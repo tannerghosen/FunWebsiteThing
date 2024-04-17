@@ -3,17 +3,18 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace LearningASPNETAndRazor.Pages
 {
-    public class PrivacyModel : PageModel
+    public class SandboxModel : PageModel
     {
-        private readonly ILogger<PrivacyModel> _logger;
+        private readonly ILogger<IndexModel> _logger;
 
-        public PrivacyModel(ILogger<PrivacyModel> logger)
+        public SandboxModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
         }
 
         public void OnGet()
         {
+
         }
     }
 }
