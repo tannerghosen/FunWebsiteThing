@@ -1,8 +1,8 @@
-﻿
-@page
+﻿@page
 @using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
 @using MySql.Data;
 @using MySql.Data.MySqlClient;
+@inject Database Database;
 @model SandboxModel
 @{
     ViewData["Title"] = "Sandbox";
@@ -33,20 +33,24 @@
     </fieldset>
 </form>
 @{
-    try
-    {
-        string connect = "Server=127.0.0.1;Port=3306;Database=test;User Id=root;";
-        var con = new MySqlConnection(connect);
-        con.Open();
         if (HttpMethods.IsPost(Request.Method))
         {
             string username = Request.Form["username"];
             string password = Request.Form["password"];
+            //string favcolor = Request.Form["favcolor"];
             bool checkbox = Request.Form["checkbox"] == "";
             Console.WriteLine(checkbox);
 
             if (checkbox == false) // register
             {
+                string result = Database.Register(username, password);
+                if(!string.IsNullOrEmpty(result))
+                {
+                    <div style="background-color: #444; border-color: #555; border-radius: 1px;">
+                        @result
+                    </div>
+                }
+                /*
                 string query = "SELECT COUNT(*) FROM accounts WHERE username = @username"; // + username;
                 Console.WriteLine(query);
                 using (var cmd = new MySqlCommand(query, con))
@@ -73,9 +77,18 @@
                         Account Added: @username
                     </div>
                 }
+                */
             }
             else // login
             {
+                string result = Database.Login(username, password);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    <div style="background-color: #444; border-color: #555; border-radius: 1px;">
+                        @result
+                    </div>
+                }
+                /*
                 string query = "SELECT COUNT(*) FROM accounts WHERE username = @username"; //+ username;
                 Console.WriteLine(query);
                 using (var cmd = new MySqlCommand(query, con))
@@ -111,17 +124,10 @@
                             Logged into: @username
                         </div>
                     }
-                }
+                }*/
             }
         }
     }
-    catch (MySqlException ex)
-    {
-        <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-            Database issue: @ex
-        </div>
-    }
-}
 
 <!-- Form Example -->
 <!--form method="post">

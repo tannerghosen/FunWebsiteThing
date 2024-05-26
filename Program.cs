@@ -1,7 +1,10 @@
+using LearningASPNETAndRazor;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddSingleton<Database>();
 
 var app = builder.Build();
 
