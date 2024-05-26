@@ -10,8 +10,121 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<!-- Form Example -->
+<!-- Login / Registration Example (really basic) -->
 <form method="post">
+    <fieldset>
+        <legend>Login / Register</legend>
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" name="username" value="" />
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="text" name="password" value="" />
+        </div>
+        <div>
+            <label for="checkbox">Login / Register Toggle:</label>
+            <input type="checkbox" name="checkbox" value="" />
+        </div>
+        <div>
+            <label>&nbsp;</label>
+            <input type="submit" value="Submit" class="submit" />
+        </div>
+    </fieldset>
+</form>
+@{
+    try
+    {
+        string connect = "Server=127.0.0.1;Port=3306;Database=test;User Id=root;";
+        var con = new MySqlConnection(connect);
+        con.Open();
+        if (HttpMethods.IsPost(Request.Method))
+        {
+            string username = Request.Form["username"];
+            string password = Request.Form["password"];
+            bool checkbox = Request.Form["checkbox"] == "";
+            Console.WriteLine(checkbox);
+
+            if (checkbox == false) // register
+            {
+                string query = "SELECT COUNT(*) FROM accounts WHERE username = @username"; // + username;
+                Console.WriteLine(query);
+                using (var cmd = new MySqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@username", username);
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    if (count > 0)
+                    {
+                        // Username already exists, handle error
+                        <div style="background-color: #400; border-color: #500; border-radius: 1px;">
+                            Username already exists!
+                        </div>
+                        return;
+                    }
+                }
+                query = "INSERT INTO accounts (username, password) VALUES (@username, @password)"; //(" + username + "," + password + ")";
+                Console.WriteLine(query);
+                using (var cmd = new MySqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@username", username);
+                    cmd.Parameters.AddWithValue("@password", password);
+                    cmd.ExecuteNonQuery();
+                    <div style="background-color: #222; border-color: #333; border-radius: 1px;">
+                        Account Added: @username
+                    </div>
+                }
+            }
+            else // login
+            {
+                string query = "SELECT COUNT(*) FROM accounts WHERE username = @username"; //+ username;
+                Console.WriteLine(query);
+                using (var cmd = new MySqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@username", username);
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    if (count == 0)
+                    {
+                        // Username already exists, handle error
+                        <div style="background-color: #400; border-color: #500; border-radius: 1px;">
+                            Username doesn't exist!
+                        </div>
+                        return;
+                    }
+                }
+                query = "SELECT password FROM accounts WHERE username = @username"; // + username;
+                Console.WriteLine(query);
+                using (var cmd = new MySqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@username", username);
+                    string pass = cmd.ExecuteScalar().ToString();
+                    if (pass != password) // invalid password
+                    {
+                        // Username already exists, handle error
+                        <div style="background-color: #400; border-color: #500; border-radius: 1px;">
+                            Invalid password!
+                        </div>
+                        return;
+                    }
+                    else // valid password
+                    {
+                        <div style="background-color: #222; border-color: #333; border-radius: 1px;">
+                            Logged into: @username
+                        </div>
+                    }
+                }
+            }
+        }
+    }
+    catch (MySqlException ex)
+    {
+        <div style="background-color: #400; border-color: #500; border-radius: 1px;">
+            Database issue: @ex
+        </div>
+    }
+}
+
+<!-- Form Example -->
+<!--form method="post">
     <fieldset>
         <legend>What's your name?</legend>
         <div>
@@ -31,86 +144,87 @@
             <input type="submit" value="Submit" class="submit" />
         </div>
     </fieldset>
-</form>
+</form>-->
 @{
-    if (HttpMethods.IsPost(Request.Method))
-    {
+        /*if (HttpMethods.IsPost(Request.Method))
+        {
         string firstname = Request.Form["firstname"];
         string lastname = Request.Form["lastname"];
         bool checkbox = Request.Form["checkbox"] == "on";
 
-        if(checkbox == true)
-        {
+            if(checkbox == true)
+            {
             <div style="background-color: #111; border-color: #222; border-radius: 1px;">
             You entered: <br />
             First Name: @firstname <br />
-            Last Name: @lastname <br />
+        Last Name: @lastname <br />
             </div>
-        }
-        else
-        {
+            }
+            else
+            {
             <div style="background-color: #400; border-color: #500; border-radius: 1px;">
             You are not this person! <br />
-            @firstname @lastname
-            </div>
-        }
-    }
+    @firstname @lastname
+    </div>
+                }
+            }*/
 }
 
 <!-- File Handling -->
 @{
     // Note if you want to get a specific API's class, you will need to be specific with the name, as seen below
-    var file = Directory.GetCurrentDirectory() + "/wwwroot/misc/nameshit.txt";
+    /*var file = Directory.GetCurrentDirectory() + "/wwwroot/misc/nameshit.txt";
     if (System.IO.File.Exists(file)) // if the file exists
-    {
+        {
         Array data = System.IO.File.ReadAllLines(file);
         <table style="background-color: #333; border-color: #111; border-radius: 1px">
             <thead style="background-color: #222; border-color: #111; border-radius: 1px">
-                <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                </tr>
-            </thead>
-            @{
-                foreach(string line in data)
-                {
                     <tr>
-                    @{
+                    <th>First Name</th>
+            <th>Last Name</th>
+                </tr>
+                </thead>
+                @{
+                    foreach(string line in data)
+                    {
+                        <tr>
+                        @{
                         foreach(string item in line.Split(","))
                         {
-                            <td>@item</td>
-                        }
+                    <td>@item</td>
                     }
-                    </tr>
                 }
-            }
+        </tr>
+    }
+    }
         </table>
-    }
-    else
-    {
+        }
+        else
+        {
         <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-            File does not exist at @file !
-        </div>
-    }
+    File does not exist at @file !
+    </div>
+    }*/
 
 }
 <!-- SQL connectivity example - you must launch MySQL via XAMPP -->
 @{
+    /*
     string connect = "Server=127.0.0.1;Port=3306;Database=test;User Id=root;";
     var con = new MySqlConnection(connect);
     con.Open();
     MySqlCommand command = new MySqlCommand("SELECT * FROM test", con);
     MySqlDataReader reader = command.ExecuteReader();
-    <table>
+        <table>
+        <tr>
         @while(reader.Read())
-        {
-            for (int i = 0; i < reader.FieldCount; i++)
             {
-                <tr>
-                    <td>@reader[i].ToString()</td>
-                </tr>
-            }
+            for (int i = 0; i < reader.FieldCount; i++)
+                {
+                <td>@reader[i].ToString()</td>
         }
+    }
+    </tr>
     </table>
-    reader.Close();
+    reader.Close(); */
 }
