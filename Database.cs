@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
-
+using BCrypt.Net;
+using System.Data.SqlTypes;
 namespace LearningASPNETAndRazor
 {
     public class Database
@@ -12,7 +13,7 @@ namespace LearningASPNETAndRazor
             return con;
         }
         public string Register(string username, string password)
-        {
+        {;
             MySqlConnection con = Connect();
             string query = "SELECT COUNT(*) FROM accounts WHERE username = @username";
             Console.WriteLine(query);
@@ -29,8 +30,11 @@ namespace LearningASPNETAndRazor
             Console.WriteLine(query);
             using (var cmd = new MySqlCommand(query, con))
             {
+                string salt = BCrypt.Net.BCrypt.GenerateSalt(12);
+                string hashpass = BCrypt.Net.BCrypt.HashPassword(password, salt);
+                Console.WriteLine(hashpass);
                 cmd.Parameters.AddWithValue("@username", username);
-                cmd.Parameters.AddWithValue("@password", password);
+                cmd.Parameters.AddWithValue("@password", hashpass);
                 cmd.ExecuteNonQuery();
                 return "Account Added: " + username;
             }
@@ -55,8 +59,9 @@ namespace LearningASPNETAndRazor
             using (var cmd = new MySqlCommand(query, con))
             {
                 cmd.Parameters.AddWithValue("@username", username);
-                string pass = cmd.ExecuteScalar().ToString();
-                if (pass != password) // invalid password
+                string hash = cmd.ExecuteScalar().ToString();
+                Console.WriteLine(hash + " " + password);
+                if (!BCrypt.Net.BCrypt.Verify(password, hash)) // invalid password
                 {
                     return "Invalid password!";
                 }
