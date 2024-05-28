@@ -20,7 +20,7 @@
         </div>
         <div>
             <label for="password">Password:</label>
-            <input type="text" name="password" value="" />
+            <input type="text" name="password" value="" id="pass" />
         </div>
         <div>
             <label for="checkbox">Login / Register Toggle:</label>
@@ -32,6 +32,20 @@
         </div>
     </fieldset>
 </form>
+<script>
+    function GeneratePass() 
+    {
+        $.ajax({
+            type: "GET",
+            url: "api/Misc/GeneratePassword",
+            success: function (data) 
+            {
+                document.getElementById("pass").value = data.password; // get the password from our MiscController
+            }
+        });
+    }
+</script>
+<button onclick="GeneratePass()">Generate Pass</button>
 @{
         if (HttpMethods.IsPost(Request.Method))
         {
@@ -46,89 +60,23 @@
                 string result = Database.Register(username, password);
                 if(!string.IsNullOrEmpty(result))
                 {
-                    <div style="background-color: #444; border-color: #555; border-radius: 1px;">
-                        @result
-                    </div>
-                }
-                /*
-                string query = "SELECT COUNT(*) FROM accounts WHERE username = @username"; // + username;
-                Console.WriteLine(query);
-                using (var cmd = new MySqlCommand(query, con))
-                {
-                    cmd.Parameters.AddWithValue("@username", username);
-                    int count = Convert.ToInt32(cmd.ExecuteScalar());
-                    if (count > 0)
-                    {
-                        // Username already exists, handle error
-                        <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-                            Username already exists!
+                        <div style="background-color: #444; border-color: #555; border-radius: 1px;">
+                            @result
                         </div>
-                        return;
-                    }
                 }
-                query = "INSERT INTO accounts (username, password) VALUES (@username, @password)"; //(" + username + "," + password + ")";
-                Console.WriteLine(query);
-                using (var cmd = new MySqlCommand(query, con))
-                {
-                    cmd.Parameters.AddWithValue("@username", username);
-                    cmd.Parameters.AddWithValue("@password", password);
-                    cmd.ExecuteNonQuery();
-                    <div style="background-color: #222; border-color: #333; border-radius: 1px;">
-                        Account Added: @username
-                    </div>
-                }
-                */
             }
             else // login
             {
                 string result = Database.Login(username, password);
                 if (!string.IsNullOrEmpty(result))
                 {
-                    <div style="background-color: #444; border-color: #555; border-radius: 1px;">
-                        @result
-                    </div>
+                        <div style="background-color: #444; border-color: #555; border-radius: 1px;">
+                            @result
+                        </div>
                 }
-                /*
-                string query = "SELECT COUNT(*) FROM accounts WHERE username = @username"; //+ username;
-                Console.WriteLine(query);
-                using (var cmd = new MySqlCommand(query, con))
-                {
-                    cmd.Parameters.AddWithValue("@username", username);
-                    int count = Convert.ToInt32(cmd.ExecuteScalar());
-                    if (count == 0)
-                    {
-                        // Username already exists, handle error
-                        <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-                            Username doesn't exist!
-                        </div>
-                        return;
-                    }
-                }
-                query = "SELECT password FROM accounts WHERE username = @username"; // + username;
-                Console.WriteLine(query);
-                using (var cmd = new MySqlCommand(query, con))
-                {
-                    cmd.Parameters.AddWithValue("@username", username);
-                    string pass = cmd.ExecuteScalar().ToString();
-                    if (pass != password) // invalid password
-                    {
-                        // Username already exists, handle error
-                        <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-                            Invalid password!
-                        </div>
-                        return;
-                    }
-                    else // valid password
-                    {
-                        <div style="background-color: #222; border-color: #333; border-radius: 1px;">
-                            Logged into: @username
-                        </div>
-                    }
-                }*/
             }
         }
-    }
-
+}
 <!-- Form Example -->
 <!--form method="post">
     <fieldset>
