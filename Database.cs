@@ -12,27 +12,29 @@ namespace LearningASPNETAndRazor
             con.Open();
             return con;
         }
-        public string Register(string username, string password)
+        public string Register(string email, string username, string password)
         {;
             MySqlConnection con = Connect();
-            string query = "SELECT COUNT(*) FROM accounts WHERE username = @username";
+            string query = "SELECT COUNT(*) FROM accounts WHERE email = @email OR username = @username";
             Console.WriteLine(query);
             using (var cmd = new MySqlCommand(query, con))
             {
                 cmd.Parameters.AddWithValue("username", username);
+                cmd.Parameters.AddWithValue("email", email);
                 int count = Convert.ToInt32(cmd.ExecuteScalar());
                 if (count > 0)
                 {
-                    return "Username already exists!";
+                    return "Email or username already exists!";
                 }
             }
-            query = "INSERT INTO accounts (username, password) VALUES (@username, @password)";
+            query = "INSERT INTO accounts (email, username, password) VALUES (@email, @username, @password)";
             Console.WriteLine(query);
             using (var cmd = new MySqlCommand(query, con))
             {
                 string salt = BCrypt.Net.BCrypt.GenerateSalt(12);
                 string hashpass = BCrypt.Net.BCrypt.HashPassword(password, salt);
                 Console.WriteLine(hashpass);
+                cmd.Parameters.AddWithValue("@email", email);
                 cmd.Parameters.AddWithValue("@username", username);
                 cmd.Parameters.AddWithValue("@password", hashpass);
                 cmd.ExecuteNonQuery();
