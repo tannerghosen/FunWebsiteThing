@@ -11,100 +11,8 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<!-- Login / Registration Example (really basic) -->
-<form method="post">
-    <fieldset>
-        <legend>Login / Register</legend>
-        <div>
-            <label for="username">Email:</label>
-            <input type="text" name="email" value="" />
-        </div>
-        <div>
-            <label for="username">Username:</label>
-            <input type="text" name="username" value="" />
-        </div>
-        <div>
-            <label for="password">Password:</label>
-            <input type="text" name="password" value="" id="pass" />
-        </div>
-        <div>
-            <label for="checkbox">Login / Register Toggle:</label>
-            <input type="checkbox" name="checkbox" value="" />
-        </div>
-        <div>
-            <label>&nbsp;</label>
-            <input type="submit" value="Submit" class="submit" />
-        </div>
-    </fieldset>
-</form>
-<script>
-    function GeneratePass() 
-    {
-        $.ajax({
-            type: "GET",
-            url: "api/Misc/GeneratePassword",
-            success: function (data) 
-            {
-                document.getElementById("pass").value = data.password; // get the password from our MiscController
-            }
-        });
-    }
-</script>
-<button onclick="GeneratePass()">Generate Pass</button>
-@{
-        if (HttpMethods.IsPost(Request.Method))
-        {
-            string email = Request.Form["email"];
-            string username = Request.Form["username"];
-            string password = Request.Form["password"];
-            //string favcolor = Request.Form["favcolor"];
-            bool checkbox = Request.Form["checkbox"] == "";
-            Console.WriteLine(checkbox);
-            if (checkbox == false) // register
-            {
-                if (!Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$") || string.IsNullOrEmpty(email))
-                {
-                    <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-                        Invalid email
-                    </div>
-                }
-                else if(string.IsNullOrEmpty(username))
-                {
-                    <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-                        Invalid username
-                    </div>
-                }
-                else if(string.IsNullOrEmpty(password))
-                {
-                    <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-                        Invalid password
-                    </div>
-                }
-                else
-                {
-                    string result = Database.Register(email, username, password);
-                    if(!string.IsNullOrEmpty(result))
-                    {
-                        <div style="background-color: #444; border-color: #555; border-radius: 1px;">
-                            @result
-                        </div>
-                    }
-                }
-            }
-            else // login
-            {
-                string result = Database.Login(username, password);
-                if (!string.IsNullOrEmpty(result))
-                {
-                    <div style="background-color: #444; border-color: #555; border-radius: 1px;">
-                        @result
-                    </div>
-                }
-            }
-        }
-}
 <!-- Form Example -->
-<!--form method="post">
+<form method="post">
     <fieldset>
         <legend>What's your name?</legend>
         <div>
@@ -124,13 +32,13 @@
             <input type="submit" value="Submit" class="submit" />
         </div>
     </fieldset>
-</form>-->
+</form>
 @{
-        /*if (HttpMethods.IsPost(Request.Method))
+        if (HttpMethods.IsPost(Request.Method))
         {
         string firstname = Request.Form["firstname"];
         string lastname = Request.Form["lastname"];
-        bool checkbox = Request.Form["checkbox"] == "on";
+        bool checkbox = Request.Form["checkbox"] == "";
 
             if(checkbox == true)
             {
@@ -147,13 +55,13 @@
     @firstname @lastname
     </div>
                 }
-            }*/
+            }
 }
 
 <!-- File Handling -->
 @{
     // Note if you want to get a specific API's class, you will need to be specific with the name, as seen below
-    /*var file = Directory.GetCurrentDirectory() + "/wwwroot/misc/nameshit.txt";
+    var file = Directory.GetCurrentDirectory() + "/wwwroot/misc/nameshit.txt";
     if (System.IO.File.Exists(file)) // if the file exists
         {
         Array data = System.IO.File.ReadAllLines(file);
@@ -184,12 +92,12 @@
         <div style="background-color: #400; border-color: #500; border-radius: 1px;">
     File does not exist at @file !
     </div>
-    }*/
+    }
 
 }
 <!-- SQL connectivity example - you must launch MySQL via XAMPP -->
 @{
-    /*
+    
     string connect = "Server=127.0.0.1;Port=3306;Database=test;User Id=root;";
     var con = new MySqlConnection(connect);
     con.Open();
@@ -206,5 +114,5 @@
     }
     </tr>
     </table>
-    reader.Close(); */
+    reader.Close(); 
 }

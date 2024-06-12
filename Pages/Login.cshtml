@@ -1,0 +1,45 @@
+﻿@page
+@using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
+@using MySql.Data;
+@using MySql.Data.MySqlClient;
+@using System.Text.RegularExpressions;
+@inject Database Database;
+@model SandboxModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<!-- Login / Registration Example (really basic) -->
+<form method="post">
+    <fieldset>
+        <legend>Login</legend>
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" name="username" value="" />
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="text" name="password" value="" id="pass" />
+        </div>
+        <div>
+            <label>&nbsp;</label>
+            <input type="submit" value="Submit" class="submit" />
+        </div>
+    </fieldset>
+</form>
+@{
+    if (HttpMethods.IsPost(Request.Method))
+    {
+                string username = Request.Form["username"];
+                string password = Request.Form["password"];
+                string result = Database.Login(username, password);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    <div style="background-color: #444; border-color: #555; border-radius: 1px;">
+                        @result
+                    </div>
+                }
+    }
+}

@@ -13,7 +13,7 @@ namespace LearningASPNETAndRazor
             return con;
         }
         public string Register(string email, string username, string password)
-        {;
+        {
             MySqlConnection con = Connect();
             string query = "SELECT COUNT(*) FROM accounts WHERE email = @email OR username = @username";
             Console.WriteLine(query);
