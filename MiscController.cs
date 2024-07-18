@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+// This is an API controller that connects with the Misc class to call the method GeneratePassword and return it as a json string.
 namespace LearningASPNETAndRazor
 {
     [ApiController]

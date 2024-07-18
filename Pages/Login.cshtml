@@ -11,7 +11,7 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<!-- Login / Registration Example (really basic) -->
+<!-- Login Form -->
 <form method="post">
     <fieldset>
         <legend>Login</legend>
@@ -30,12 +30,14 @@
     </fieldset>
 </form>
 @{
-    if (HttpMethods.IsPost(Request.Method))
+    // Lot a simpler than Registration, but that's because it's just wasted energy if the user leaves shit blank whereas registering
+    // an account with blank fields would go through without the if-elses and that would cause several issues
+    if (HttpMethods.IsPost(Request.Method)) // if POST
     {
                 string username = Request.Form["username"];
                 string password = Request.Form["password"];
                 string result = Database.Login(username, password);
-                if (!string.IsNullOrEmpty(result))
+                if (!string.IsNullOrEmpty(result)) // If we get a result, return the results
                 {
                     <div style="background-color: #444; border-color: #555; border-radius: 1px;">
                         @result

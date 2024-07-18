@@ -1,10 +1,10 @@
 ﻿using MySql.Data.MySqlClient;
-using BCrypt.Net;
-using System.Data.SqlTypes;
 namespace LearningASPNETAndRazor
 {
+    // This class is injected into our Login.cshtml and Register.cshtmls
     public class Database
     {
+        // Connects to our database
         public MySqlConnection Connect()
         {
             string connect = "Server=127.0.0.1;Port=3306;Database=test;User Id=root;";
@@ -12,6 +12,9 @@ namespace LearningASPNETAndRazor
             con.Open();
             return con;
         }
+        
+        // Registers an account by first running a SQL statement to see if it the account exists. If it does, don't do anything.
+        // If it doesn't, run another SQL statement that inserts it into the table, alongside generating a salt to hash our password.
         public string Register(string email, string username, string password)
         {
             MySqlConnection con = Connect();
@@ -41,7 +44,10 @@ namespace LearningASPNETAndRazor
                 return "Account Added: " + username;
             }
         }
-
+        
+        // "Logs us into" an account by running a SQL statement to see if the username is valid first. If it isn't, do nothing.
+        // If it is, then we run another SQL statement that compares the hashed password with the password given using BCrypt.Verify
+        // If it matches, we "log in", if not, we return the password is invalid.
         public string Login(string username, string password)
         {
             MySqlConnection con = Connect();

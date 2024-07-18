@@ -34,28 +34,28 @@
     </fieldset>
 </form>
 @{
-        if (HttpMethods.IsPost(Request.Method))
+        if (HttpMethods.IsPost(Request.Method)) // if POST
         {
-        string firstname = Request.Form["firstname"];
-        string lastname = Request.Form["lastname"];
-        bool checkbox = Request.Form["checkbox"] == "";
+        string firstname = Request.Form["firstname"]; // get first name
+        string lastname = Request.Form["lastname"]; // get last name
+        bool checkbox = Request.Form["checkbox"] == ""; // get checkbox status
 
-            if(checkbox == true)
+            if(checkbox == true) // if the checkbox is true
             {
-            <div style="background-color: #111; border-color: #222; border-radius: 1px;">
-            You entered: <br />
-            First Name: @firstname <br />
-        Last Name: @lastname <br />
-            </div>
+                <div style="background-color: #111; border-color: #222; border-radius: 1px;">
+                You entered: <br />
+                First Name: @firstname <br />
+                Last Name: @lastname <br />
+                </div>
             }
-            else
+            else // if it's not, they didn't confirm their identity
             {
-            <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-            You are not this person! <br />
-    @firstname @lastname
-    </div>
-                }
+                <div style="background-color: #400; border-color: #500; border-radius: 1px;">
+                You are not this person! <br />
+                @firstname @lastname
+                </div>
             }
+        }
 }
 
 <!-- File Handling -->
@@ -63,15 +63,15 @@
     // Note if you want to get a specific API's class, you will need to be specific with the name, as seen below
     var file = Directory.GetCurrentDirectory() + "/wwwroot/misc/nameshit.txt";
     if (System.IO.File.Exists(file)) // if the file exists
-        {
-        Array data = System.IO.File.ReadAllLines(file);
+    {
+        Array data = System.IO.File.ReadAllLines(file); // Read the lines of nameshit.txt as individual elements of an array
         <table style="background-color: #333; border-color: #111; border-radius: 1px">
             <thead style="background-color: #222; border-color: #111; border-radius: 1px">
-                    <tr>
-                    <th>First Name</th>
+            <tr>
+            <th>First Name</th>
             <th>Last Name</th>
-                </tr>
-                </thead>
+            </tr>
+            </thead>
                 @{
                     foreach(string line in data)
                     {
@@ -79,40 +79,40 @@
                         @{
                         foreach(string item in line.Split(","))
                         {
-                    <td>@item</td>
+                            <td>@item</td>
+                        }
+                         }
+                        </tr>
                     }
                 }
-        </tr>
-    }
-    }
         </table>
-        }
-        else
-        {
+    }
+    else
+    {
         <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-    File does not exist at @file !
-    </div>
+        File does not exist at @file !
+        </div>
     }
 
 }
 <!-- SQL connectivity example - you must launch MySQL via XAMPP -->
 @{
     
-    string connect = "Server=127.0.0.1;Port=3306;Database=test;User Id=root;";
-    var con = new MySqlConnection(connect);
+    string connect = "Server=127.0.0.1;Port=3306;Database=test;User Id=root;"; // connect string
+    var con = new MySqlConnection(connect); // open MySQL connection
     con.Open();
-    MySqlCommand command = new MySqlCommand("SELECT * FROM test", con);
-    MySqlDataReader reader = command.ExecuteReader();
+    MySqlCommand command = new MySqlCommand("SELECT * FROM test", con); // run a MySQL command using the connection string
+    MySqlDataReader reader = command.ExecuteReader(); // let the command execute as a reader
         <table>
         <tr>
-        @while(reader.Read())
+        @while(reader.Read()) // while there's shit to read
+        {
+            for (int i = 0; i < reader.FieldCount; i++) // for i being less than the columns in that row
             {
-            for (int i = 0; i < reader.FieldCount; i++)
-                {
-                <td>@reader[i].ToString()</td>
+                <td>@reader[i].ToString()</td> // return that column
+            }
         }
-    }
-    </tr>
-    </table>
+        </tr>
+        </table>
     reader.Close(); 
 }

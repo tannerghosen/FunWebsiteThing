@@ -11,7 +11,7 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<!-- Login / Registration Example (really basic) -->
+<!-- Registration Form -->
 <form method="post">
     <fieldset>
         <legend>Register</legend>
@@ -38,7 +38,7 @@
     {
         $.ajax({
             type: "GET",
-            url: "api/Misc/GeneratePassword",
+            url: "api/Misc/GeneratePassword", // this is the path to get the GeneratePassword function from MiscController. (think of it like API -> ClassName -> MethodName (if included in the controller))
             success: function (data) 
             {
                 document.getElementById("pass").value = data.password; // get the password from our MiscController
@@ -48,25 +48,25 @@
 </script>
 <button onclick="GeneratePass()">Generate Pass</button>
 @{
-        if (HttpMethods.IsPost(Request.Method))
+        if (HttpMethods.IsPost(Request.Method)) // if we POST
         {
             string email = Request.Form["email"];
             string username = Request.Form["username"];
             string password = Request.Form["password"];
             //string favcolor = Request.Form["favcolor"];
-                if (!Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$") || string.IsNullOrEmpty(email))
+                if (!Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$") || string.IsNullOrEmpty(email)) // if email doesn't match regex / is empty
                 {
                     <div style="background-color: #400; border-color: #500; border-radius: 1px;">
                         Invalid email
                     </div>
                 }
-                else if(string.IsNullOrEmpty(username))
+                else if(string.IsNullOrEmpty(username)) // if username is empty
                 {
                     <div style="background-color: #400; border-color: #500; border-radius: 1px;">
                         Invalid username
                     </div>
                 }
-                else if(string.IsNullOrEmpty(password))
+                else if(string.IsNullOrEmpty(password)) // if password is empty
                 {
                     <div style="background-color: #400; border-color: #500; border-radius: 1px;">
                         Invalid password
@@ -74,8 +74,8 @@
                 }
                 else
                 {
-                    string result = Database.Register(email, username, password);
-                    if(!string.IsNullOrEmpty(result))
+                    string result = Database.Register(email, username, password); // Registers our account, hopefully
+                    if(!string.IsNullOrEmpty(result)) // If we do (or don't), return the result
                     {
                         <div style="background-color: #444; border-color: #555; border-radius: 1px;">
                             @result

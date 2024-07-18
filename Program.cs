@@ -4,9 +4,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<Database>();
-builder.Services.AddSingleton<Misc>();
-builder.Services.AddControllers();
+builder.Services.AddSingleton<Database>(); // This allows us to inject Database into our files
+builder.Services.AddSingleton<Misc>(); // This (I believe?) allows us to use the controller MiscController without an error happening
+builder.Services.AddControllers(); // This adds MiscController to the program
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
@@ -32,8 +32,9 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllerRoute("api", "api/Misc/GeneratePassword");
+    endpoints.MapControllerRoute("api", "api/Misc/GeneratePassword"); // Adds the waypoint for GeneratePassword (api/Misc/GeneratePassword)
     endpoints.MapControllers();
+    // Do note; basically waypoints follow this pattern: API/ClassName/MethodNameIfItIsPartOfTheController
 });
 
 app.UseAuthorization();
