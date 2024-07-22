@@ -10,7 +10,6 @@ namespace LearningASPNETAndRazor
         [HttpGet("GeneratePassword")]
         public IActionResult GeneratePassword()
         {
-            Console.WriteLine("GENERATING A FUCKING PASSWORD");
             string pass = Misc.GeneratePassword();
             return new JsonResult(new { Password = pass });
         }

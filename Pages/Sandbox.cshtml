@@ -3,7 +3,6 @@
 @using MySql.Data;
 @using MySql.Data.MySqlClient;
 @using System.Text.RegularExpressions;
-@inject Database Database;
 @model SandboxModel
 @{
     ViewData["Title"] = "Sandbox";
@@ -99,13 +98,13 @@
 @{
     
     string connect = "Server=127.0.0.1;Port=3306;Database=test;User Id=root;"; // connect string
-    var con = new MySqlConnection(connect); // open MySQL connection
-    con.Open();
+    var con = new MySqlConnection(connect); // MySQL connection
+    con.Open(); // open it
     MySqlCommand command = new MySqlCommand("SELECT * FROM test", con); // run a MySQL command using the connection string
     MySqlDataReader reader = command.ExecuteReader(); // let the command execute as a reader
         <table>
         <tr>
-        @while(reader.Read()) // while there's shit to read
+        @while(reader.Read()) // while there's stuff to read
         {
             for (int i = 0; i < reader.FieldCount; i++) // for i being less than the columns in that row
             {

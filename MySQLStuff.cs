@@ -2,7 +2,7 @@
 namespace LearningASPNETAndRazor
 {
     // This class is injected into our Login.cshtml and Register.cshtmls
-    public class Database
+    public class MySQLStuff
     {
         // Connects to our database
         public MySqlConnection Connect()

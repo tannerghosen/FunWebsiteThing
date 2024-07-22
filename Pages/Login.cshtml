@@ -3,7 +3,7 @@
 @using MySql.Data;
 @using MySql.Data.MySqlClient;
 @using System.Text.RegularExpressions;
-@inject Database Database;
+@inject MySQLStuff s;
 @model SandboxModel
 @{
     ViewData["Title"] = "Login";
@@ -36,7 +36,7 @@
     {
                 string username = Request.Form["username"];
                 string password = Request.Form["password"];
-                string result = Database.Login(username, password);
+                string result = s.Login(username, password);
                 if (!string.IsNullOrEmpty(result)) // If we get a result, return the results
                 {
                     <div style="background-color: #444; border-color: #555; border-radius: 1px;">

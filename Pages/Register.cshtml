@@ -3,7 +3,7 @@
 @using MySql.Data;
 @using MySql.Data.MySqlClient;
 @using System.Text.RegularExpressions;
-@inject Database Database;
+@inject MySQLStuff s
 @model SandboxModel
 @{
     ViewData["Title"] = "Register";
@@ -74,7 +74,7 @@
                 }
                 else
                 {
-                    string result = Database.Register(email, username, password); // Registers our account, hopefully
+                    string result = s.Register(email, username, password); // Registers our account, hopefully
                     if(!string.IsNullOrEmpty(result)) // If we do (or don't), return the result
                     {
                         <div style="background-color: #444; border-color: #555; border-radius: 1px;">
