@@ -15,6 +15,11 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = "TannerGhosensASPNETWebsite.Session";
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -30,6 +35,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+app.UseSession();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllerRoute("api", "api/Misc/GeneratePassword"); // Adds the waypoint for GeneratePassword (api/Misc/GeneratePassword)

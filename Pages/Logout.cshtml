@@ -1,0 +1,46 @@
+﻿@page
+@using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
+@using MySql.Data;
+@using MySql.Data.MySqlClient;
+@using System.Text.RegularExpressions;
+@inject MySQLStuff s;
+@model SandboxModel
+@{
+    ViewData["Title"] = "Logout";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<!-- Login Form -->
+<form method="post">
+    <fieldset>
+        <legend>Logout</legend>
+        <div>
+            <label>&nbsp;</label>
+            <input type="submit" value="Logout" class="submit" />
+        </div>
+    </fieldset>
+</form>
+@{
+    Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
+    string user = HttpContext.Session.GetString("Username");
+    int? status = HttpContext.Session.GetInt32("IsLoggedIn");
+    if (HttpContext.Session.GetInt32("IsLoggedIn") == 1)
+    {
+        <p>You're currently logged in as "@user".</p>
+    }
+}
+@{
+    // Lot a simpler than Registration, but that's because it's just wasted energy if the user leaves shit blank whereas registering
+    // an account with blank fields would go through without the if-elses and that would cause several issues
+    if (HttpMethods.IsPost(Request.Method)) // if POST
+    {
+        if (HttpContext.Session.GetInt32("IsLoggedIn") == 1) 
+        {
+            HttpContext.Session.SetString("Username", "");
+            HttpContext.Session.SetInt32("IsLoggedIn", 0);
+            Response.Redirect("/Logout");
+            Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
+        }
+    }
+}

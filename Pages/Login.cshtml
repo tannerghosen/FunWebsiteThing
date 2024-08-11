@@ -37,11 +37,17 @@
                 string username = Request.Form["username"];
                 string password = Request.Form["password"];
                 string result = s.Login(username, password);
-                if (!string.IsNullOrEmpty(result)) // If we get a result, return the results
+                if (!string.IsNullOrEmpty(result) && HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
                 {
                     <div style="background-color: #444; border-color: #555; border-radius: 1px;">
                         @result
                     </div>
+                }
+                if (result.Contains("Logged into: " + username) && (HttpContext.Session.GetInt32("IsLoggedIn") == null || HttpContext.Session.GetInt32("IsLoggedIn") == 0))
+                {
+                    HttpContext.Session.SetString("Username", username);
+                    HttpContext.Session.SetInt32("IsLoggedIn", 1); 
+                    Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
                 }
     }
 }

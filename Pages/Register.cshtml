@@ -77,9 +77,18 @@
                     string result = s.Register(email, username, password); // Registers our account, hopefully
                     if(!string.IsNullOrEmpty(result)) // If we do (or don't), return the result
                     {
-                        <div style="background-color: #444; border-color: #555; border-radius: 1px;">
-                            @result
-                        </div>
+                        if(HttpContext.Session.GetInt32("IsLoggedIn") != 1)
+                        {
+                            <div style="background-color: #444; border-color: #555; border-radius: 1px;">
+                                @result
+                            </div>
+                            if (result.Contains("Account Added: " + username))
+                            {
+                                HttpContext.Session.SetString("Username", username);
+                                HttpContext.Session.SetInt32("IsLoggedIn", 1);
+                                Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
+                            }
+                        }
                     }
                 }
         }
