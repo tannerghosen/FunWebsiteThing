@@ -1,7 +1,5 @@
 ﻿@page
 @using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
-@using MySql.Data;
-@using MySql.Data.MySqlClient;
 @using System.Text.RegularExpressions;
 @inject MySQLStuff s;
 @model SandboxModel
@@ -34,20 +32,30 @@
     // an account with blank fields would go through without the if-elses and that would cause several issues
     if (HttpMethods.IsPost(Request.Method)) // if POST
     {
-                string username = Request.Form["username"];
-                string password = Request.Form["password"];
-                string result = s.Login(username, password);
-                if (!string.IsNullOrEmpty(result) && HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
-                {
+        string username = Request.Form["username"];
+        string password = Request.Form["password"];
+        bool result = s.Login(username, password);
+        if ((!string.IsNullOrEmpty(username) || !string.IsNullOrEmpty(password)) && HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
+        {
+            switch(result)
+            {
+                case true:
                     <div style="background-color: #444; border-color: #555; border-radius: 1px;">
-                        @result
+                        Logged Into: @username
                     </div>
-                }
-                if (result.Contains("Logged into: " + username) && (HttpContext.Session.GetInt32("IsLoggedIn") == null || HttpContext.Session.GetInt32("IsLoggedIn") == 0))
-                {
-                    HttpContext.Session.SetString("Username", username);
-                    HttpContext.Session.SetInt32("IsLoggedIn", 1); 
-                    Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
-                }
+                    break;
+                case false:
+                    <div style="background-color: #400; border-color: #500; border-radius: 1px;">
+                        Invalid password / account "@username" doesn't exist!
+                    </div>
+                    break;
+            }
+            if (result == true)
+            {
+                HttpContext.Session.SetString("Username", username);
+                HttpContext.Session.SetInt32("IsLoggedIn", 1);
+                Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
+            }
+        }
     }
 }

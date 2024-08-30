@@ -1,7 +1,5 @@
 ﻿@page
 @using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
-@using MySql.Data;
-@using MySql.Data.MySqlClient;
 @using System.Text.RegularExpressions;
 @inject MySQLStuff s
 @model SandboxModel
@@ -74,21 +72,28 @@
                 }
                 else
                 {
-                    string result = s.Register(email, username, password); // Registers our account, hopefully
-                    if(!string.IsNullOrEmpty(result)) // If we do (or don't), return the result
+                    if ((!string.IsNullOrEmpty(username) || !string.IsNullOrEmpty(password)) && HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
                     {
-                        if(HttpContext.Session.GetInt32("IsLoggedIn") != 1)
-                        {
-                            <div style="background-color: #444; border-color: #555; border-radius: 1px;">
-                                @result
-                            </div>
-                            if (result.Contains("Account Added: " + username))
+                            bool result = s.Register(email, username, password); // Registers our account, hopefully
+                            switch (result)
+                            {
+                                case true:
+                                    <div style="background-color: #444; border-color: #555; border-radius: 1px;">
+                                        Account Registered: @username<br />Logged in automatically.
+                                    </div>
+                                    break;
+                                case false:
+                                    <div style="background-color: #400; border-color: #500; border-radius: 1px;">
+                                        The account @username already exists!
+                                    </div>
+                                    break;
+                            }
+                            if (result == true)
                             {
                                 HttpContext.Session.SetString("Username", username);
                                 HttpContext.Session.SetInt32("IsLoggedIn", 1);
                                 Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
                             }
-                        }
                     }
                 }
         }

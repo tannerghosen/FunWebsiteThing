@@ -15,7 +15,7 @@ namespace LearningASPNETAndRazor
         
         // Registers an account by first running a SQL statement to see if it the account exists. If it does, don't do anything.
         // If it doesn't, run another SQL statement that inserts it into the table, alongside generating a salt to hash our password.
-        public string Register(string email, string username, string password)
+        public bool Register(string email, string username, string password)
         {
             MySqlConnection con = Connect();
             string query = "SELECT COUNT(*) FROM accounts WHERE email = @email OR username = @username";
@@ -27,7 +27,7 @@ namespace LearningASPNETAndRazor
                 int count = Convert.ToInt32(cmd.ExecuteScalar());
                 if (count > 0)
                 {
-                    return "Email or username already exists!";
+                    return false;
                 }
             }
             query = "INSERT INTO accounts (email, username, password) VALUES (@email, @username, @password)";
@@ -41,14 +41,14 @@ namespace LearningASPNETAndRazor
                 cmd.Parameters.AddWithValue("@username", username);
                 cmd.Parameters.AddWithValue("@password", hashpass);
                 cmd.ExecuteNonQuery();
-                return "Account Added: " + username;
+                return true;
             }
         }
         
         // "Logs us into" an account by running a SQL statement to see if the username is valid first. If it isn't, do nothing.
         // If it is, then we run another SQL statement that compares the hashed password with the password given using BCrypt.Verify
         // If it matches, we "log in", if not, we return the password is invalid.
-        public string Login(string username, string password)
+        public bool Login(string username, string password)
         {
             MySqlConnection con = Connect();
             string query = "SELECT COUNT(*) FROM accounts WHERE username = @username";
@@ -59,7 +59,7 @@ namespace LearningASPNETAndRazor
                 int count = Convert.ToInt32(cmd.ExecuteScalar());
                 if (count == 0)
                 {
-                    return "Username doesn't exist!";
+                    return false;
                 }
             }
             query = "SELECT password FROM accounts WHERE username = @username";
@@ -71,11 +71,11 @@ namespace LearningASPNETAndRazor
                 Console.WriteLine(hash + " " + password);
                 if (!BCrypt.Net.BCrypt.Verify(password, hash)) // invalid password
                 {
-                    return "Invalid password!";
+                    return false;
                 }
                 else // valid password
                 {
-                    return "Logged into: " + username;
+                    return true;
                 }
             }
         }
