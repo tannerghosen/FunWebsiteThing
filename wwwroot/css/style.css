@@ -1,109 +1,86 @@
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
 /* to-do: clean up the stylesheet a bit */
-body 
-{
-	font: normal 110% Consolas;
-	margin: 0;
+body {
+  font: normal 110% "Consolas";
+  margin: 0;
 }
 
-html, body 
-{
-	height: 100%;
-	background: #000;
-	color: #FFF;
-	transition: background-color 0.5s ease;
+html, body {
+  height: 100%;
+  background: #000;
+  color: #FFF;
+  transition: background-color 0.5s ease;
 }
 
-.container 
-{
-	/* flexbox */
-	max-width: 85%; /* we don't need a lot of space */
-	height: 75vh; /* screen height */
-	max-height: 75vh;
-	min-width: 60%;
-	display: flex;
-	flex-direction: column; /* display as a column */
-	justify-content: center; /* align content in center horizontally */
-	align-items: center; /* align content in center vertically */
-	position: relative;
-	bottom: 2.5%;
-	overflow: hidden;
+.container {
+  /* flexbox */
+  max-width: 65%; /* we don't need a lot of space */
+  height: 75vh; /* screen height */
+  max-height: 75vh;
+  min-width: 60%;
+  display: flex;
+  flex-direction: column; /* display as a column */
+  align-items: center; /* align content in center vertically */
+  justify-content: center; /* align content in center horizontally */
+  position: relative;
+  bottom: 2.5%;
+  overflow: hidden;
 }
 
-.flexcontainer 
-{
-	flex-direction: column;
-	justify-content: space-around;
-	align-items: center;
-	align-content: flex-start;
+.flexcontainer {
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  align-content: flex-start;
 }
 
-h1 
-{
-	font: 400 175% 'Press Start 2P';
-	margin: 0;
+h1 {
+  font: 400 175% "Press Start 2P";
+  margin: 0;
 }
 
-.container h2 
-{
-	font: 400 125% 'Press Start 2P';
-	margin: 0;
-	grid-column: span 2;
+.container h2 {
+  font: 400 125% "Press Start 2P";
+  margin: 0;
+  grid-column: span 2;
 }
 
-a 
-{
-	text-decoration: none;
-	color: #CCC;
-	transition: all 0.2s ease-out;
+a {
+  text-decoration: none;
+  color: #CCC;
+  transition: all 0.2s ease-out;
 }
 
-a:hover 
-{
-	color: #EEE;
+a:hover {
+  color: #EEE;
 }
 
-.linkcontainer 
-{
-	left: 50%;
-	transform: translate(-50%, 0%);
-	margin: 0 auto;
-	background: #151515;
-	border: 1px solid #CCC;
-	padding: 7.5px;
-	position: absolute;
+.headercontainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 15vh;
 }
 
-.headercontainer 
-{
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 15vh;
+.header {
+  visibility: hidden;
+  transition: all 0.2s ease-out;
+  /*animation: slidein 0.8s ease-in;*/ /*forwards, bounce 0.8s linear 0.8s;*/
+  /* remove ease-in and keep the following for multiple anims: forwards, 
+  	anotheranim 3s linear 1s */
+  text-align: center;
+  /*animation-timing-function: cubic-bezier(.5, 0.05, 1, .5);*/
 }
 
-.header 
-{
-	visibility: hidden;
-	transition: all 0.2s ease-out;
-	/*animation: slidein 0.8s ease-in;*/ /*forwards, bounce 0.8s linear 0.8s;*/
-	/* remove ease-in and keep the following for multiple anims: forwards, 
-		anotheranim 3s linear 1s */
-	text-align: center;
-	/*animation-timing-function: cubic-bezier(.5, 0.05, 1, .5);*/
+img {
+  width: 43.75vw;
+  height: 50vh;
+  border: 1px solid #DDD;
+  border-radius: 4px;
+  padding: 5px;
 }
 
-img 
-{
-    width: 43.75vw;
-    height: 50vh;
-	border: 1px solid #DDD;
-	border-radius: 4px;
-	padding: 5px;
-}
-
-ul 
+/*ul 
 {
 	list-style-type: none;
 	margin: 0 auto;
@@ -114,288 +91,187 @@ ul
 li 
 {
 	display: inline;
-}
-
+}*/
 /* Light Mode / Dark Mode */
-#lightswitch
-{
-	color: transparent;
-	cursor: pointer;
-	user-select: none;
-	background: #222;
-	text-shadow: 0 0 0 #FFF;
-	-webkit-user-select: none;
+#lightswitch {
+  color: transparent;
+  cursor: pointer;
+  user-select: none;
+  text-shadow: 0 0 0 #DDD;
+  -webkit-user-select: none;
 }
 
-.lightmode 
-{
-	background: #FFF;
-	color: #000;
-	transition: background-color 0.5s ease;
+.lightmode {
+  background: #FFF;
+  color: #000;
+  transition: background-color 0.5s ease;
 }
 
-.lightmode a
-{
-	color: #333;
+.lightmode a {
+  color: #333;
 }
 
-.lightmode a:hover 
-{
-	color: #111;
+.lightmode a:hover {
+  color: #111;
 }
 
-.lightmode #lightswitch
-{
-	background: #DDD;
-	text-shadow: 0 0 0 #333;
-
+.lightmode .linkcontainer {
+  background: #EEE;
 }
 
-.lightmode .linkcontainer 
-{
-	background: #DDD;
-	border: 1px solid #333;
+.lightmode #lightswitch {
+  text-shadow: 0 0 0 #333;
 }
 
-.lightmode img 
-{
-	border: 1px solid #222;
-	border-radius: 4px;
-	padding: 5px;
+.lightmode img {
+  border: 1px solid #222;
+  border-radius: 4px;
+  padding: 5px;
 }
-
 
 /* Slideshow */
-#backbutton, #nextbutton 
-{
-	cursor: pointer;
-	user-select: none;
-	color: #CCC;
-	-webkit-user-select: none;
+#backbutton, #nextbutton {
+  cursor: pointer;
+  user-select: none;
+  color: #CCC;
+  -webkit-user-select: none;
 }
 
-#backbutton
-{
-	float: left;
+#backbutton {
+  float: left;
 }
 
-#nextbutton
-{
-	float: right;
+#nextbutton {
+  float: right;
 }
 
-#backbutton:hover, #nextbutton:hover
-{
-	color: #EEE;
+#backbutton:hover, #nextbutton:hover {
+  color: #EEE;
 }
 
-.lightmode #backbutton, .lightmode #nextbutton
-{
-	color: #333;
+.lightmode #backbutton, .lightmode #nextbutton {
+  color: #333;
 }
 
-.lightmode #backbutton:hover, .lightmode #nextbutton:hover
-{
-	color: #111;
+.lightmode #backbutton:hover, .lightmode #nextbutton:hover {
+  color: #111;
 }
 
-#buttoncontainer
-{
-	position: absolute;
-	left: 50%;
-	bottom: 15%;
-	transform: translate(-50%, 0%);
-	margin: 0 auto;
-	padding: 30px; 
+#buttoncontainer {
+  position: absolute;
+  left: 50%;
+  bottom: 15%;
+  transform: translate(-50%, 0%);
+  margin: 0 auto;
+  padding: 30px;
 }
 
-.notransition
-{
-	transition: none !important;
+.notransition {
+  transition: none !important;
 }
 
 /* Misc */
-.project 
-{
-	height: 200px;
-	display: flex;
-	align-items: flex-start;
-	flex-wrap: wrap;
+.project {
+  height: 200px;
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
 }
 
-#simage 
-{
-	height: 10vh;
-	width: 10vh;
+#simage {
+  height: 10vh;
+  width: 10vh;
 }
 
-.fade 
-{
-	animation: fade 0.5s linear;
+.fade {
+  animation: fade 0.5s linear;
+}
+
+/* Accessibility */
+.accesstext {
+  font-family: sans-serif, Arial, Helvetica;
+}
+
+/* Navbar */
+.linkcontainer {
+  overflow: hidden;
+  background-color: #111;
+  position: relative;
+}
+
+.linkcontainer #links {
+  display: none;
+}
+
+.linkcontainer a {
+  float: left;
+  padding: 0px 10px;
+}
+
+.linkcontainer #lightbulb {
+  font-size: 60%;
 }
 
 /* Responsive */
-@media (min-width: 0) and (max-width: 365px),
-(min-width: 366px) and (max-width: 429px),
-(min-width: 430px) and (max-width: 750px),
-(min-height: 0) and (max-height: 549px) 
-{
-    body 
-    {
-        font-size: 65%;
-    }
-
-    .container 
-    {
-        height: 50vh; /* screen height */
-        max-height: 55vh;
-        max-width: 85%;
-        top: 5%;
-        overflow: hidden;
-    }
-
-    #buttoncontainer 
-    {
-        bottom: 20%;
-    }
-
-    .linkcontainer 
-    {
-        left: 50%;
-        transform: translate(-50%, 0%);
-        margin: 0 auto;
-        background: #151515;
-        border: 1px solid #CCC;
-        padding: 7.5px;
-        position: absolute;
-        bottom: 10%;
-    }
-}
-
-@media (min-width: 430px) and (max-width: 750px),
-(min-width: 750px) and (max-width: 975px),
-(min-height: 550px) and (max-height: 650px) 
-{
-    body 
-    {
-        font-size: 75%;
-    }
-
-    .container 
-    {
-        height: 50vh; /* screen height */
-        max-height: 55vh;
-        max-width: 60%;
-        top: 5%;
-        overflow: hidden;
-    }
-
-    #buttoncontainer 
-    {
-        bottom: 25%;
-    }
-
-    .linkcontainer 
-    {
-        left: 50%;
-        transform: translate(-50%, 0%);
-        margin: 0 auto;
-        background: #151515;
-        border: 1px solid #CCC;
-        padding: 7.5px;
-        position: absolute;
-        bottom: 10%;
-    }
-}
-
+/* Moved to mobile.css */
 /* Anims */
-@keyframes slidein 
-{
-	0% 
-	{
-		transform: translate(0%, -900%);
-	}
-
-
-	50% 
-	{
-		transform: translate(0%, -50%);
-	}
-
-	100% 
-	{
-		transform: translate(0%, 0%);
-	}
+@keyframes slidein {
+  0% {
+    transform: translate(0%, -900%);
+  }
+  50% {
+    transform: translate(0%, -50%);
+  }
+  100% {
+    transform: translate(0%, 0%);
+  }
+}
+@keyframes blink {
+  0%, 50%, 100% {
+    opacity: 1;
+  }
+  25%, 75% {
+    opacity: 0;
+  }
+}
+@keyframes rotating {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes bounce {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  10%, 90% {
+    transform: translate(0, -5px);
+  }
+  20%, 80% {
+    transform: translate(0, -15px);
+  }
+  30%, 70% {
+    transform: translate(0, -20px);
+  }
+  40%, 60% {
+    transform: translate(0, -25px);
+  }
+  50% {
+    transform: translate(0, -30px);
+  }
+}
+@keyframes fade {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 
-@keyframes blink 
-{
-	0%, 50%, 100% 
-	{
-		opacity: 1;
-	}
-
-	25%, 75% 
-	{
-		opacity: 0;
-	}
-}
-
-@keyframes rotating
-{
-	0% 
-	{
-		transform: rotate(0deg);
-	}
-
-	50% 
-	{
-		transform: rotate(180deg);
-	}
-
-	100% 
-	{
-		transform: rotate(360deg);
-	}
-}
-
-@keyframes bounce
-{
-	0%, 100%
-	{
-		transform: translate(0, 0);
-	}
-	10%, 90%
-	{
-		transform: translate(0, -5px);
-	}
-	20%, 80% 
-	{
-		transform: translate(0, -15px);
-	}
-	30%, 70% 
-	{
-		transform: translate(0, -20px);
-	}
-	40%, 60% 
-	{
-		transform: translate(0, -25px);
-	}
-	50% 
-	{
-		transform: translate(0, -30px);
-	}
-}
-
-@keyframes fade 
-{
-	0%, 100% 
-	{
-		opacity: 1;
-	}
-
-	50% 
-	{
-		opacity: 0;
-	}
-}
+/*# sourceMappingURL=style.css.map */

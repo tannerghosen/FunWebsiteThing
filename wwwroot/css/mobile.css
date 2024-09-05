@@ -1,0 +1,142 @@
+@media (min-width: 480px) and (max-width: 720px) {
+  body {
+    font-size: 80%;
+  }
+  .container {
+    height: 60vh; /* screen height */
+    max-height: 65vh;
+    max-width: 75%;
+    top: 5%;
+    overflow: hidden;
+  }
+  h1 {
+    font: 400 125% "Press Start 2P";
+    margin: 0;
+  }
+  .container h2 {
+    font: 400 90% "Press Start 2P";
+    margin: 0;
+    grid-column: span 2;
+  }
+  #buttoncontainer {
+    bottom: 25%;
+  }
+  .linkcontainer {
+    font-size: 100%;
+  }
+  .linkcontainer a {
+    float: left;
+    padding: 0px 5px;
+  }
+  .headercontainer {
+    height: 10vh;
+  }
+}
+@media (min-width: 0) and (max-width: 480px) {
+  body {
+    font-size: 80%;
+  }
+  .container {
+    height: 60vh; /* screen height */
+    max-height: 65vh;
+    max-width: 75%;
+    top: 5%;
+    overflow: hidden;
+  }
+  h1 {
+    font: 400 125% "Press Start 2P";
+    margin: 0;
+  }
+  .container h2 {
+    font: 400 90% "Press Start 2P";
+    margin: 0;
+    grid-column: span 2;
+  }
+  #buttoncontainer {
+    bottom: 15%;
+  }
+  .linkcontainer {
+    font-size: 92.5%;
+  }
+  .linkcontainer a {
+    float: left;
+    padding: 0px 5px;
+  }
+  .headercontainer {
+    height: 10vh;
+  }
+}
+@media (min-height: 351px) and (max-height: 600px) {
+  body {
+    font-size: 70%;
+  }
+  .container {
+    height: 60vh; /* screen height */
+    max-height: 65vh;
+    max-width: 85%;
+    top: 5%;
+    overflow: hidden;
+  }
+  h1 {
+    font: 400 100% "Press Start 2P";
+    margin: 0;
+  }
+  .container h2 {
+    font: 400 65% "Press Start 2P";
+    margin: 0;
+    grid-column: span 2;
+  }
+  #buttoncontainer {
+    bottom: 20%;
+  }
+  .linkcontainer {
+    font-size: 120%;
+  }
+  .headercontainer {
+    height: 10vh;
+  }
+  .project {
+    height: 20vh;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+}
+@media (min-height: 0) and (max-height: 350px) {
+  body {
+    font-size: 60%;
+  }
+  .container {
+    height: 60vh; /* screen height */
+    max-height: 65vh;
+    max-width: 95%;
+    top: 5%;
+    overflow: hidden;
+  }
+  h1 {
+    font: 400 90% "Press Start 2P";
+    margin: 0;
+  }
+  .container h2 {
+    font: 400 55% "Press Start 2P";
+    margin: 0;
+    grid-column: span 2;
+  }
+  #buttoncontainer {
+    bottom: 10%;
+  }
+  .linkcontainer {
+    font-size: 120%;
+  }
+  .project {
+    height: 15vh;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .headercontainer {
+    height: 7.5vh;
+  }
+}
+
+/*# sourceMappingURL=mobile.css.map */
