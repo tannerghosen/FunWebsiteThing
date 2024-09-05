@@ -1,7 +1,7 @@
 ﻿@page
 @using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
 @using System.Text.RegularExpressions;
-@inject MySQLStuff s;
+@inject SQLStuff s;
 @model SandboxModel
 @{
     ViewData["Title"] = "Login";
@@ -32,6 +32,7 @@
     // an account with blank fields would go through without the if-elses and that would cause several issues
     if (HttpMethods.IsPost(Request.Method)) // if POST
     {
+        s.Init();
         string username = Request.Form["username"];
         string password = Request.Form["password"];
         bool result = s.Login(username, password);

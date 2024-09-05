@@ -1,8 +1,8 @@
 ﻿@page
 @using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
-@using MySql.Data;
-@using MySql.Data.MySqlClient;
+@using Microsoft.Data.Sqlite;
 @using System.Text.RegularExpressions;
+@inject SQLStuff s
 @model SandboxModel
 @{
     ViewData["Title"] = "Sandbox";
@@ -94,24 +94,35 @@
     }
 
 }
-<!-- SQL connectivity example - you must launch MySQL via XAMPP -->
+<!-- SQL connectivity example -->
 @{
-    
-    string connect = "Server=127.0.0.1;Port=3306;Database=test;User Id=root;"; // connect string
-    var con = new MySqlConnection(connect); // MySQL connection
-    con.Open(); // open it
-    MySqlCommand command = new MySqlCommand("SELECT * FROM test", con); // run a MySQL command using the connection string
-    MySqlDataReader reader = command.ExecuteReader(); // let the command execute as a reader
-        <table>
-        <tr>
-        @while(reader.Read()) // while there's stuff to read
+    s.Init();
+    string connect = "Data Source=database.db"; // connect string
+    using (var con = new SqliteConnection(connect))
+    {
+        con.Open();
+        using (var create = new SqliteCommand("CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)", con))
         {
-            for (int i = 0; i < reader.FieldCount; i++) // for i being less than the columns in that row
-            {
-                <td>@reader[i].ToString()</td> // return that column
-            }
+            create.ExecuteNonQuery(); // Execute the command to create table
         }
-        </tr>
-        </table>
-    reader.Close(); 
+        using (var insert = new SqliteCommand("INSERT INTO test (name) VALUES (\"test\")", con))
+        {
+            insert.ExecuteNonQuery();
+        }
+        using (var command = new SqliteCommand("SELECT * FROM test", con))
+        {
+            SqliteDataReader reader = command.ExecuteReader(); // let the command execute as a reader
+            <table>
+                    @while (reader.Read()) // while there's stuff to read
+                    {
+                        for (int i = 0; i < reader.FieldCount; i++) // for i being less than the columns in that row
+                        {
+                            <tr><td>@reader[i].ToString()</td></tr>
+                            // return that column
+                        }
+                    }
+            </table>
+            reader.Close();
+        }
+    }
 }

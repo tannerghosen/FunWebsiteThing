@@ -1,7 +1,7 @@
 ﻿@page
 @using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
 @using System.Text.RegularExpressions;
-@inject MySQLStuff s
+@inject SQLStuff s
 @model SandboxModel
 @{
     ViewData["Title"] = "Register";
@@ -48,6 +48,7 @@
 @{
         if (HttpMethods.IsPost(Request.Method)) // if we POST
         {
+            s.Init();
             string email = Request.Form["email"];
             string username = Request.Form["username"];
             string password = Request.Form["password"];
