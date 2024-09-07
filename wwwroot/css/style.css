@@ -14,7 +14,6 @@ html, body {
 
 .container {
   /* flexbox */
-  max-width: 65%; /* we don't need a lot of space */
   height: 75vh; /* screen height */
   max-height: 75vh;
   min-width: 60%;
@@ -275,3 +274,8 @@ li
 }
 
 /*# sourceMappingURL=style.css.map */
+
+#app 
+{
+    text-align: center;
+}

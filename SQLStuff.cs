@@ -97,6 +97,11 @@ namespace LearningASPNETAndRazor
                     {
                         cmd.ExecuteNonQuery();
                     }
+                    /*string createaccount = "INSERT INTO accounts (email, username, password) VALUES (\"test@testing.com\", \"admin\", \"test\")";
+                    using (var cmd = new SqliteCommand(createaccount, con))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }*/
                 }
             }
         }

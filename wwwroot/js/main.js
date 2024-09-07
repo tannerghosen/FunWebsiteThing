@@ -3,9 +3,9 @@ if (!localStorage.getItem("mode"))
 {
 	localStorage.setItem("mode", "dark");
 }
-if (!localStorage.getItem("lastpage"))
+if (!localStorage.getItem("navbar"))
 {
-	localStorage.setItem("lastpage","");
+	localStorage.setItem("navbar","closed");
 }
 // Functions
 document.addEventListener("DOMContentLoaded", () =>
@@ -67,39 +67,20 @@ document.addEventListener("DOMContentLoaded", () =>
 		}
 	});
 
-	// Typewriter (for the neat header effect)
-	let header = document.getElementById("header");
-	let i = 0; // iterator
-	let text = ""; // text to output
-	let speed = 150; // speed of the typewriter in ms
-	let thepage = "";
-	function TypeWriter()
+	if (localStorage.getItem("navbar") === "open")
 	{
-		if (i < text.length && thepage == localStorage.getItem("lastpage")) // if i < text.length and thepage matches the current page or if thepage is null (first time visiting)
-		{
-			header.innerHTML += text.charAt(i); // add the letter at i
-			i++; // increase iterator
-			setTimeout(TypeWriter, speed); // recursively call the function after speed ms
-		}
-	}
-
-// Heavily gutted part of Router (part 1) from my normal github website
-	const app = document.getElementById("app");
-	
-	if(localStorage.getItem("lastpage")) // if we visited the site before, load the last page.
-	{
-		header.style.visibility = "visible"; // unhide header
-	}
-	else // first time we were here, load home and play a funny typewriter animation.
-	{
-		// this is so we don't get <empty string> from trying to get innerHTML too early
-		setTimeout(() =>
-		{
-			thepage = localStorage.getItem("lastpage"); // we grab the lastpage so if the page changes we stop the typewriter
-			text = header.innerHTML; // set text to header's innerHTML
-			header.style.visibility = "visible"; // make header visible
-			header.innerHTML = ""; // clear its innerHTML
-			TypeWriter(); // call typewriter
-		}, 500);
+		console.log(localStorage.getItem("navbar"));
+		NavbarToggle();
+		localStorage.setItem("navbar", "open");
 	}
 });
+
+// Navbar
+function NavbarToggle()
+{
+	let l = document.getElementById("links");
+	l.style.display = l.style.display === "block" ? "none" : "block";
+	console.log("navbar atm :" + localStorage.getItem("navbar"));
+	localStorage.setItem("navbar", localStorage.getItem("navbar") === "closed" ? "open" : "closed");
+	console.log("navbar now: " + localStorage.getItem("navbar"));
+}
