@@ -116,7 +116,7 @@ namespace LearningASPNETAndRazor
                     if (count == 0)
                     {
                         string pass = BCrypt.Net.BCrypt.HashPassword("test");
-                        string createadmin = "INSERT INTO accounts (id, email, username, password) VALUES (-2, \"admin@email.com\", \"admin\", @pass)";
+                        string createadmin = "INSERT INTO accounts (id, email, username, password) VALUES (-1999, \"admin@email.com\", \"admin\", @pass)";
                         using (var cmd = new SqliteCommand(createadmin, con))
                         {
                             cmd.Parameters.AddWithValue("@pass", pass);
