@@ -93,22 +93,53 @@ namespace LearningASPNETAndRazor
                 using (var con = new SqliteConnection($"Data Source=database.db"))
                 {
                     con.Open();
-                    string command = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL)";
-                    using (var cmd = new SqliteCommand(command, con))
+                    con.Close();
+                }
+            }
+            using (var con = Connect())
+            {
+                con.Open();
+                string command = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL, password TEXT NOT NULL)";
+                using (var cmd = new SqliteCommand(command, con))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                string com = "CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, userid INTEGER NOT NULL, comment NVARCHAR(255), date DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (userid) REFERENCES accounts(id))";
+                using (var cmd = new SqliteCommand(com, con))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+                string isadminalive = "SELECT COUNT(*) FROM accounts WHERE username = 'admin'";
+                using (var c = new SqliteCommand(isadminalive, con))
+                {
+                    int count = Convert.ToInt32(c.ExecuteScalar());
+                    if (count == 0)
                     {
-                        cmd.ExecuteNonQuery();
-                    }
-                    string com = "CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, userid INTEGER NOT NULL, comment NVARCHAR(255), date DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (userid) REFERENCES accounts(id))";
-                    using (var cmd = new SqliteCommand(com, con))
-                    {
-                        cmd.ExecuteNonQuery();
-                    }
-                    string createaccount = "INSERT INTO accounts (id, email, username, password) VALUES (-1, \"anonymous@localhost.com\", \"Anonymous\", \"tSFSDAKFSDJKGFISDJTR89324JR283JI213HE812H3E8D1H2IKASKFHDASKDFHKASHDKASHDKAHSDA\")";
-                    using (var cmd = new SqliteCommand(createaccount, con))
-                    {
-                        cmd.ExecuteNonQuery();
+                        string pass = BCrypt.Net.BCrypt.HashPassword("test");
+                        string createadmin = "INSERT INTO accounts (id, email, username, password) VALUES (-2, \"admin@email.com\", \"admin\", @pass)";
+                        using (var cmd = new SqliteCommand(createadmin, con))
+                        {
+                            cmd.Parameters.AddWithValue("@pass", pass);
+                            cmd.ExecuteNonQuery();
+                        }
                     }
                 }
+                string youcallanonymously = "SELECT COUNT(*) FROM accounts WHERE username = 'Anonymous'";
+                using (var c = new SqliteCommand(youcallanonymously, con))
+                {
+                    int count = Convert.ToInt32(c.ExecuteScalar());
+                    if (count == 0)
+                    {
+                        string pass = BCrypt.Net.BCrypt.HashPassword("tSFSDAKFSDJKGFISDJTR89324JR283JI213HE812H3E8D1H2IKASKFHDASKDFHKASHDKASHDKAH1231241251241231;;'===---+++SDA");
+                        string createanonymous = "INSERT INTO accounts (id, email, username, password) VALUES (-1, \"anonymous@localhost.com\", \"Anonymous\", @pass)";
+                        using (var cmd = new SqliteCommand(createanonymous, con))
+                        {
+                            cmd.Parameters.AddWithValue("@pass", pass);
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
+                con.Close();
             }
         }
 
