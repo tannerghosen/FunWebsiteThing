@@ -1,5 +1,7 @@
 ﻿using Microsoft.Data.Sqlite;
-using System.Reflection.PortableExecutable;
+using Microsoft.AspNetCore.Http;
+using System.Xml.Linq;
+
 namespace LearningASPNETAndRazor
 {
     // This class is injected into our Login.cshtml and Register.cshtmls
@@ -109,7 +111,7 @@ namespace LearningASPNETAndRazor
                 {
                     cmd.ExecuteNonQuery();
                 }
-                string isadminalive = "SELECT COUNT(*) FROM accounts WHERE username = 'admin'";
+                string isadminalive = "SELECT COUNT(*) FROM accounts WHERE id = -1999";
                 using (var c = new SqliteCommand(isadminalive, con))
                 {
                     int count = Convert.ToInt32(c.ExecuteScalar());
@@ -124,7 +126,7 @@ namespace LearningASPNETAndRazor
                         }
                     }
                 }
-                string youcallanonymously = "SELECT COUNT(*) FROM accounts WHERE username = 'Anonymous'";
+                string youcallanonymously = "SELECT COUNT(*) FROM accounts WHERE id = -1";
                 using (var c = new SqliteCommand(youcallanonymously, con))
                 {
                     int count = Convert.ToInt32(c.ExecuteScalar());
@@ -194,9 +196,9 @@ namespace LearningASPNETAndRazor
                     {
                         while (reader.Read())
                         {
-                            usernames.Add(reader.GetString(0)); // username
-                            comments.Add(reader.GetString(1)); // comment
-                            dates.Add(reader.GetString(2)); // date
+                            usernames.Add(reader.GetString(0)); 
+                            comments.Add(reader.GetString(1));
+                            dates.Add(reader.GetString(2)); 
                         }
                     }
                 }
@@ -204,14 +206,82 @@ namespace LearningASPNETAndRazor
             }
         }
 
-        // to do
-        public bool UpdateInfo(int option, string input)
+        public bool DoesUserExist(string username)
         {
             using (var con = Connect())
             {
                 con.Open();
+                string query = "SELECT COUNT(*) FROM accounts WHERE username = @username";
+                Console.WriteLine(query);
+                using (var cmd = new SqliteCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@username", username);
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    if (count == 0)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
             }
-            return false;
+        }
+
+        public bool UpdateInfo(string username, int option, string input)
+        {
+            using (var con = Connect())
+            {
+                con.Open();
+                string query = @"SELECT * FROM accounts WHERE username = @username";
+                using (var cmd = new SqliteCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@username", username);
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+                    if (count != 0)
+                    {
+                        switch (option)
+                        {
+                            case 0: // password
+                                string updatepassword = "UPDATE accounts SET password = @password WHERE username = @username";
+                                using (var c = new SqliteCommand(updatepassword, con))
+                                {
+                                    string pass = BCrypt.Net.BCrypt.HashPassword(input);
+                                    c.Parameters.AddWithValue("@username", username);
+                                    c.Parameters.AddWithValue("@password", pass);
+                                    c.ExecuteNonQuery();
+                                }
+                                return true;
+                                break;
+                            case 1: // email
+                                string updateemail = "UPDATE accounts SET email = @email WHERE username = @username";
+                                using (var c = new SqliteCommand(updateemail, con))
+                                {
+                                    c.Parameters.AddWithValue("@username", username);
+                                    c.Parameters.AddWithValue("@email", input);
+                                    c.ExecuteNonQuery();
+                                }
+                                return true;
+                                break;
+                            case 2: // username
+                                string updateusername = "UPDATE accounts SET username = @newusername WHERE username = @username";
+                                using (var c = new SqliteCommand(updateusername, con))
+                                {
+                                    c.Parameters.AddWithValue("@username", username);
+                                    c.Parameters.AddWithValue("@newusername", input);
+                                    c.ExecuteNonQuery();
+                                }
+                                return true;
+                                break;
+                            default: // shouldn't happen
+                                return false;
+                                break;
+                        }
+                    }
+                    return false;
+                }
+            }
         }
     }
 }

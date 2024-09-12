@@ -1,18 +1,16 @@
 ﻿@page
 @using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
 @using System.Text.RegularExpressions;
-@inject SQLStuff s
-@model RegisterModel
+@model SettingsModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Settings";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<!-- Registration Form -->
 <form method="post">
     <fieldset>
-        <legend>Register</legend>
+        <legend>Settings</legend>
         <div>
             <label for="email">Email:</label>
             <input type="text" name="email" asp-for="Email" value="" />
@@ -32,13 +30,11 @@
     </fieldset>
 </form>
 <script>
-    function GeneratePass() 
-    {
+    function GeneratePass() {
         $.ajax({
             type: "GET",
             url: "api/Misc/GeneratePassword", // this is the path to get the GeneratePassword function from MiscController. (think of it like API -> ClassName -> MethodName (if included in the controller))
-            success: function (data) 
-            {
+            success: function (data) {
                 document.getElementById("pass").value = data.password; // get the password from our MiscController
             }
         });
