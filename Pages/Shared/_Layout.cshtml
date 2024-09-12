@@ -22,15 +22,16 @@
                 <a asp-area="" asp-page="/Index">Home</a>
                 <a asp-area="" asp-page="/Sandbox">Sandbox</a>
                 <a asp-area="" asp-page="/Login">Login</a>
-                @{
-                    if (this.ViewContext.HttpContext.Session.GetInt32("IsLoggedIn") == 1)
-                    {   
-                        <a asp-area="" asp-page="/Logout">Logout</a>
-                    }
-                }
                 <a asp-area="" asp-page="/Register">Register</a>
+                <a asp-area="" asp-page="/Comments">Comments</a>
                 <a href="https://github.com/tannerghosen">GitHub</a>
                 <a href="javascript:;" id="lightswitch"><span id="lightbulb">💡</span> Toggle Light/Dark Mode</a>
+                @{
+                    if (this.ViewContext.HttpContext.Session.GetInt32("IsLoggedIn") == 1)
+                    {
+                        <b style="float: right;">Hello, @this.ViewContext.HttpContext.Session.GetString("Username")!</b> <a style="float: right;" asp-page="/Logout">Logout</a>
+                    }
+                }
             </div>
         </div>
         <div class="headercontainer">

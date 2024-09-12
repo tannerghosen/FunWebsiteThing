@@ -1,0 +1,42 @@
+﻿@page
+@using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
+@using Microsoft.Data.Sqlite;
+@using System.Text.RegularExpressions;
+@inject SQLStuff s;
+@model CommentsModel
+@{
+    ViewData["Title"] = "Comments";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<!-- Login Form -->
+<form method="post">
+    <fieldset>
+        <legend>Comments</legend>
+        <div>
+            <textarea rows="10" cols="200" asp-for="Comment"></textarea>
+        </div>
+        <div>
+            <label>&nbsp;</label>
+            <input type="submit" value="Submit" class="submit" />
+        </div>
+    </fieldset>
+</form>
+ <table>
+    @{
+        s.Init();
+        var (usernames, comments, dates) = s.GrabComments();
+        if(usernames.Length == 0)
+        {
+            <tr><td><b>No comments available...</b></td></tr>
+        }
+        else
+        {
+            for (int i = 0; i < usernames.Length; i++)
+            {
+                <tr><td>@dates[i]</td><td>@usernames[i]</td><td>@comments[i]</td></tr>
+            }
+        }
+}
+</table>

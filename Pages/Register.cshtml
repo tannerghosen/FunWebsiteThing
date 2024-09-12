@@ -15,15 +15,15 @@
         <legend>Register</legend>
         <div>
             <label for="username">Email:</label>
-            <input type="text" name="email" value="" />
+            <input type="text" name="email" asp-for="Email" value="" />
         </div>
         <div>
             <label for="username">Username:</label>
-            <input type="text" name="username" value="" />
+            <input type="text" name="username" asp-for="Username" value="" />
         </div>
         <div>
             <label for="password">Password:</label>
-            <input type="text" name="password" value="" id="pass" />
+            <input type="text" name="password" asp-for="Password" value="" id="pass" />
         </div>
         <div>
             <label>&nbsp;</label>
@@ -45,57 +45,3 @@
     }
 </script>
 <button onclick="GeneratePass()">Generate Pass</button>
-@{
-        if (HttpMethods.IsPost(Request.Method)) // if we POST
-        {
-            s.Init();
-            string email = Request.Form["email"];
-            string username = Request.Form["username"];
-            string password = Request.Form["password"];
-            //string favcolor = Request.Form["favcolor"];
-                if (!Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$") || string.IsNullOrEmpty(email)) // if email doesn't match regex / is empty
-                {
-                    <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-                        Invalid email
-                    </div>
-                }
-                else if(string.IsNullOrEmpty(username)) // if username is empty
-                {
-                    <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-                        Invalid username
-                    </div>
-                }
-                else if(string.IsNullOrEmpty(password)) // if password is empty
-                {
-                    <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-                        Invalid password
-                    </div>
-                }
-                else
-                {
-                    if ((!string.IsNullOrEmpty(username) || !string.IsNullOrEmpty(password)) && HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
-                    {
-                            bool result = s.Register(email, username, password); // Registers our account, hopefully
-                            switch (result)
-                            {
-                                case true:
-                                    <div style="background-color: #444; border-color: #555; border-radius: 1px;">
-                                        Account Registered: @username<br />Logged in automatically.
-                                    </div>
-                                    break;
-                                case false:
-                                    <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-                                        The account @username already exists!
-                                    </div>
-                                    break;
-                            }
-                            if (result == true)
-                            {
-                                HttpContext.Session.SetString("Username", username);
-                                HttpContext.Session.SetInt32("IsLoggedIn", 1);
-                                Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
-                            }
-                    }
-                }
-        }
-}

@@ -1,7 +1,6 @@
 ﻿@page
 @using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
 @using System.Text.RegularExpressions;
-@inject SQLStuff s;
 @model LoginModel
 @{
     ViewData["Title"] = "Login";
@@ -15,11 +14,11 @@
         <legend>Login</legend>
         <div>
             <label for="username">Username:</label>
-            <input type="text" name="username" value="" />
+            <input type="text" name="username" asp-for="Username" value="" />
         </div>
         <div>
             <label for="password">Password:</label>
-            <input type="text" name="password" value="" id="pass" />
+            <input type="text" name="password" asp-for="Password" value="" id="pass" />
         </div>
         <div>
             <label>&nbsp;</label>
@@ -27,36 +26,3 @@
         </div>
     </fieldset>
 </form>
-@{
-    // Lot a simpler than Registration, but that's because it's just wasted energy if the user leaves shit blank whereas registering
-    // an account with blank fields would go through without the if-elses and that would cause several issues
-    if (HttpMethods.IsPost(Request.Method)) // if POST
-    {
-        s.Init();
-        string username = Request.Form["username"];
-        string password = Request.Form["password"];
-        bool result = s.Login(username, password);
-        if ((!string.IsNullOrEmpty(username) || !string.IsNullOrEmpty(password)) && HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
-        {
-            switch(result)
-            {
-                case true:
-                    <div style="background-color: #444; border-color: #555; border-radius: 1px;">
-                        Logged Into: @username
-                    </div>
-                    break;
-                case false:
-                    <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-                        Invalid password / account "@username" doesn't exist!
-                    </div>
-                    break;
-            }
-            if (result == true)
-            {
-                HttpContext.Session.SetString("Username", username);
-                HttpContext.Session.SetInt32("IsLoggedIn", 1);
-                Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
-            }
-        }
-    }
-}

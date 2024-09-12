@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.Sqlite;
+using System.Reflection.PortableExecutable;
 namespace LearningASPNETAndRazor
 {
     // This class is injected into our Login.cshtml and Register.cshtmls
@@ -92,17 +93,85 @@ namespace LearningASPNETAndRazor
                 using (var con = new SqliteConnection($"Data Source=database.db"))
                 {
                     con.Open();
-                    string command = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL, username TEXT NOT NULL, password TEXT NOT NULL)";
+                    string command = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL)";
                     using (var cmd = new SqliteCommand(command, con))
                     {
                         cmd.ExecuteNonQuery();
                     }
-                    /*string createaccount = "INSERT INTO accounts (email, username, password) VALUES (\"test@testing.com\", \"admin\", \"test\")";
+                    string com = "CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, userid INTEGER NOT NULL, comment NVARCHAR(255), date DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (userid) REFERENCES accounts(id))";
+                    using (var cmd = new SqliteCommand(com, con))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+                    string createaccount = "INSERT INTO accounts (id, email, username, password) VALUES (-1, \"anonymous@localhost.com\", \"Anonymous\", \"tSFSDAKFSDJKGFISDJTR89324JR283JI213HE812H3E8D1H2IKASKFHDASKDFHKASHDKASHDKAHSDA\")";
                     using (var cmd = new SqliteCommand(createaccount, con))
                     {
                         cmd.ExecuteNonQuery();
-                    }*/
+                    }
                 }
+            }
+        }
+
+        public void AddComment(string comment, string username = "Anonymous")
+        {
+            Console.WriteLine("DEBUG TIME WOOOOO COMMENT IS RIGHT HERE >> " + comment + " << IF AIN'T HERE, GOD DAMNIT ALL");
+            int userid = 0;
+            int anonymousid = -1;
+            if (comment == null)
+            {
+                comment = "Been thinking about them beans...";
+            }
+            using (var con = Connect())
+            {
+                con.Open();
+                string query = "SELECT id FROM accounts WHERE username = @username";
+                using (var cmd = new SqliteCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@username", username);
+                    var result = cmd.ExecuteScalar();
+                    if (result == null)
+                    {
+                        userid = anonymousid;
+                    }
+                    else
+                    {
+                        userid = Convert.ToInt32(result);
+                    }
+                }
+                string q = "INSERT INTO comments (userid, comment) VALUES (@userid, @comment)";
+                Console.WriteLine(q);
+                Console.WriteLine("HEY RETARDED " + userid + " " + comment);
+                using (var cmd = new SqliteCommand(q, con))
+                {
+                    cmd.Parameters.AddWithValue("@userid", userid);
+                    cmd.Parameters.AddWithValue("@comment", comment);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public (string[], string[], string[]) GrabComments()
+        {
+            List<string> usernames = new List<string>();
+            List<string> comments = new List<string>();
+            List<string> dates = new List<string>();
+            using (var con = Connect())
+            {
+                con.Open();
+                string query = @"SELECT a.username, c.comment, c.date FROM comments c JOIN accounts a ON c.userid = a.id ORDER BY c.date DESC;";
+                using (var cmd = new SqliteCommand(query, con))
+                {
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            usernames.Add(reader.GetString(0)); // username
+                            comments.Add(reader.GetString(1)); // comment
+                            dates.Add(reader.GetString(2)); // date
+                        }
+                    }
+                }
+                return (usernames.ToArray(), comments.ToArray(), dates.ToArray());
             }
         }
 
