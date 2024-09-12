@@ -32,6 +32,7 @@ namespace LearningASPNETAndRazor.Pages
         }
         public void OnPost()
         {
+            _s.Init();
             if (!Regex.IsMatch(Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$") || string.IsNullOrEmpty(Email)) // if email doesn't match regex / is empty
             {
                 Result = "Invalid Email";

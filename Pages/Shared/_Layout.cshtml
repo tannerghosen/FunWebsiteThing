@@ -29,7 +29,7 @@
                 @{
                     if (this.ViewContext.HttpContext.Session.GetInt32("IsLoggedIn") == 1)
                     {
-                        <b style="float: right;">Hello, @this.ViewContext.HttpContext.Session.GetString("Username")!</b> <a style="float: right;" asp-page="/Logout">Logout</a>
+                        <a style="float: right;" asp-page="/Logout">Logout</a> <b style="float: right;">Hello, @this.ViewContext.HttpContext.Session.GetString("Username")!</b>
                     }
                 }
             </div>

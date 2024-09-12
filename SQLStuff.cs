@@ -114,12 +114,11 @@ namespace LearningASPNETAndRazor
 
         public void AddComment(string comment, string username = "Anonymous")
         {
-            Console.WriteLine("DEBUG TIME WOOOOO COMMENT IS RIGHT HERE >> " + comment + " << IF AIN'T HERE, GOD DAMNIT ALL");
             int userid = 0;
             int anonymousid = -1;
             if (comment == null)
             {
-                comment = "Been thinking about them beans...";
+                comment = "";
             }
             using (var con = Connect())
             {
@@ -140,7 +139,6 @@ namespace LearningASPNETAndRazor
                 }
                 string q = "INSERT INTO comments (userid, comment) VALUES (@userid, @comment)";
                 Console.WriteLine(q);
-                Console.WriteLine("HEY RETARDED " + userid + " " + comment);
                 using (var cmd = new SqliteCommand(q, con))
                 {
                     cmd.Parameters.AddWithValue("@userid", userid);
