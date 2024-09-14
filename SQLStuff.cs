@@ -106,7 +106,7 @@ namespace LearningASPNETAndRazor
                 {
                     cmd.ExecuteNonQuery();
                 }
-                string com = "CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, userid INTEGER NOT NULL, comment NVARCHAR(255), date DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (userid) REFERENCES accounts(id))";
+                string com = "CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, commentsid INTEGER NOT NULL, userid INTEGER NOT NULL, comment NVARCHAR(255), date DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (userid) REFERENCES accounts(id))";
                 using (var cmd = new SqliteCommand(com, con))
                 {
                     cmd.ExecuteNonQuery();
@@ -170,8 +170,7 @@ namespace LearningASPNETAndRazor
                         userid = Convert.ToInt32(result);
                     }
                 }
-                string q = "INSERT INTO comments (userid, comment) VALUES (@userid, @comment)";
-                Console.WriteLine(q);
+                string q = "INSERT INTO comments (userid, commentsid, comment) VALUES (@userid, 0, @comment)";
                 using (var cmd = new SqliteCommand(q, con))
                 {
                     cmd.Parameters.AddWithValue("@userid", userid);
@@ -181,7 +180,7 @@ namespace LearningASPNETAndRazor
             }
         }
 
-        public (string[], string[], string[]) GrabComments()
+        public (string[], string[], string[]) GrabComments(int section = 0)
         {
             List<string> usernames = new List<string>();
             List<string> comments = new List<string>();
@@ -189,9 +188,10 @@ namespace LearningASPNETAndRazor
             using (var con = Connect())
             {
                 con.Open();
-                string query = @"SELECT a.username, c.comment, c.date FROM comments c JOIN accounts a ON c.userid = a.id ORDER BY c.date DESC;";
+                string query = @"SELECT a.username, c.comment, c.date FROM comments c JOIN accounts a ON c.userid = a.id WHERE c.commentsid = @section ORDER BY c.date DESC;";
                 using (var cmd = new SqliteCommand(query, con))
                 {
+                    cmd.Parameters.AddWithValue("@section", section);
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())

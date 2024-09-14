@@ -30,7 +30,6 @@ namespace LearningASPNETAndRazor.Pages
 
         public void OnPost()
         {
-            _s.Init();
             bool result = _s.Login(Username, Password);
             if ((!string.IsNullOrEmpty(Username) || !string.IsNullOrEmpty(Password)) && HttpContext.Session.GetInt32("IsLoggedIn") != 1)
             {
