@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Xml.Linq;
 
-namespace LearningASPNETAndRazor
+namespace FunWebsiteThing
 {
     // This class is for anything involving SQLite in this project, which includes so far: login/registration, account settings and comments.
     public class SQLStuff
@@ -28,7 +28,7 @@ namespace LearningASPNETAndRazor
             using (var con = Connect())
             {
                 con.Open();
-                string command = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL, password TEXT NOT NULL)";
+                string command = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL, password TEXT NOT NULL, sessionid INTEGER)";
                 using (var cmd = new SqliteCommand(command, con))
                 {
                     cmd.ExecuteNonQuery();
@@ -74,7 +74,7 @@ namespace LearningASPNETAndRazor
 
         // Registers an account by first running a SQL statement to see if it the account exists. If it does, don't do anything.
         // If it doesn't, run another SQL statement that inserts it into the table, alongside generating a salt to hash our password.
-        public bool Register(string email, string username, string password)
+        public bool Register(string email, string username, string password, int sessionid = 0)
         {
             using (var con = Connect())
             {
@@ -90,7 +90,7 @@ namespace LearningASPNETAndRazor
                         return false;
                     }
                 }
-                query = "INSERT INTO accounts (email, username, password) VALUES (@email, @username, @password)";
+                query = "INSERT INTO accounts (email, username, password, sessionid) VALUES (@email, @username, @password, @sid)";
                 using (var cmd = new SqliteCommand(query, con))
                 {
                     string salt = BCrypt.Net.BCrypt.GenerateSalt(12);
@@ -98,6 +98,7 @@ namespace LearningASPNETAndRazor
                     cmd.Parameters.AddWithValue("@email", email);
                     cmd.Parameters.AddWithValue("@username", username);
                     cmd.Parameters.AddWithValue("@password", hashpass);
+                    cmd.Parameters.AddWithValue("@sid", sessionid);
                     cmd.ExecuteNonQuery();
                     return true;
                 }
@@ -107,7 +108,7 @@ namespace LearningASPNETAndRazor
         // Logs us into an account by running a SQL statement to see if the username is valid first. If it isn't, return false.
         // If it is, then we run another SQL statement that compares the hashed password with the password given using BCrypt.Verify
         // If it matches, we return true so Login.cshtml.cs can handle setting the session up. If not, we return false.
-        public bool Login(string username, string password)
+        public bool Login(string username, string password, int sessionid = 0)
         {
             using (var con = Connect())
             {
@@ -133,7 +134,28 @@ namespace LearningASPNETAndRazor
                     }
                     else // valid password
                     {
-                        return true;
+                        query = "SELECT sessionid FROM accounts WHERE username = @username";
+                        using (var c = new SqliteCommand(query, con))
+                        {
+                            c.Parameters.AddWithValue("@username", username);
+                            var result = c.ExecuteScalar();
+                            int id = (result != null && result != DBNull.Value)? Convert.ToInt32(result) : -999999999; // Default the id to 0 if it's null or DBNull
+                            if (sessionid != id || id == -999999999)
+                            {
+                                query = "UPDATE accounts SET sessionid = @sid WHERE username = @username";
+                                using (var cm = new SqliteCommand(query, con))
+                                {
+                                    cm.Parameters.AddWithValue("@sid", sessionid);
+                                    cm.Parameters.AddWithValue("@username", username);
+                                    cm.ExecuteNonQuery();
+                                }
+                                return true;
+                            }
+                            else
+                            {
+                                return true;
+                            }
+                        }
                     }
                 }
             }
@@ -224,7 +246,7 @@ namespace LearningASPNETAndRazor
         }
 
         // Same as above but userid variant, in case this is more preferable in the future
-        public bool DoesUserExist(int userid)
+        public bool DoesUserExist(int? userid)
         {
             using (var con = Connect())
             {
@@ -246,10 +268,51 @@ namespace LearningASPNETAndRazor
             }
         }
 
-        // Updates various settings of a specified user (by username)'s account.
-        public bool UpdateInfo(string username, int option, string input)
+        public int GetUserID(string username)
         {
-            if (DoesUserExist(username))
+            using (var con = Connect())
+            {
+                con.Open();
+                string query = "SELECT COUNT(*) FROM accounts WHERE username = @username";
+                using (var cmd = new SqliteCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@username", username);
+                    int id = Convert.ToInt32(cmd.ExecuteScalar());
+                    return id;
+                }
+            }
+        }
+        public bool DoesSIDMatch(int? userid, int? sid)
+        {
+            bool usercheck = DoesUserExist(userid);
+            if (usercheck)
+            {
+                using (var con = Connect())
+                {
+                    con.Open();
+                    string query = "SELECT sessionid FROM accounts WHERE id = @userid";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@userid", userid);
+                        int id = Convert.ToInt32(cmd.ExecuteScalar());
+                        if (id != sid)
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        // Updates various settings of a specified user (by username)'s account.
+        public bool UpdateInfo(int? userid, int option, string input, int? sessionid = 0)
+        {
+            if (DoesSIDMatch(userid, sessionid))
             {
                 using (var con = Connect())
                 {
@@ -257,31 +320,31 @@ namespace LearningASPNETAndRazor
                     switch (option)
                     {
                         case 0: // password
-                            string updatepassword = "UPDATE accounts SET password = @password WHERE username = @username";
+                            string updatepassword = "UPDATE accounts SET password = @password WHERE id = @id";
                             using (var c = new SqliteCommand(updatepassword, con))
                             {
                                 string pass = BCrypt.Net.BCrypt.HashPassword(input);
-                                c.Parameters.AddWithValue("@username", username);
+                                c.Parameters.AddWithValue("@id", userid);
                                 c.Parameters.AddWithValue("@password", pass);
                                 c.ExecuteNonQuery();
                             }
                             return true;
                             break;
                         case 1: // email
-                            string updateemail = "UPDATE accounts SET email = @email WHERE username = @username";
+                            string updateemail = "UPDATE accounts SET email = @email WHERE id = @id";
                             using (var c = new SqliteCommand(updateemail, con))
                             {
-                                c.Parameters.AddWithValue("@username", username);
+                                c.Parameters.AddWithValue("@id", userid);
                                 c.Parameters.AddWithValue("@email", input);
                                 c.ExecuteNonQuery();
                             }
                             return true;
                             break;
                         case 2: // username
-                            string updateusername = "UPDATE accounts SET username = @newusername WHERE username = @username";
+                            string updateusername = "UPDATE accounts SET username = @newusername WHERE id = @id";
                             using (var c = new SqliteCommand(updateusername, con))
                             {
-                                c.Parameters.AddWithValue("@username", username);
+                                c.Parameters.AddWithValue("@id", userid);
                                 c.Parameters.AddWithValue("@newusername", input);
                                 c.ExecuteNonQuery();
                             }

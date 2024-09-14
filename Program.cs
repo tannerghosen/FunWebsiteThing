@@ -1,4 +1,4 @@
-using LearningASPNETAndRazor;
+using FunWebsiteThing;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +17,12 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddSession(options =>
 {
-    options.Cookie.Name = "TannerGhosensASPNETWebsite.Session";
+    options.Cookie.Name = "TannerGhosensFunWebsiteThing.Session";
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.IdleTimeout = TimeSpan.FromHours(3); 
 });
 
 var app = builder.Build();

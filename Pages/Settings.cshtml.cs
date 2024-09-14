@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.RegularExpressions;
 
-namespace LearningASPNETAndRazor.Pages
+namespace FunWebsiteThing.Pages
 {
     public class SettingsModel : PageModel
     {
@@ -23,11 +23,11 @@ namespace LearningASPNETAndRazor.Pages
 
         public void OnPost()
         {
-            if (HttpContext.Session.GetInt32("IsLoggedIn") == 1 && HttpContext.Session.GetString("Username") != null && _s.DoesUserExist(HttpContext.Session.GetString("Username")) == true)
+            if (HttpContext.Session.GetInt32("IsLoggedIn") == 1 && HttpContext.Session.GetString("Username") != null && HttpContext.Session.GetInt32("UserId") != null && HttpContext.Session.GetInt32("SessionId") != null)
             {
                 if (!string.IsNullOrEmpty(Password))
                 {
-                    bool passwordupdated = _s.UpdateInfo(HttpContext.Session.GetString("Username"), 0, Password);
+                    bool passwordupdated = _s.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 0, Password, HttpContext.Session.GetInt32("SessionId"));
                     if (passwordupdated)
                     {
                         Result = "Password has been changed. Be sure to write it down or save it in your browser!";
@@ -39,7 +39,7 @@ namespace LearningASPNETAndRazor.Pages
                 }
                 if (!string.IsNullOrEmpty(Email) && Regex.IsMatch(Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
                 {
-                    bool emailupdated = _s.UpdateInfo(HttpContext.Session.GetString("Username"), 1, Email);
+                    bool emailupdated = _s.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 1, Email, HttpContext.Session.GetInt32("SessionId"));
                     if (emailupdated)
                     {
                         Result = "Email has been updated to " + Email;
@@ -51,7 +51,7 @@ namespace LearningASPNETAndRazor.Pages
                 }
                 if (!string.IsNullOrEmpty(Username))
                 {
-                    bool usernameupdated = _s.UpdateInfo(HttpContext.Session.GetString("Username"), 2, Username);
+                    bool usernameupdated = _s.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 2, Username, HttpContext.Session.GetInt32("SessionId"));
                     if (usernameupdated)
                     {
                         HttpContext.Session.SetString("Username", Username);

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Reflection;
 using System.Xml.Linq;
 
-namespace LearningASPNETAndRazor.Pages
+namespace FunWebsiteThing.Pages
 {
     public class CommentsModel : PageModel
     {

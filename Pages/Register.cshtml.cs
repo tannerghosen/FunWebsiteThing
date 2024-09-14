@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
 
-namespace LearningASPNETAndRazor.Pages
+namespace FunWebsiteThing.Pages
 {
     public class RegisterModel : PageModel
     {
@@ -32,6 +32,8 @@ namespace LearningASPNETAndRazor.Pages
         }
         public void OnPost()
         {
+            Random r = new Random();
+            int sid = r.Next(999999999);
             if (!Regex.IsMatch(Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$") || string.IsNullOrEmpty(Email)) // if email doesn't match regex / is empty
             {
                 Result = "Invalid Email";
@@ -48,7 +50,8 @@ namespace LearningASPNETAndRazor.Pages
             {
                 if (HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
                 {
-                    bool result = _s.Register(Email, Username, Password); // Registers our account, hopefully
+                    Console.WriteLine("hello");
+                    bool result = _s.Register(Email, Username, Password, sid); // Registers our account, hopefully
                     switch (result)
                     {
                         case true:
@@ -61,8 +64,10 @@ namespace LearningASPNETAndRazor.Pages
                     if (result == true)
                     {
                         HttpContext.Session.SetString("Username", Username);
+                        HttpContext.Session.SetInt32("UserId", _s.GetUserID(Username));
+                        HttpContext.Session.SetInt32("SessionId", sid);
                         HttpContext.Session.SetInt32("IsLoggedIn", 1);
-                        Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
+                        Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
                     }
                 }
             }

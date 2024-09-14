@@ -1,6 +1,7 @@
 ﻿@page
 @using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
 @using System.Text.RegularExpressions;
+@using Microsoft.AspNetCore.Http
 @inject SQLStuff s;
 @model LogoutModel
 @{
@@ -10,9 +11,7 @@
 <h1>@ViewData["Title"]</h1>
 
 @{
-    Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
     string user = HttpContext.Session.GetString("Username");
-    int? status = HttpContext.Session.GetInt32("IsLoggedIn");
     if (HttpContext.Session.GetInt32("IsLoggedIn") == 1)
     {
         <p>You're currently logged in as "@user".</p>
@@ -35,18 +34,5 @@
                 </div>
             </fieldset>
         </form>
-    }
-}
-@{
-    // This is how we handle logout
-    if (HttpMethods.IsPost(Request.Method)) // if POST
-    {
-        if (HttpContext.Session.GetInt32("IsLoggedIn") == 1) 
-        {
-            HttpContext.Session.SetString("Username", "");
-            HttpContext.Session.SetInt32("IsLoggedIn", 0);
-            Response.Redirect("/Logout");
-            Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
-        }
     }
 }

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Principal;
 
-namespace LearningASPNETAndRazor.Pages
+namespace FunWebsiteThing.Pages
 {
     public class SandboxModel : PageModel
     {

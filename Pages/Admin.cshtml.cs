@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace LearningASPNETAndRazor.Pages
+namespace FunWebsiteThing.Pages
 {
     public class AdminModel : PageModel
     {

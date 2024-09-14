@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using System.Text;
 
-namespace LearningASPNETAndRazor
+namespace FunWebsiteThing
 {
     public class Misc
     {
@@ -48,7 +48,6 @@ namespace LearningASPNETAndRazor
             }
             else if (attempt == 1000) // Unfortunately if recursion goes beyond 500 we'll have to settle for a duplicate. Don't want to slow the program.
             {
-                //Logger.Write("Failed to give a unique / regex matching password after predefined attempt limit.", "WARNING");
                 return GeneratedPass;
             }
             return "";
