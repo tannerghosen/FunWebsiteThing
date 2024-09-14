@@ -27,17 +27,40 @@ namespace LearningASPNETAndRazor.Pages
             {
                 if (!string.IsNullOrEmpty(Password))
                 {
-                        _s.UpdateInfo(HttpContext.Session.GetString("Username"), 0, Password);
+                    bool passwordupdated = _s.UpdateInfo(HttpContext.Session.GetString("Username"), 0, Password);
+                    if (passwordupdated)
+                    {
+                        Result = "Password has been changed. Be sure to write it down or save it in your browser!";
+                    }
+                    else
+                    {
+                        Result = "Unknown error";
+                    }
                 }
                 if (!string.IsNullOrEmpty(Email) && Regex.IsMatch(Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
                 {
-                        _s.UpdateInfo(HttpContext.Session.GetString("Username"), 1, Email);
+                    bool emailupdated = _s.UpdateInfo(HttpContext.Session.GetString("Username"), 1, Email);
+                    if (emailupdated)
+                    {
+                        Result = "Email has been updated to " + Email;
+                    }
+                    else
+                    {
+                        Result = "Email is already in use by another account!";
+                    }
                 }
                 if (!string.IsNullOrEmpty(Username))
                 {
-                        bool usernameupdated = _s.UpdateInfo(HttpContext.Session.GetString("Username"), 2, Username);
-                        if(usernameupdated)
-                            HttpContext.Session.SetString("Username", Username);
+                    bool usernameupdated = _s.UpdateInfo(HttpContext.Session.GetString("Username"), 2, Username);
+                    if (usernameupdated)
+                    {
+                        HttpContext.Session.SetString("Username", Username);
+                        Result = "Username updated to " + Username;
+                    }
+                    else
+                    {
+                        Result = "Username is already in use by another account!";
+                    }
                 }
             }
         }

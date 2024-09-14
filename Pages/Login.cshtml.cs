@@ -41,10 +41,9 @@ namespace LearningASPNETAndRazor.Pages
                 }
                 else
                 {
-                    Result = "Invalid login.";
+                    Result = "Invalid login";
                 }
             }
-            Result = "Unknown error.";
         }
     }
 }
