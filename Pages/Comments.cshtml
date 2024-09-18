@@ -2,6 +2,7 @@
 @using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
 @using Microsoft.Data.Sqlite;
 @using System.Text.RegularExpressions;
+@using System.Globalization
 @inject SQLStuff s;
 @model CommentsModel
 @{
@@ -10,20 +11,29 @@
 
 <h1>@ViewData["Title"]</h1>
 
-<!-- Login Form -->
+<div>
 <form method="post">
     <fieldset>
-        <legend>Comments</legend>
-        <div>
-            <textarea rows="10" cols="200" asp-for="Comment"></textarea>
-        </div>
+            <textarea style="margin: auto; color: #111" rows="5" col="200" asp-for="Comment"></textarea>
         <div>
             <label>&nbsp;</label>
             <input type="submit" value="Submit" class="submit" />
         </div>
     </fieldset>
 </form>
- <table>
+</div>
+<style>
+    td 
+    {
+        border: 2px solid #FFF;
+    }
+
+    .lightmode td {
+        border: 2px solid #000;
+    }
+</style>
+<div class="commentsection">
+<table>
     @{
         s.Init();
         var (usernames, comments, dates) = s.GrabComments();
@@ -35,8 +45,10 @@
         {
             for (int i = 0; i < usernames.Length; i++)
             {
-                <tr><td>@dates[i]</td><td>@usernames[i]</td><td>@comments[i]</td></tr>
+                <tr><td><b>@usernames[i]</b> (@DateTime.ParseExact(dates[i], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture))</td><td>@comments[i]</td></tr>
+                //<div>@usernames[i] at @DateTime.ParseExact(dates[i], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)</div> <div>@comments[i]</div>
             }
         }
 }
 </table>
+</div>

@@ -34,12 +34,12 @@ html, body {
 }
 
 h1 {
-  font: 400 175% "Press Start 2P";
+  font: 400 175% "Press Start 2P" !important; 
   margin: 0;
 }
 
 .container h2 {
-  font: 400 125% "Press Start 2P";
+  font: 400 125% "Press Start 2P" !important;
   margin: 0;
   grid-column: span 2;
 }
@@ -91,13 +91,40 @@ li
 {
 	display: inline;
 }*/
+.submit 
+{
+    background-color: #000;
+    color: #FFF;
+    border: 2px solid #FFF;
+    border-radius: 5px;
+    font-weight: 700;
+}
+.submit:hover
+{
+    background-color: #333;
+}
+
+.commentsection {
+    max-height: 100px;
+    overflow-y: auto;
+    overflow-x: auto;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+textarea 
+{
+    width: 75%;
+}
+
 /* Light Mode / Dark Mode */
 #lightswitch {
-  color: transparent;
-  cursor: pointer;
-  user-select: none;
-  text-shadow: 0 0 0 #DDD;
-  -webkit-user-select: none;
+    color: transparent;
+    cursor: pointer;
+    user-select: none;
+    text-shadow: 0 0 0 #DDD;
+    -webkit-user-select: none;
 }
 
 .lightmode {
@@ -128,6 +155,19 @@ li
   padding: 5px;
 }
 
+.lightmode .submit 
+{
+    background-color: #FFF;
+    color: #000;
+    border: 2px solid #000;
+    border-radius: 5px;
+    font-weight: 700;
+}
+
+.lightmode .submit:hover
+{
+    background-color: #CCC;
+}
 /* Slideshow */
 #backbutton, #nextbutton {
   cursor: pointer;

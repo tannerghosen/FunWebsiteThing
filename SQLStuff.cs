@@ -68,7 +68,12 @@ namespace FunWebsiteThing
                         }
                     }
                 }
-                con.Close();
+                /*string commenttrigger = "DROP TRIGGER IF EXISTS commentdate;CREATE TRIGGER commentdate BEFORE INSERT ON comments FOR EACH ROW BEGIN UPDATE comments SET date = DATETIME('now', 'utc', '-8 hours') WHERE commentsid = NEW.commentsid; END;";
+                using (var c = new SqliteCommand(commenttrigger, con))
+                {
+                    c.ExecuteNonQuery();
+                }
+                con.Close();*/
             }
         }
 
@@ -161,7 +166,7 @@ namespace FunWebsiteThing
             }
         }
 
-        public void AddComment(string comment, string username = "Anonymous")
+        public void AddComment(string comment, string username = "Anonymous", int commentsection = 0)
         {
             int userid = 0;
             int anonymousid = -1;
@@ -186,11 +191,12 @@ namespace FunWebsiteThing
                         userid = Convert.ToInt32(result);
                     }
                 }
-                string q = "INSERT INTO comments (userid, commentsid, comment) VALUES (@userid, 0, @comment)";
+                string q = "INSERT INTO comments (userid, commentsid, comment, date) VALUES (@userid, @commentsection, @comment, DATETIME('now', 'utc', '-8 hours'))";
                 using (var cmd = new SqliteCommand(q, con))
                 {
                     cmd.Parameters.AddWithValue("@userid", userid);
                     cmd.Parameters.AddWithValue("@comment", comment);
+                    cmd.Parameters.AddWithValue("@commentsection", commentsection);
                     cmd.ExecuteNonQuery();
                 }
             }

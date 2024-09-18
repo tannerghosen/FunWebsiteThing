@@ -8,13 +8,14 @@
     max-width: 75%;
     top: 5%;
     overflow: hidden;
+    margin: auto;
   }
   h1 {
-    font: 400 125% "Press Start 2P";
+    font: 400 125% "Press Start 2P" !important;
     margin: 0;
   }
   .container h2 {
-    font: 400 90% "Press Start 2P";
+    font: 400 90% "Press Start 2P" !important;
     margin: 0;
     grid-column: span 2;
   }
@@ -31,24 +32,35 @@
   .headercontainer {
     height: 10vh;
   }
+    .commentsection {
+        font-size: 70%;
+    }
+        .commentsection td {
+            max-width: 200px;
+            overflow-x: scroll;
+        }
+    textarea {
+        max-width: 200px;
+    }
 }
 @media (min-width: 0) and (max-width: 480px) {
   body {
     font-size: 80%;
   }
-  .container {
-    height: 60vh; /* screen height */
-    max-height: 65vh;
-    max-width: 75%;
-    top: 5%;
-    overflow: hidden;
-  }
+    .container {
+        height: 60vh; /* screen height */
+        max-height: 65vh;
+        max-width: 75%;
+        top: 5%;
+        overflow: hidden;
+        margin: auto;
+    }
   h1 {
-    font: 400 125% "Press Start 2P";
+    font: 400 125% "Press Start 2P" !important;
     margin: 0;
   }
   .container h2 {
-    font: 400 90% "Press Start 2P";
+    font: 400 90% "Press Start 2P" !important;
     margin: 0;
     grid-column: span 2;
   }
@@ -65,24 +77,35 @@
   .headercontainer {
     height: 10vh;
   }
+    .commentsection {
+        font-size: 70%;
+    }
+        .commentsection td {
+            max-width: 200px;
+            overflow-x: scroll;
+        }
+    textarea {
+        max-width: 200px;
+    }
 }
 @media (min-height: 351px) and (max-height: 600px) {
   body {
     font-size: 70%;
   }
-  .container {
-    height: 60vh; /* screen height */
-    max-height: 65vh;
-    max-width: 85%;
-    top: 5%;
-    overflow: hidden;
-  }
+    .container {
+        height: 60vh; /* screen height */
+        max-height: 65vh;
+        max-width: 85%;
+        top: 5%;
+        overflow: hidden;
+        margin: auto;
+    }
   h1 {
-    font: 400 100% "Press Start 2P";
+    font: 400 100% "Press Start 2P" !important;
     margin: 0;
   }
   .container h2 {
-    font: 400 65% "Press Start 2P";
+    font: 400 65% "Press Start 2P" !important;
     margin: 0;
     grid-column: span 2;
   }
@@ -101,24 +124,35 @@
     align-items: flex-start;
     flex-wrap: wrap;
   }
+    .commentsection {
+        font-size: 70%;
+    }
+        .commentsection td {
+            max-width: 200px;
+            overflow-x: scroll;
+        }
+    textarea {
+        max-width: 200px;
+    }
 }
 @media (min-height: 0) and (max-height: 350px) {
   body {
     font-size: 60%;
   }
-  .container {
-    height: 60vh; /* screen height */
-    max-height: 65vh;
-    max-width: 95%;
-    top: 5%;
-    overflow: hidden;
-  }
+    .container {
+        height: 60vh; /* screen height */
+        max-height: 65vh;
+        max-width: 95%;
+        top: 5%;
+        overflow: hidden;
+        margin: auto;
+    }
   h1 {
-    font: 400 90% "Press Start 2P";
+    font: 400 90% "Press Start 2P" !important;
     margin: 0;
   }
   .container h2 {
-    font: 400 55% "Press Start 2P";
+    font: 400 55% "Press Start 2P" !important;
     margin: 0;
     grid-column: span 2;
   }
@@ -137,6 +171,16 @@
   .headercontainer {
     height: 7.5vh;
   }
+    .commentsection {
+        font-size: 70%;
+    }
+        .commentsection td {
+            max-width: 200px;
+            overflow-x: scroll;
+        }
+    textarea {
+        max-width: 200px;
+    }
 }
 
 /*# sourceMappingURL=mobile.css.map */

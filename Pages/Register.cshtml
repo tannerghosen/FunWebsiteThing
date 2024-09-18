@@ -12,18 +12,17 @@
 <!-- Registration Form -->
 <form method="post">
     <fieldset>
-        <legend>Register</legend>
         <div>
             <label for="email">Email:</label>
-            <input type="text" name="email" asp-for="Email" value="" />
+            <input type="text" name="email" asp-for="Email" value="" id="email" placeholder="you@example.com" class="text-black" />
         </div>
         <div>
             <label for="username">Username:</label>
-            <input type="text" name="username" asp-for="Username" value="" />
+            <input type="text" name="username" asp-for="Username" value="" id="username" placeholder="you" class="text-black" />
         </div>
         <div>
             <label for="password">Password:</label>
-            <input type="text" name="password" asp-for="Password" value="" id="pass" />
+            <input type="text" name="password" asp-for="Password" value="" id="pass" class="text-black" />
         </div>
         <div>
             <label>&nbsp;</label>
