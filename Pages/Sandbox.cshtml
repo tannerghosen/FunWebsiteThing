@@ -23,7 +23,11 @@
             <input type="text" name="lastname" value="" />
         </div>
         <div>
-            <label for="checkbox">You Sure This Guy?:</label>
+            <label for="number">Number:</label>
+            <input type="text" name="number" value="" />
+        </div>
+        <div>
+            <label for="checkbox">Verify:</label>
             <input type="checkbox" name="checkbox" value="" />
         </div>
         <div>
@@ -33,10 +37,11 @@
     </fieldset>
 </form>
 @{
-        if (HttpMethods.IsPost(Request.Method)) // if POST
-        {
-        string firstname = Request.Form["firstname"]; // get first name
-        string lastname = Request.Form["lastname"]; // get last name
+    if (HttpMethods.IsPost(Request.Method)) // if POST
+    {
+        string? firstname = Request.Form["firstname"]; // get first name
+        string? lastname = Request.Form["lastname"]; // get last name
+        int.TryParse(Request.Form["number"], out int number);
         bool checkbox = Request.Form["checkbox"] == ""; // get checkbox status
 
             if(checkbox == true) // if the checkbox is true
@@ -45,12 +50,13 @@
                 You entered: <br />
                 First Name: @firstname <br />
                 Last Name: @lastname <br />
+                Your Number, Hopefully: @number <br />
                 </div>
             }
             else // if it's not, they didn't confirm their identity
             {
                 <div style="background-color: #400; border-color: #500; border-radius: 1px;">
-                You are not this person! <br />
+                You did not verify! <br />
                 @firstname @lastname
                 </div>
             }
@@ -111,15 +117,17 @@
         using (var command = new SqliteCommand("SELECT * FROM test", con))
         {
             SqliteDataReader reader = command.ExecuteReader(); // let the command execute as a reader
-            <table>
+            <table style="overflow-y: scroll; max-height: 100px;">
+                <tr>
                     @while (reader.Read()) // while there's stuff to read
                     {
                         for (int i = 0; i < reader.FieldCount; i++) // for i being less than the columns in that row
                         {
-                            <tr><td>@reader[i].ToString()</td></tr>
+                            <td>@reader[i].ToString()</td>
                             // return that column
                         }
                     }
+                </tr>
             </table>
             reader.Close();
         }

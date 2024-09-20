@@ -15,6 +15,9 @@ namespace FunWebsiteThing.Pages
         public string Password { get; set; }
 
         [BindProperty]
+        public bool Checkbox { get; set; }
+
+        [BindProperty]
         public string Result { get; set; }
 
         private SQLStuff _s = new SQLStuff();
@@ -32,21 +35,26 @@ namespace FunWebsiteThing.Pages
         }
         public void OnPost()
         {
+            Console.WriteLine(Checkbox);
             Random r = new Random();
             int sid = r.Next(999999999);
-            if (!Regex.IsMatch(Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$") || string.IsNullOrEmpty(Email)) // if email doesn't match regex / is empty
+            if (string.IsNullOrEmpty(Email)) // if email doesn't match regex / is empty
+            {
+                Result = "Email is blank";
+            }
+            else if (!Regex.IsMatch(Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
             {
                 Result = "Invalid Email";
             }
             else if (string.IsNullOrEmpty(Username)) // if username is empty
             {
-                Result = "Invalid Username";
+                Result = "Username is blank";
             }
             else if (string.IsNullOrEmpty(Password)) // if password is empty
             {
-                Result = "Invalid Password";
+                Result = "Username is blank";
             }
-            else
+            else if (Checkbox)
             {
                 if (HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
                 {
@@ -71,6 +79,12 @@ namespace FunWebsiteThing.Pages
                     }
                 }
             }
+            else
+            {
+                Result = "You did not verify your stuff.";
+            }
+            TempData["Result"] = Result;
+            Console.WriteLine(TempData["Result"]);
         }
     }
 }

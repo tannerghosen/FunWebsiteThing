@@ -50,6 +50,8 @@ namespace FunWebsiteThing.Pages
                     Result = "Invalid login";
                 }
             }
+            TempData["Result"] = Result;
+            Console.WriteLine(TempData["Result"]);
         }
     }
 }

@@ -25,11 +25,25 @@
             <input type="text" name="password" asp-for="Password" value="" id="pass" class="text-black" />
         </div>
         <div>
+            <label for="checkbox">Verify:</label>
+            <input type="checkbox" name="checkbox" asp-for="Checkbox" id="checkbox" class="text-black"/>
+        </div>
+        <div>
             <label>&nbsp;</label>
             <input type="submit" value="Submit" class="submit" />
         </div>
     </fieldset>
 </form>
+@{
+    var message = TempData["Result"] as string;
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <script>
+        alert('@message');
+    </script>
+}
 <script>
     function GeneratePass() 
     {

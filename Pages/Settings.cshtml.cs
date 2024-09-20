@@ -30,11 +30,11 @@ namespace FunWebsiteThing.Pages
                     bool passwordupdated = _s.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 0, Password, HttpContext.Session.GetInt32("SessionId"));
                     if (passwordupdated)
                     {
-                        Result = "Password has been changed. Be sure to write it down or save it in your browser!";
+                        Result += "Password has been changed. Be sure to write it down or save it in your browser!";
                     }
                     else
                     {
-                        Result = "Unknown error";
+                        Result += "Unknown error";
                     }
                 }
                 if (!string.IsNullOrEmpty(Email) && Regex.IsMatch(Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
@@ -42,11 +42,11 @@ namespace FunWebsiteThing.Pages
                     bool emailupdated = _s.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 1, Email, HttpContext.Session.GetInt32("SessionId"));
                     if (emailupdated)
                     {
-                        Result = "Email has been updated to " + Email;
+                        Result += "\\nEmail has been updated to " + Email;
                     }
                     else
                     {
-                        Result = "Email is already in use by another account!";
+                        Result += "\\nEmail is already in use by another account!";
                     }
                 }
                 if (!string.IsNullOrEmpty(Username))
@@ -55,14 +55,16 @@ namespace FunWebsiteThing.Pages
                     if (usernameupdated)
                     {
                         HttpContext.Session.SetString("Username", Username);
-                        Result = "Username updated to " + Username;
+                        Result += "\\nUsername updated to " + Username;
                     }
                     else
                     {
-                        Result = "Username is already in use by another account!";
+                        Result += "\\nUsername is already in use by another account!";
                     }
                 }
             }
+            TempData["Result"] = Result;
+            Console.WriteLine(TempData["Result"]);
         }
     }
 }

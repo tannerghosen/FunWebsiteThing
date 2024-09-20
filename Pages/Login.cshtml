@@ -25,3 +25,13 @@
         </div>
     </fieldset>
 </form>
+@{
+    var message = TempData["Result"] as string;
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <script>
+        alert('@message');
+    </script>
+}

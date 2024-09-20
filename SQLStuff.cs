@@ -28,7 +28,7 @@ namespace FunWebsiteThing
             using (var con = Connect())
             {
                 con.Open();
-                string command = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL, password TEXT NOT NULL, sessionid INTEGER)";
+                string command = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, sessionid INTEGER)";
                 using (var cmd = new SqliteCommand(command, con))
                 {
                     cmd.ExecuteNonQuery();
@@ -144,7 +144,7 @@ namespace FunWebsiteThing
                         {
                             c.Parameters.AddWithValue("@username", username);
                             var result = c.ExecuteScalar();
-                            int id = (result != null && result != DBNull.Value)? Convert.ToInt32(result) : -999999999; // Default the id to 0 if it's null or DBNull
+                            int id = (result != null && result != DBNull.Value) ? Convert.ToInt32(result) : -999999999; // Default the id to 0 if it's null or DBNull
                             if (sessionid != id || id == -999999999)
                             {
                                 query = "UPDATE accounts SET sessionid = @sid WHERE username = @username";
@@ -342,7 +342,14 @@ namespace FunWebsiteThing
                             {
                                 c.Parameters.AddWithValue("@id", userid);
                                 c.Parameters.AddWithValue("@email", input);
-                                c.ExecuteNonQuery();
+                                try
+                                {
+                                    c.ExecuteNonQuery();
+                                }
+                                catch
+                                {
+                                    return false;
+                                }
                             }
                             return true;
                             break;
@@ -352,7 +359,14 @@ namespace FunWebsiteThing
                             {
                                 c.Parameters.AddWithValue("@id", userid);
                                 c.Parameters.AddWithValue("@newusername", input);
-                                c.ExecuteNonQuery();
+                                try
+                                {
+                                    c.ExecuteNonQuery();
+                                }
+                                catch
+                                {
+                                    return false;
+                                }
                             }
                             return true;
                             break;
