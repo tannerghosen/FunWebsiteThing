@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Principal;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FunWebsiteThing.Pages
 {

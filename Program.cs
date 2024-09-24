@@ -42,15 +42,15 @@ app.UseRouting();
 app.UseSession();
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapControllerRoute("api", "api/Misc/GeneratePassword"); // Adds the waypoint for GeneratePassword (api/Misc/GeneratePassword)
+    endpoints.MapControllerRoute("api", "api/Misc/GeneratePassword"); // Adds the endpoint for GeneratePassword (api/Misc/GeneratePassword)
     endpoints.MapControllers();
-    // Do note; basically waypoints follow this pattern: API/ClassName/MethodNameIfItIsPartOfTheController
+    // Do note; basically endpoints follow this pattern: api/ClassName/MethodNameIfItIsPartOfTheController
 });
 
 app.UseAuthorization();
 
 app.MapRazorPages();
 
-SQLStuff _s = new SQLStuff();
-_s.Init();
+SQLStuff _s = new SQLStuff(); // grab a copy of our SQLStuff
+_s.Init(); // Create Database file before we start / add missing tables / important users
 app.Run();

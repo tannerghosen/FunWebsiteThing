@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Security.Principal;
 using System.Text.RegularExpressions;
 
 namespace FunWebsiteThing.Pages
