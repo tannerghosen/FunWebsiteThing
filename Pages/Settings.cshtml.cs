@@ -27,40 +27,69 @@ namespace FunWebsiteThing.Pages
             {
                 if (!string.IsNullOrEmpty(Password))
                 {
-                    bool passwordupdated = _s.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 0, Password, HttpContext.Session.GetInt32("SessionId"));
+                    // for these if-elses with xupdated, the expected outcome is either it updates it or not.
+                    // because the error could
+                    (bool passwordupdated, bool error) = _s.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 0, Password, HttpContext.Session.GetInt32("SessionId"));
                     if (passwordupdated)
                     {
-                        Result += "Password has been changed. Be sure to write it down or save it in your browser!";
+                        Result += "Password has been changed. Be sure to write it down or save it in your browser!"; // Success
                     }
-                    else
+                    else if (!passwordupdated && !error)
                     {
-                        Result += "Unknown error";
+                        Result += "An unknown error occurred while changing the Password."; // unlike below where dups can happen, this should never happen
+                    }
+                    else if (!passwordupdated && error)
+                    {
+                        Result += "An error occurred while changing the Password."; // SQL Error
                     }
                 }
+                else if (string.IsNullOrEmpty(Password))
+                {
+                }
+
                 if (!string.IsNullOrEmpty(Email) && Regex.IsMatch(Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
                 {
-                    bool emailupdated = _s.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 1, Email, HttpContext.Session.GetInt32("SessionId"));
+                    (bool emailupdated, bool error) = _s.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 1, Email, HttpContext.Session.GetInt32("SessionId"));
                     if (emailupdated)
                     {
-                        Result += "\\nEmail has been updated to " + Email;
+                        Result += "\\nEmail has been updated to " + Email; // Success
                     }
-                    else
+                    else if (!emailupdated && !error)
                     {
-                        Result += "\\nEmail is already in use by another account!";
+                        Result += "\\nEmail is already in use by another account!"; // SQL Conflict (Email used by another account)
+                    }
+                    else if (!emailupdated && error)
+                    {
+                        Result += "\\nAn error occurred while changing the Email."; // Error / SQL Error
                     }
                 }
+                else if (string.IsNullOrEmpty(Email))
+                { 
+                }
+                else if (!Regex.IsMatch(Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
+                {
+                    Result += "\\nEmail format is invalid. Emails should follow a format of name@emailprovider.com";
+                }
+
                 if (!string.IsNullOrEmpty(Username))
                 {
-                    bool usernameupdated = _s.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 2, Username, HttpContext.Session.GetInt32("SessionId"));
+                    (bool usernameupdated, bool error) = _s.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 2, Username, HttpContext.Session.GetInt32("SessionId"));
                     if (usernameupdated)
                     {
                         HttpContext.Session.SetString("Username", Username);
-                        Result += "\\nUsername updated to " + Username;
+                        Result += "\\nUsername updated to " + Username; // Success
                     }
-                    else
+                    else if (!usernameupdated && !error)
                     {
-                        Result += "\\nUsername is already in use by another account!";
+                        Result += "\\nUsername is already in use by another account!"; // SQL Conflict (Username used by another account)
                     }
+                    else if (!usernameupdated && error)
+                    {
+                        Result += "\\nAn error occurred while changing the Username."; // Error / SQL Error
+                    }
+                }
+                else if (string.IsNullOrEmpty(Username))
+                {
                 }
             }
             TempData["Result"] = Result;

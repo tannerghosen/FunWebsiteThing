@@ -381,7 +381,7 @@ namespace FunWebsiteThing
         }
 
         // Updates various settings of a specified user (by username)'s account.
-        public bool UpdateInfo(int? userid, int option, string input, int? sessionid = 0)
+        public (bool, bool) UpdateInfo(int? userid, int option, string input, int? sessionid = 0)
         {
             if (DoesSIDMatch(userid, sessionid))
             {
@@ -401,7 +401,7 @@ namespace FunWebsiteThing
                                     c.Parameters.AddWithValue("@password", pass);
                                     c.ExecuteNonQuery();
                                 }
-                                return true;
+                                return (true, false);
                                 break;
                             case 1: // email
                                 string updateemail = "UPDATE accounts SET email = @email WHERE id = @id";
@@ -415,10 +415,10 @@ namespace FunWebsiteThing
                                     }
                                     catch
                                     {
-                                        return false;
+                                        return (false, false); // dup email
                                     }
                                 }
-                                return true;
+                                return (true, false);
                                 break;
                             case 2: // username
                                 string updateusername = "UPDATE accounts SET username = @newusername WHERE id = @id";
@@ -432,13 +432,13 @@ namespace FunWebsiteThing
                                     }
                                     catch
                                     {
-                                        return false;
+                                        return (false, false); // dup username
                                     }
                                 }
-                                return true;
+                                return (true, false);
                                 break;
                             default: // shouldn't happen
-                                return false;
+                                return (false, true);
                                 break;
                         }
                     }
@@ -446,12 +446,12 @@ namespace FunWebsiteThing
                 catch (SqliteException e)
                 {
                     Console.WriteLine("SQLStuff: An error occured in UpdateInfo: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
-                    return false;
+                    return (false, true); // error happened due to sql issue, so yea let's say an error occured
                 }
             }
             else
             {
-                return false;
+                return (false, true);
             }
         }
     }
