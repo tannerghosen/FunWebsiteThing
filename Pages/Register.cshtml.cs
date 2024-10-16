@@ -58,23 +58,23 @@ namespace FunWebsiteThing.Pages
                 if (HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
                 {
                     Console.WriteLine("hello");
-                    bool result = _s.Register(Email, Username, Password, sid); // Registers our account, hopefully
-                    switch (result)
-                    {
-                        case true:
-                            Result = "Account Registered. Logged into " + Username + ".";
-                            break;
-                        case false:
-                            Result = "Duplicate Account";
-                            break;
-                    }
+                    (bool result, bool error) = _s.Register(Email, Username, Password, sid); // Registers our account, hopefully
                     if (result == true)
                     {
+                        Result = "Account Registered. Logged into " + Username + ".";
                         HttpContext.Session.SetString("Username", Username);
                         HttpContext.Session.SetInt32("UserId", _s.GetUserID(Username));
                         HttpContext.Session.SetInt32("SessionId", sid);
                         HttpContext.Session.SetInt32("IsLoggedIn", 1);
                         Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
+                    }
+                    else if (result == false && error != true)
+                    {
+                        Result = "Duplicate account.";
+                    }
+                    else if (error == true)
+                    {
+                        Result = "An error occured while registering the account.";
                     }
                 }
             }

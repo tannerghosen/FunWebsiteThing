@@ -32,7 +32,7 @@ namespace FunWebsiteThing.Pages
             Random r = new Random();
             int sid = r.Next(999999999);
             Console.WriteLine(sid);
-            bool result = _s.Login(Username, Password, sid);
+            (bool result, bool error) = _s.Login(Username, Password, sid);
             if ((!string.IsNullOrEmpty(Username) || !string.IsNullOrEmpty(Password)) && HttpContext.Session.GetInt32("IsLoggedIn") != 1)
             {
                 if (result == true)
@@ -44,9 +44,13 @@ namespace FunWebsiteThing.Pages
                     Result = "Login successful. Logged in as: " + Username + ".";
                     Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
                 }
-                else
+                else if (result == false && error != true)
                 {
                     Result = "Invalid login";
+                }
+                else if (error == true)
+                {
+                    Result = "An error occured while logging in";
                 }
             }
             TempData["Result"] = Result;

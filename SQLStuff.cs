@@ -81,7 +81,8 @@ namespace FunWebsiteThing
 
         // Registers an account by first running a SQL statement to see if it the account exists. If it does, don't do anything.
         // If it doesn't, run another SQL statement that inserts it into the table, alongside generating a salt to hash our password.
-        public bool Register(string email, string username, string password, int sessionid = 0)
+        // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
+        public (bool, bool) Register(string email, string username, string password, int sessionid = 0)
         {
             try
             {
@@ -96,7 +97,7 @@ namespace FunWebsiteThing
                         int count = Convert.ToInt32(cmd.ExecuteScalar());
                         if (count > 0)
                         {
-                            return false;
+                            return (false, false);
                         }
                     }
                     query = "INSERT INTO accounts (email, username, password, sessionid) VALUES (@email, @username, @password, @sid)";
@@ -109,21 +110,22 @@ namespace FunWebsiteThing
                         cmd.Parameters.AddWithValue("@password", hashpass);
                         cmd.Parameters.AddWithValue("@sid", sessionid);
                         cmd.ExecuteNonQuery();
-                        return true;
+                        return (true, false);
                     }
                 }
             }
             catch (SqliteException e)
             {
                 Console.WriteLine("SQLStuff: An error occured in Register: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
-                return false;
+                return (false, true);
             }
         }
-        
+
         // Logs us into an account by running a SQL statement to see if the username is valid first. If it isn't, return false.
         // If it is, then we run another SQL statement that compares the hashed password with the password given using BCrypt.Verify
         // If it matches, we return true so Login.cshtml.cs can handle setting the session up. If not, we return false.
-        public bool Login(string username, string password, int sessionid = 0)
+        // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
+        public (bool, bool) Login(string username, string password, int sessionid = 0)
         {
             try
             {
@@ -137,7 +139,7 @@ namespace FunWebsiteThing
                         int count = Convert.ToInt32(cmd.ExecuteScalar());
                         if (count == 0)
                         {
-                            return false;
+                            return (false, false);
                         }
                     }
                     query = "SELECT password FROM accounts WHERE username = @username";
@@ -147,7 +149,7 @@ namespace FunWebsiteThing
                         string hash = cmd.ExecuteScalar().ToString();
                         if (!BCrypt.Net.BCrypt.Verify(password, hash)) // invalid password
                         {
-                            return false;
+                            return (false, false);
                         }
                         else // valid password
                         {
@@ -166,11 +168,11 @@ namespace FunWebsiteThing
                                         cm.Parameters.AddWithValue("@username", username);
                                         cm.ExecuteNonQuery();
                                     }
-                                    return true;
+                                    return (true, false);
                                 }
                                 else
                                 {
-                                    return true;
+                                    return (true, false);
                                 }
                             }
                         }
@@ -180,7 +182,7 @@ namespace FunWebsiteThing
             catch(SqliteException e)
             {
                 Console.WriteLine("SQLStuff: An error occured in Login: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
-                return false;
+                return (false, true);
             }
         }
 
@@ -381,6 +383,7 @@ namespace FunWebsiteThing
         }
 
         // Updates various settings of a specified user (by username)'s account.
+        // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
         public (bool, bool) UpdateInfo(int? userid, int option, string input, int? sessionid = 0)
         {
             if (DoesSIDMatch(userid, sessionid))
@@ -402,7 +405,6 @@ namespace FunWebsiteThing
                                     c.ExecuteNonQuery();
                                 }
                                 return (true, false);
-                                break;
                             case 1: // email
                                 string updateemail = "UPDATE accounts SET email = @email WHERE id = @id";
                                 using (var c = new SqliteCommand(updateemail, con))
@@ -419,7 +421,6 @@ namespace FunWebsiteThing
                                     }
                                 }
                                 return (true, false);
-                                break;
                             case 2: // username
                                 string updateusername = "UPDATE accounts SET username = @newusername WHERE id = @id";
                                 using (var c = new SqliteCommand(updateusername, con))
@@ -436,10 +437,8 @@ namespace FunWebsiteThing
                                     }
                                 }
                                 return (true, false);
-                                break;
-                            default: // shouldn't happen
-                                return (false, true);
-                                break;
+                            default:
+                                return (false, false);
                         }
                     }
                 }
