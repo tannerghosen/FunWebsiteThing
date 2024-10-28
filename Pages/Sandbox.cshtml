@@ -101,38 +101,20 @@
 
 }
 <!-- SQL connectivity example -->
-@{
-    string connect = "Data Source=database.db"; // connect string
-    using (var con = new SqliteConnection(connect))
-    {
-        con.Open();
-        using (var create = new SqliteCommand("CREATE TABLE IF NOT EXISTS test (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)", con))
-        {
-            create.ExecuteNonQuery(); // Execute the command to create table
-        }
-        using (var insert = new SqliteCommand("INSERT INTO test (name) VALUES (\"test\")", con))
-        {
-            insert.ExecuteNonQuery();
-        }
-        using (var command = new SqliteCommand("SELECT * FROM test", con))
-        {
-            SqliteDataReader reader = command.ExecuteReader(); // let the command execute as a reader
-            <table style="overflow-y: scroll; max-height: 100px;">
-                <tr>
-                    @while (reader.Read()) // while there's stuff to read
-                    {
-                        for (int i = 0; i < reader.FieldCount; i++) // for i being less than the columns in that row
-                        {
-                            <td>@reader[i].ToString()</td>
-                            // return that column
-                        }
-                    }
-                </tr>
-            </table>
-            reader.Close();
-        }
-    }
-}
-@{
+<!-- just see sql stuff -->
 
-}
+<!-- URL Parameters -->
+<p>Type in ?name=color&favcolor=color at the end of page URL, then press submit</p>
+<form method="post">
+    <button type="submit">Submit</button>
+</form>
+<div>
+    @if (Model.Name != null)
+    {
+        <p>Your Name: @Model.Name</p>
+    }
+    @if (Model.Color != null)
+    {
+        <p>Your Favorite Color: @Model.Color</p>
+    }
+</div>
