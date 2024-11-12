@@ -9,22 +9,29 @@
 <h1>@ViewData["Title"]</h1>
 
 <!-- Login Form -->
-<form method="post">
-    <fieldset>
-        <div>
-            <label for="username">Username:</label>
-            <input type="text" name="username" asp-for="Username" value="" id="username" class="text-black" />
-        </div>
-        <div>
-            <label for="password">Password:</label>
-            <input type="text" name="password" asp-for="Password" value="" id="pass" class="text-black" />
-        </div>
-        <div>
-            <label>&nbsp;</label>
-            <input type="submit" value="Submit" class="submit" />
-        </div>
-    </fieldset>
-</form>
+@if (HttpContext.Session.GetString("Username") == null || HttpContext.Session.GetString("Username") == "") // isloggedin is unreliable
+{
+    <form method="post">
+        <fieldset>
+            <div>
+                <label for="username">Username:</label>
+                <input type="text" name="username" asp-for="Username" value="" id="username" class="text-black" />
+            </div>
+            <div>
+                <label for="password">Password:</label>
+                <input type="text" name="password" asp-for="Password" value="" id="pass" class="text-black" />
+            </div>
+            <div>
+                <label>&nbsp;</label>
+                <input type="submit" value="Submit" class="submit" />
+            </div>
+        </fieldset>
+    </form>
+}
+else
+{
+    <p>You are already logged in, @(HttpContext.Session.GetString("Username")). Did you mean to <a href="Logout">Log Out?</a></p>
+}
 @{
     var message = TempData["Result"] as string;
 }
@@ -33,5 +40,15 @@
 {
     <script>
         alert('@message');
+    </script>
+}
+
+@if (TempData["Result"] != null && TempData["Result"].ToString().Contains("Login successful. Logged in as: "))
+{
+    <script>
+        setTimeout(function () 
+        {
+            window.location.href = '@Url.Page("Index")';
+        }, 0);
     </script>
 }

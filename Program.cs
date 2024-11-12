@@ -5,8 +5,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddSingleton<SQLStuff>(); // This allows us to inject SQL operations into our files
-builder.Services.AddSingleton<Misc>(); // This (I believe?) allows us to use the controller MiscController without an error happening
+builder.Services.AddSingleton<Misc>(); // This  allows us to use the controller MiscController without an error happening
+builder.Services.AddScoped<SessionController>();
 builder.Services.AddControllers(); // This adds MiscController to the program
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",

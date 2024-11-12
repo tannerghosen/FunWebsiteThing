@@ -22,10 +22,13 @@ namespace FunWebsiteThing.Pages
         private SQLStuff _s = new SQLStuff();
 
         private readonly ILogger<IndexModel> _logger;
+        private SessionController _ac;
 
-        public RegisterModel(ILogger<IndexModel> logger)
+        public RegisterModel(ILogger<IndexModel> logger, SessionController s, SQLStuff sq)
         {
             _logger = logger;
+            _ac = s;
+            _s = sq;
         }
 
         public void OnGet()
@@ -57,15 +60,12 @@ namespace FunWebsiteThing.Pages
             {
                 if (HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
                 {
-                    Console.WriteLine("hello");
                     (bool result, bool error) = _s.Register(Email, Username, Password, sid); // Registers our account, hopefully
                     if (result == true)
                     {
+                        /* To do, add verification? */
                         Result = "Account Registered. Logged into " + Username + ".";
-                        HttpContext.Session.SetString("Username", Username);
-                        HttpContext.Session.SetInt32("UserId", _s.GetUserID(Username));
-                        HttpContext.Session.SetInt32("SessionId", sid);
-                        HttpContext.Session.SetInt32("IsLoggedIn", 1);
+                        _ac.Login(Username, _s.GetUserID(Username), sid);
                         Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
                     }
                     else if (result == false && error != true)

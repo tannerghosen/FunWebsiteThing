@@ -13,13 +13,16 @@ namespace FunWebsiteThing.Pages
         [BindProperty]
         public string Result { get; set; }
 
-        private SQLStuff _s = new SQLStuff();
+        private SQLStuff _s;
+        private SessionController _ac;
 
         private readonly ILogger<IndexModel> _logger;
 
-        public LoginModel(ILogger<IndexModel> logger)
+        public LoginModel(ILogger<IndexModel> logger, SessionController s, SQLStuff sq)
         {
             _logger = logger;
+            _ac = s;
+            _s = sq;
         }
 
         public void OnGet()
@@ -37,12 +40,10 @@ namespace FunWebsiteThing.Pages
             {
                 if (result == true)
                 {
-                    HttpContext.Session.SetString("Username", Username);
-                    HttpContext.Session.SetInt32("UserId", _s.GetUserID(Username));
-                    HttpContext.Session.SetInt32("SessionId", sid);
-                    HttpContext.Session.SetInt32("IsLoggedIn", 1);
+                    _ac.Login(Username, _s.GetUserID(Username), sid);
                     Result = "Login successful. Logged in as: " + Username + ".";
                     Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
+                    RedirectToPage();
                 }
                 else if (result == false && error != true)
                 {

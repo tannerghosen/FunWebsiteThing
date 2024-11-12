@@ -31,24 +31,24 @@
                 </div>
             </fieldset>
         </form>
+        <script>
+            function GeneratePass() {
+                $.ajax({
+                    type: "GET",
+                    url: "api/Misc/GeneratePassword", // this is the path to get the GeneratePassword function from MiscController. (think of it like API -> ClassName -> MethodName, however paths don't have to follow this structure.)
+                    success: function (data) {
+                        document.getElementById("pass").value = data.password; // get the password from our MiscController
+                    }
+                });
+            }
+        </script>
+        <button onclick="GeneratePass()">Generate Pass</button>
     }
     else
     {
         <p>You cannot change settings as you're not currently logged in.</p>
     }
 }
-<script>
-    function GeneratePass() {
-        $.ajax({
-            type: "GET",
-            url: "api/Misc/GeneratePassword", // this is the path to get the GeneratePassword function from MiscController. (think of it like API -> ClassName -> MethodName, however paths don't have to follow this structure.)
-            success: function (data) {
-                document.getElementById("pass").value = data.password; // get the password from our MiscController
-            }
-        });
-    }
-</script>
-<button onclick="GeneratePass()">Generate Pass</button>
 @{
     var message = TempData["Result"] as string;
 }
@@ -59,3 +59,5 @@
         alert('@message');
     </script>
 }
+
+<!-- add an if statement to add a link to the admin page to look at accounts, drop and alter the table -->
