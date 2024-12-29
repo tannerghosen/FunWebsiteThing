@@ -11,7 +11,7 @@
 <h1>@ViewData["Title"]</h1>
 
 <table>
-    <thead><tr><td>User ID</td><td>Username</td><td>Email</td><td>Session ID</td><td>Session Token</td><td>Are they Admin?</td></tr></thead>
+    <thead><tr><td>User ID</td><td>Username</td><td>Email</td><td>Session ID</td><td>Session Token</td><td>Are they Admin?</td><td>Admin User</td><td>Delete User</td></tr></thead>
     <tbody>
         <!-- will look like below: -->
         <!--<tr><td>0</td><td>Dummy</td><td>dummy@gmail.com</td><td>true</td></tr>-->
@@ -20,7 +20,21 @@
             string[][] info = s.GrabAccountsTable();
             foreach(string[] row in info)
             {
-                <tr><td>@row[0]</td><td>@row[2]</td><td>@row[1]</td><td>@row[4]</td><td>@row[5]</td><td>@row[6]</td></tr>
+                Console.WriteLine(Convert.ToInt32(row[0]));
+                <tr><td>@row[0]</td><td>@row[2]</td><td>@row[1]</td><td>@row[4]</td><td>@row[5]</td><td>@row[6]</td>
+                <td>
+                <form method="post" asp-page-handler="Admin">
+                    <input type="hidden" name="userid" value="@row[0]" />
+                    <button type="submit">Update Admin Status</button>
+                </form>
+                </td>
+                <td>
+                <form method="post" asp-page-handler="Delete">
+                    <input type="hidden" name="userid" value="@row[0]" />
+                    <button type="submit">Delete</button>
+                </form>
+                </td>
+                </tr>
             }
         }
     </tbody>

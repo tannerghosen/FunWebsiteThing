@@ -43,6 +43,10 @@
             }
         </script>
         <button onclick="GeneratePass()">Generate Pass</button>
+        if(HttpContext.Session.GetInt32("IsAdmin") == 1)
+        {
+            <a href="/Admin">Admin Page</a>
+        }
     }
     else
     {

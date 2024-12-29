@@ -565,5 +565,60 @@ namespace FunWebsiteThing
             }
             return false;
         }
+        public bool DeleteUser(int? userid)
+        {
+            bool usercheck = DoesUserExist(userid);
+            if (usercheck && (userid != -1 && userid != 0))
+            {
+                try
+                {
+                    using (var con = Connect())
+                    {
+                        con.Open();
+                        string query = "DELETE FROM accounts WHERE id = @userid";
+                        using (var cmd = new SqliteCommand(query, con))
+                        {
+                            cmd.Parameters.AddWithValue("@userid", userid);
+                            cmd.ExecuteNonQuery();
+                            return true;
+                        }
+                    }
+                }
+                catch (SqliteException e)
+                {
+                    Console.WriteLine("SQLStuff: An error occured in DeleteUser: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                    return false;
+                }
+            }
+            return false;
+        }
+        public bool AdminUser(int? userid)
+        {
+            bool usercheck = DoesUserExist(userid);
+            if (usercheck && (userid != -1 && userid != 0))
+            {
+                try
+                {
+                    using (var con = Connect())
+                    {
+                        con.Open();
+                        string query = "UPDATE accounts SET isadmin = @isadmin WHERE id = @userid";
+                        using (var cmd = new SqliteCommand(query, con))
+                        {
+                            cmd.Parameters.AddWithValue("@userid", userid);
+                            cmd.Parameters.AddWithValue("@isadmin", IsAdmin(userid) ? 0 : 1);
+                            cmd.ExecuteNonQuery();
+                            return true;
+                        }
+                    }
+                }
+                catch (SqliteException e)
+                {
+                    Console.WriteLine("SQLStuff: An error occured in AdminUser: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                    return false;
+                }
+            }
+            return false;
+        }
     }
 }
