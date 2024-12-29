@@ -34,10 +34,11 @@
 </style>
 <div class="commentsection">
 <table>
-    @{
-        s.Init();
-        var (usernames, comments, dates) = s.GrabComments();
-        if(usernames.Length == 0)
+        @{
+            s.Init();
+            string[][] array = s.GrabComments();
+            var (usernames, comments, dates) = (array[0], array[1], array[2]);
+            if(usernames.Length == 0)
         {
             <tr><td><b>No comments available...</b></td></tr>
         }

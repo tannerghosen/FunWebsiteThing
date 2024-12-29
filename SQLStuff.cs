@@ -30,7 +30,7 @@ namespace FunWebsiteThing
             using (var con = Connect())
             {
                 con.Open();
-                string command = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, sessionid INTEGER)";
+                string command = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, sessionid INTEGER, sessiontoken TEXT, isadmin BOOLEAN DEFAULT FALSE)";
                 using (var cmd = new SqliteCommand(command, con))
                 {
                     cmd.ExecuteNonQuery();
@@ -47,7 +47,7 @@ namespace FunWebsiteThing
                     if (count == 0)
                     {
                         string pass = BCrypt.Net.BCrypt.HashPassword("test");
-                        string createadmin = "INSERT INTO accounts (id, email, username, password) VALUES (-1999, \"admin@email.com\", \"admin\", @pass)";
+                        string createadmin = "INSERT INTO accounts (id, email, username, password, isadmin) VALUES (-1999, \"admin@email.com\", \"admin\", @pass, TRUE)";
                         using (var cmd = new SqliteCommand(createadmin, con))
                         {
                             cmd.Parameters.AddWithValue("@pass", pass);
@@ -82,7 +82,7 @@ namespace FunWebsiteThing
         // Registers an account by first running a SQL statement to see if it the account exists. If it does, don't do anything.
         // If it doesn't, run another SQL statement that inserts it into the table, alongside generating a salt to hash our password.
         // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
-        public (bool, bool) Register(string email, string username, string password, int sessionid = 0)
+        public (bool, bool) Register(string email, string username, string password, int sessionid = 0, string stoken = "")
         {
             try
             {
@@ -125,7 +125,7 @@ namespace FunWebsiteThing
         // If it is, then we run another SQL statement that compares the hashed password with the password given using BCrypt.Verify
         // If it matches, we return true so Login.cshtml.cs can handle setting the session up. If not, we return false.
         // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
-        public (bool, bool) Login(string username, string password, int sessionid = 0)
+        public (bool, bool) Login(string username, string password, int sessionid = 0, string stoken = "")
         {
             try
             {
@@ -186,6 +186,7 @@ namespace FunWebsiteThing
             }
         }
 
+        // Adds a comment to a specified comment section
         public void AddComment(string comment, string username = "Anonymous", int commentsection = 0)
         {
             int userid = 0;
@@ -229,7 +230,8 @@ namespace FunWebsiteThing
             }
         }
 
-        public (string[], string[], string[]) GrabComments(int section = 0)
+        // Grabs usernames, comments, and dates from database and returns them as arrays
+        public string[][] GrabComments(int section = 0)
         {
             List<string> usernames = new List<string>();
             List<string> comments = new List<string>();
@@ -253,13 +255,13 @@ namespace FunWebsiteThing
                             }
                         }
                     }
-                    return (usernames.ToArray(), comments.ToArray(), dates.ToArray());
+                    return new string[][] { usernames.ToArray(), comments.ToArray(), dates.ToArray() };
                 }
             }
             catch (SqliteException e)
             {
                 Console.WriteLine("SQLStuff: An error occured in GrabComments: " + e.Message + "\nSQLStuff: Error Code: " +e.SqliteErrorCode);
-                return (null, null, null);
+                return null;
             }
         }
 
@@ -325,6 +327,7 @@ namespace FunWebsiteThing
             }
         }
 
+        // Get User ID by Username
         public int GetUserID(string username)
         {
             try
@@ -347,6 +350,8 @@ namespace FunWebsiteThing
                 return -1;
             }
         }
+
+        // Does Session ID Match
         public bool DoesSIDMatch(int? userid, int? sid)
         {
             bool usercheck = DoesUserExist(userid);
@@ -376,6 +381,42 @@ namespace FunWebsiteThing
                 catch (SqliteException e)
                 {
                     Console.WriteLine("SQLStuff: An error occured in DoesSIDMatch: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        // Does Session Token Match
+        public bool DoesSTokenMatch(int? userid, string? stoken)
+        {
+            bool usercheck = DoesUserExist(userid);
+            if (usercheck)
+            {
+                try
+                {
+                    using (var con = Connect())
+                    {
+                        con.Open();
+                        string query = "SELECT sessiontoken FROM accounts WHERE id = @userid";
+                        using (var cmd = new SqliteCommand(query, con))
+                        {
+                            cmd.Parameters.AddWithValue("@userid", userid);
+                            string token = Convert.ToString(cmd.ExecuteScalar());
+                            if (token != stoken)
+                            {
+                                return false;
+                            }
+                            else
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                catch (SqliteException e)
+                {
+                    Console.WriteLine("SQLStuff: An error occured in DoesSTokenMatch: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
                     return false;
                 }
             }
@@ -451,6 +492,44 @@ namespace FunWebsiteThing
             else
             {
                 return (false, true);
+            }
+        }
+
+        // Grabs the entire table of accounts and returns an array of all 6 columns
+        public string[][] GrabAccountsTable()
+        {
+            try
+            {
+                using (var con = Connect())
+                {
+                    con.Open();
+                    string query = "SELECT * FROM accounts";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            List<string[]> rows = new List<string[]>();
+                            while (reader.Read())
+                            {
+                                string[] row = new string[7];
+                                row[0] = reader.GetInt32(0).ToString(); // id
+                                row[1] = reader.GetString(1); // email
+                                row[2] = reader.GetString(2); // username
+                                row[3] = reader.GetString(3); // password
+                                row[4] = reader.IsDBNull(4) ? "" : reader.GetInt32(4).ToString(); // sessionid
+                                row[5] = reader.IsDBNull(5) ? "" : reader.GetString(5); // sessiontoken
+                                row[6] = reader.IsDBNull(6) ? null : reader.GetBoolean(6).ToString();
+                                rows.Add(row);
+                            }
+                            return rows.ToArray();
+                        }
+                    }
+                }
+            }
+            catch (SqliteException e)
+            {
+                Console.WriteLine("SQLStuff: An error occurred in GrabAccountsTable: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                return null;
             }
         }
     }

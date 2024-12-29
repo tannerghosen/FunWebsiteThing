@@ -19,16 +19,16 @@ namespace FunWebsiteThing.Pages
         [BindProperty]
         public string Result { get; set; }
 
-        private SQLStuff _s = new SQLStuff();
+        private SQLStuff _sq = new SQLStuff();
 
         private readonly ILogger<IndexModel> _logger;
-        private SessionController _ac;
+        private SessionController _s;
 
         public RegisterModel(ILogger<IndexModel> logger, SessionController s, SQLStuff sq)
         {
             _logger = logger;
-            _ac = s;
-            _s = sq;
+            _s = s;
+            _sq = sq;
         }
 
         public void OnGet()
@@ -37,9 +37,7 @@ namespace FunWebsiteThing.Pages
         }
         public void OnPost()
         {
-            Console.WriteLine(Checkbox);
-            Random r = new Random();
-            int sid = r.Next(999999999);
+            int sid = _s.SID();
             if (string.IsNullOrEmpty(Email)) // if email doesn't match regex / is empty
             {
                 Result = "Email is blank";
@@ -54,18 +52,18 @@ namespace FunWebsiteThing.Pages
             }
             else if (string.IsNullOrEmpty(Password)) // if password is empty
             {
-                Result = "Username is blank";
+                Result = "Password is blank";
             }
             else if (Checkbox)
             {
                 if (HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
                 {
-                    (bool result, bool error) = _s.Register(Email, Username, Password, sid); // Registers our account, hopefully
+                    (bool result, bool error) = _sq.Register(Email, Username, Password, sid); // Registers our account, hopefully
                     if (result == true)
                     {
                         /* To do, add verification? */
                         Result = "Account Registered. Logged into " + Username + ".";
-                        _ac.Login(Username, _s.GetUserID(Username), sid);
+                        _s.Login(Username, _sq.GetUserID(Username), sid);
                         Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
                     }
                     else if (result == false && error != true)

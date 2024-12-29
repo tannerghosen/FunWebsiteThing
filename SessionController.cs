@@ -35,4 +35,11 @@ public class SessionController: Controller
 
         return View();
     }
+
+    public int SID()
+    {
+        Random r = new Random();
+        int sid = r.Next(999999999);
+        return sid;
+    }
 }

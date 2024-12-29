@@ -5,11 +5,11 @@ namespace FunWebsiteThing.Pages
 {
     public class LogoutModel : PageModel
     {
-        private SessionController _ac;
+        private SessionController _s;
 
         public LogoutModel(SessionController s)
         {
-            _ac = s;
+            _s = s;
         }
         public void OnGet()
         {
@@ -17,7 +17,7 @@ namespace FunWebsiteThing.Pages
         public void OnPost()
         {
             Console.WriteLine("Logging out this user: " + HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
-            _ac.Logout();
+            _s.Logout();
 
             Response.Redirect("/Logout");
         }

@@ -13,16 +13,16 @@ namespace FunWebsiteThing.Pages
         [BindProperty]
         public string Result { get; set; }
 
-        private SQLStuff _s;
-        private SessionController _ac;
+        private SQLStuff _sq;
+        private SessionController _s;
 
         private readonly ILogger<IndexModel> _logger;
 
         public LoginModel(ILogger<IndexModel> logger, SessionController s, SQLStuff sq)
         {
             _logger = logger;
-            _ac = s;
-            _s = sq;
+            _s = s;
+            _sq = sq;
         }
 
         public void OnGet()
@@ -32,15 +32,13 @@ namespace FunWebsiteThing.Pages
 
         public void OnPost()
         {
-            Random r = new Random();
-            int sid = r.Next(999999999);
-            Console.WriteLine(sid);
-            (bool result, bool error) = _s.Login(Username, Password, sid);
+            int sid = _s.SID();
+            (bool result, bool error) = _sq.Login(Username, Password, sid);
             if ((!string.IsNullOrEmpty(Username) || !string.IsNullOrEmpty(Password)) && HttpContext.Session.GetInt32("IsLoggedIn") != 1)
             {
                 if (result == true)
                 {
-                    _ac.Login(Username, _s.GetUserID(Username), sid);
+                    _s.Login(Username, _sq.GetUserID(Username), sid);
                     Result = "Login successful. Logged in as: " + Username + ".";
                     Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
                     RedirectToPage();
