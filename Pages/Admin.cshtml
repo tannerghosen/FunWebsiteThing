@@ -6,10 +6,10 @@
     ViewData["Title"] = "Admin Page";
 }
 @inject SQLStuff s
+@if (HttpContext.Session.GetInt32("IsAdmin") == 1)
+{
 <h1>@ViewData["Title"]</h1>
 
-<b>TODO</b>
-<!-- todo: we want to display the entire admin table -->
 <table>
     <thead><tr><td>User ID</td><td>Username</td><td>Email</td><td>Session ID</td><td>Session Token</td><td>Are they Admin?</td></tr></thead>
     <tbody>
@@ -24,4 +24,10 @@
             }
         }
     </tbody>
-</table>
+    </table>
+}
+else
+{
+    <h1>Nothing here!</h1>
+    <p>Nothing at all! Nothing at all!</p>
+}

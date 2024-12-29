@@ -14,11 +14,12 @@ public class SessionController: Controller
 
     public IActionResult Login(string username, int id, int sessionid)
     {
-        Console.WriteLine("Username: " + username + " id: " + id + " ses id: " + sessionid);
         _h.HttpContext.Session.SetString("Username", username);
         _h.HttpContext.Session.SetInt32("UserId", _sq.GetUserID(username));
         _h.HttpContext.Session.SetInt32("SessionId", sessionid);
         _h.HttpContext.Session.SetInt32("IsLoggedIn", 1);
+        _h.HttpContext.Session.SetInt32("IsAdmin", _sq.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")) == true ? 1 : 0);
+        Console.WriteLine("Username: " + username + " id: " + _sq.GetUserID(username) + " ses id: " + sessionid + " is admin?: " + _sq.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")));
 
         return View();
     }
@@ -31,6 +32,8 @@ public class SessionController: Controller
             _h.HttpContext.Session.SetInt32("IsLoggedIn", 0);
             _h.HttpContext.Session.SetInt32("UserId", -999999999);
             _h.HttpContext.Session.SetInt32("SessionId", -999999999);
+            _h.HttpContext.Session.SetInt32("IsAdmin", 0);
+
         }
 
         return View();

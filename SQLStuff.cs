@@ -30,7 +30,7 @@ namespace FunWebsiteThing
             using (var con = Connect())
             {
                 con.Open();
-                string command = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, sessionid INTEGER, sessiontoken TEXT, isadmin BOOLEAN DEFAULT FALSE)";
+                string command = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, sessionid INTEGER, sessiontoken TEXT, isadmin BOOLEAN DEFAULT 0)";
                 using (var cmd = new SqliteCommand(command, con))
                 {
                     cmd.ExecuteNonQuery();
@@ -40,14 +40,14 @@ namespace FunWebsiteThing
                 {
                     cmd.ExecuteNonQuery();
                 }
-                string isadminalive = "SELECT COUNT(*) FROM accounts WHERE id = -1999";
+                string isadminalive = "SELECT COUNT(*) FROM accounts WHERE id = 0";
                 using (var c = new SqliteCommand(isadminalive, con))
                 {
                     int count = Convert.ToInt32(c.ExecuteScalar());
                     if (count == 0)
                     {
                         string pass = BCrypt.Net.BCrypt.HashPassword("test");
-                        string createadmin = "INSERT INTO accounts (id, email, username, password, isadmin) VALUES (-1999, \"admin@email.com\", \"admin\", @pass, TRUE)";
+                        string createadmin = "INSERT INTO accounts (id, email, username, password, isadmin) VALUES (0, \"admin@email.com\", \"admin\", @pass, 1)";
                         using (var cmd = new SqliteCommand(createadmin, con))
                         {
                             cmd.Parameters.AddWithValue("@pass", pass);
@@ -335,7 +335,7 @@ namespace FunWebsiteThing
                 using (var con = Connect())
                 {
                     con.Open();
-                    string query = "SELECT COUNT(*) FROM accounts WHERE username = @username";
+                    string query = "SELECT id FROM accounts WHERE username = @username";
                     using (var cmd = new SqliteCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@username", username);
@@ -531,6 +531,39 @@ namespace FunWebsiteThing
                 Console.WriteLine("SQLStuff: An error occurred in GrabAccountsTable: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
                 return null;
             }
+        }
+
+        // checks if user is admin
+        public bool IsAdmin(int? userid)
+        {
+            bool usercheck = DoesUserExist(userid);
+            if (usercheck)
+            {
+                try
+                {
+                    using (var con = Connect())
+                    {
+                        con.Open();
+                        string query = "SELECT isadmin FROM accounts WHERE id = @userid";
+                        using (var cmd = new SqliteCommand(query, con))
+                        {
+                            cmd.Parameters.AddWithValue("@userid", userid);
+                            var result = cmd.ExecuteScalar();
+                            if (result != null && result != DBNull.Value)
+                            {
+                                // Assuming isadmin is stored as a boolean (which might internally be 0 or 1)
+                                return Convert.ToInt32(result) == 1;
+                            }
+                        }
+                    }
+                }
+                catch (SqliteException e)
+                {
+                    Console.WriteLine("SQLStuff: An error occured in IsAdmin " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                    return false;
+                }
+            }
+            return false;
         }
     }
 }
