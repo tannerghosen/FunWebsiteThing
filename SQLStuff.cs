@@ -116,7 +116,7 @@ namespace FunWebsiteThing
             }
             catch (SqliteException e)
             {
-                Console.WriteLine("SQLStuff: An error occured in Register: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                Logger.Write("SQLStuff: An error occured in Register: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return (false, true);
             }
         }
@@ -181,7 +181,7 @@ namespace FunWebsiteThing
             }
             catch(SqliteException e)
             {
-                Console.WriteLine("SQLStuff: An error occured in Login: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                Logger.Write("SQLStuff: An error occured in Login: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return (false, true);
             }
         }
@@ -226,7 +226,7 @@ namespace FunWebsiteThing
             }
             catch (SqliteException e)
             {
-                Console.WriteLine("SQLStuff: An error occured in AddComment: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                Logger.Write("SQLStuff: An error occured in AddComment: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
             }
         }
 
@@ -260,7 +260,7 @@ namespace FunWebsiteThing
             }
             catch (SqliteException e)
             {
-                Console.WriteLine("SQLStuff: An error occured in GrabComments: " + e.Message + "\nSQLStuff: Error Code: " +e.SqliteErrorCode);
+                Logger.Write("SQLStuff: An error occured in GrabComments: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return null;
             }
         }
@@ -291,7 +291,7 @@ namespace FunWebsiteThing
             }
             catch (SqliteException e)
             {
-                Console.WriteLine("SQLStuff: An error occured in DoesUserExist (string username parameter variant): " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                Logger.Write("SQLStuff: An error occured in DoesUserExist (string username parameter variant): " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return false;
             }
         }
@@ -322,7 +322,7 @@ namespace FunWebsiteThing
             }
             catch (SqliteException e)
             {
-                Console.WriteLine("SQLStuff: An error occured in DoesUserExist (int? userid parameter variant): " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                Logger.Write("SQLStuff: An error occured in DoesUserExist (int? userid parameter variant): " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return false;
             }
         }
@@ -346,7 +346,7 @@ namespace FunWebsiteThing
             }
             catch (SqliteException e)
             {
-                Console.WriteLine("SQLStuff: An error occured in DoesUserExist: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                Logger.Write("SQLStuff: An error occured in DoesUserExist: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return -1;
             }
         }
@@ -380,7 +380,7 @@ namespace FunWebsiteThing
                 }
                 catch (SqliteException e)
                 {
-                    Console.WriteLine("SQLStuff: An error occured in DoesSIDMatch: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                    Logger.Write("SQLStuff: An error occured in DoesSIDMatch: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                     return false;
                 }
             }
@@ -416,7 +416,7 @@ namespace FunWebsiteThing
                 }
                 catch (SqliteException e)
                 {
-                    Console.WriteLine("SQLStuff: An error occured in DoesSTokenMatch: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                    Logger.Write("SQLStuff: An error occured in DoesSTokenMatch: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                     return false;
                 }
             }
@@ -425,9 +425,9 @@ namespace FunWebsiteThing
 
         // Updates various settings of a specified user (by username)'s account.
         // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
-        public (bool, bool) UpdateInfo(int? userid, int option, string input, int? sessionid = 0)
+        public (bool, bool) UpdateInfo(int? userid, int option, string input, int? sessionid = 0, bool adminupdate = false)
         {
-            if (DoesSIDMatch(userid, sessionid))
+            if ((DoesSIDMatch(userid, sessionid) || adminupdate == true) && (userid != -1 && userid != 0))
             {
                 try
                 {
@@ -485,7 +485,7 @@ namespace FunWebsiteThing
                 }
                 catch (SqliteException e)
                 {
-                    Console.WriteLine("SQLStuff: An error occured in UpdateInfo: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                    Logger.Write("SQLStuff: An error occured in UpdateInfo: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                     return (false, true); // error happened due to sql issue, so yea let's say an error occured
                 }
             }
@@ -528,7 +528,7 @@ namespace FunWebsiteThing
             }
             catch (SqliteException e)
             {
-                Console.WriteLine("SQLStuff: An error occurred in GrabAccountsTable: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                Logger.Write("SQLStuff: An error occurred in GrabAccountsTable: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return null;
             }
         }
@@ -559,12 +559,14 @@ namespace FunWebsiteThing
                 }
                 catch (SqliteException e)
                 {
-                    Console.WriteLine("SQLStuff: An error occured in IsAdmin " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                    Logger.Write("SQLStuff: An error occured in IsAdmin " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                     return false;
                 }
             }
             return false;
         }
+
+        // Deletes a user from the accounts table
         public bool DeleteUser(int? userid)
         {
             bool usercheck = DoesUserExist(userid);
@@ -586,12 +588,14 @@ namespace FunWebsiteThing
                 }
                 catch (SqliteException e)
                 {
-                    Console.WriteLine("SQLStuff: An error occured in DeleteUser: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                    Logger.Write("SQLStuff: An error occured in DeleteUser: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                     return false;
                 }
             }
             return false;
         }
+
+        // Makes user an admin
         public bool AdminUser(int? userid)
         {
             bool usercheck = DoesUserExist(userid);
@@ -614,7 +618,7 @@ namespace FunWebsiteThing
                 }
                 catch (SqliteException e)
                 {
-                    Console.WriteLine("SQLStuff: An error occured in AdminUser: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode);
+                    Logger.Write("SQLStuff: An error occured in AdminUser: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                     return false;
                 }
             }
