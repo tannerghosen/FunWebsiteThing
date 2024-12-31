@@ -18,7 +18,7 @@ namespace FunWebsiteThing
         /// </summary>
         public static string Log = "./FWT.log";
         /// <summary>
-        /// Write: Writes a message to our Wasspord.log, usually important info such as errors, warnings, or debug info I'd appreciate if an issue arises.
+        /// Write: Writes a message to our FWT.log, containing SQL errors / messages, website interactions (login, logout), and debugging information.
         /// </summary>
         /// <param name="message"></param>
         /// <param name="messagetype"></param>

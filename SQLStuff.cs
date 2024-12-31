@@ -222,6 +222,7 @@ namespace FunWebsiteThing
                         cmd.Parameters.AddWithValue("@commentsection", commentsection);
                         cmd.ExecuteNonQuery();
                     }
+                    Logger.Write("Comment added by " + username + " to section " + commentsection);
                 }
             }
             catch (SqliteException e)
