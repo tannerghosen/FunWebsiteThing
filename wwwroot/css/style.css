@@ -27,8 +27,6 @@ html, body {
   position: relative;
   bottom: 2.5%;
   overflow: hidden;
-  visibility: hidden;
-  animation: fadein 1s forwards;
   animation-delay: 2s;
 }
 
@@ -71,7 +69,6 @@ a:hover {
   animation-timing-function: linear;
   text-align: center;
   transform: translateX(0);
-  animation: fadein 1s forwards;
 }
 
 img {

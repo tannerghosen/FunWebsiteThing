@@ -33,7 +33,8 @@ namespace FunWebsiteThing.Pages
                 {
                     // for these if-elses with xupdated, the expected outcome is either it updates it or not.
                     // bool error will always be true if xupdated is false
-                    (bool passwordupdated, bool error) = _s.UpdateInfo(Id, 0, Password, -999999999, true);
+                                                                      // id  option session id (not applicable) 
+                    (bool passwordupdated, bool error) = _s.UpdateInfo(Id, 0, Password, null, true); // isadmin is true
                     if (passwordupdated)
                     {
                         Result += "Password has been changed."; // Success
@@ -53,7 +54,7 @@ namespace FunWebsiteThing.Pages
 
                 if (!string.IsNullOrEmpty(Email) && Regex.IsMatch(Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
                 {
-                    (bool emailupdated, bool error) = _s.UpdateInfo(Id, 1, Email, -999999999, true);
+                    (bool emailupdated, bool error) = _s.UpdateInfo(Id, 1, Email, null, true);
                     if (emailupdated)
                     {
                         Result += "\\nEmail has been updated to " + Email; // Success
@@ -77,7 +78,7 @@ namespace FunWebsiteThing.Pages
 
                 if (!string.IsNullOrEmpty(Username))
                 {
-                    (bool usernameupdated, bool error) = _s.UpdateInfo(Id, 2, Username, -999999999, true);
+                    (bool usernameupdated, bool error) = _s.UpdateInfo(Id, 2, Username, null, true);
                     if (usernameupdated)
                     {
                         Result += "\\nUsername updated to " + Username; // Success

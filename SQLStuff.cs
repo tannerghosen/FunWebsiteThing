@@ -158,8 +158,8 @@ namespace FunWebsiteThing
                             {
                                 c.Parameters.AddWithValue("@username", username);
                                 var result = c.ExecuteScalar();
-                                int id = (result != null && result != DBNull.Value) ? Convert.ToInt32(result) : -999999999; // Default the id to 0 if it's null or DBNull
-                                if (sessionid != id || id == -999999999)
+                                int id = (result != null && result != DBNull.Value) ? Convert.ToInt32(result) : -1; // Default the id to 0 if it's null or DBNull
+                                if (sessionid != id || id == -1)
                                 {
                                     query = "UPDATE accounts SET sessionid = @sid WHERE username = @username";
                                     using (var cm = new SqliteCommand(query, con))
@@ -189,31 +189,24 @@ namespace FunWebsiteThing
         // Adds a comment to a specified comment section
         public void AddComment(string comment, string username = "Anonymous", int commentsection = 0)
         {
-            int userid = 0;
-            int anonymousid = -1;
-            if (comment == null || comment == "")
+            int userid, anonymousid = -1;
+            if (comment == null)
             {
                 comment = "";
+            }
+            if (!DoesUserExist(username) || (username == "" || username == null || username == "Anonymous"))
+            {
+                userid = anonymousid;
+            }
+            else
+            {
+                userid = GetUserID(username);
             }
             try
             {
                 using (var con = Connect())
                 {
                     con.Open();
-                    string query = "SELECT id FROM accounts WHERE username = @username";
-                    using (var cmd = new SqliteCommand(query, con))
-                    {
-                        cmd.Parameters.AddWithValue("@username", username);
-                        var result = cmd.ExecuteScalar();
-                        if (result == null)
-                        {
-                            userid = anonymousid;
-                        }
-                        else
-                        {
-                            userid = Convert.ToInt32(result);
-                        }
-                    }
                     string q = "INSERT INTO comments (userid, commentsid, comment, date) VALUES (@userid, @commentsection, @comment, DATETIME('now', 'utc', '-8 hours'))";
                     using (var cmd = new SqliteCommand(q, con))
                     {
@@ -222,7 +215,7 @@ namespace FunWebsiteThing
                         cmd.Parameters.AddWithValue("@commentsection", commentsection);
                         cmd.ExecuteNonQuery();
                     }
-                    Logger.Write("Comment added by " + username + " to section " + commentsection);
+                    Logger.Write("Comment added by " + username + " to comment section id " + commentsection);
                 }
             }
             catch (SqliteException e)
@@ -237,32 +230,59 @@ namespace FunWebsiteThing
             List<string> usernames = new List<string>();
             List<string> comments = new List<string>();
             List<string> dates = new List<string>();
+            List<string> ids = new List<string>();
             try
             {
                 using (var con = Connect())
                 {
                     con.Open();
-                    string query = @"SELECT a.username, c.comment, c.date FROM comments c JOIN accounts a ON c.userid = a.id WHERE c.commentsid = @section ORDER BY c.date DESC;";
+                    // SELECT account username, comments comment, comments data FROM comments JOIN accounts on comments userid = accounts id WHERE commentsid = section ORDER BY comments date DESC
+                    string query = @"SELECT a.username, c.comment, c.date, c.id FROM comments c JOIN accounts a ON a.id = c.userid WHERE c.commentsid = @section ORDER BY c.date DESC";
                     using (var cmd = new SqliteCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@section", section);
                         using (var reader = cmd.ExecuteReader())
                         {
-                            while (reader.Read())
+                            if (reader != null)
                             {
-                                usernames.Add(reader.GetString(0));
-                                comments.Add(reader.GetString(1));
-                                dates.Add(reader.GetString(2));
+                                while (reader.Read())
+                                {
+                                    usernames.Add(reader.GetString(0));
+                                    comments.Add(reader.GetString(1));
+                                    dates.Add(reader.GetString(2));
+                                    ids.Add(reader.GetString(3));
+                                }
                             }
                         }
                     }
-                    return new string[][] { usernames.ToArray(), comments.ToArray(), dates.ToArray() };
+                    return new string[][] { usernames.ToArray(), comments.ToArray(), dates.ToArray(), ids.ToArray() };
                 }
             }
             catch (SqliteException e)
             {
                 Logger.Write("SQLStuff: An error occured in GrabComments: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return null;
+            }
+        }
+
+        public void DeleteComment(int? commentid)
+        {
+            try
+            {
+                using (var con = Connect())
+                {
+                    con.Open();
+                    string query = "DELETE FROM comments WHERE id = @id";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", commentid);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (SqliteException e)
+            {
+                Logger.Write("SQLStuff: An error occured in DeleteComment: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
             }
         }
 
@@ -347,7 +367,7 @@ namespace FunWebsiteThing
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occured in DoesUserExist: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQLStuff: An error occured in GetUserID: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return -1;
             }
         }
@@ -497,7 +517,7 @@ namespace FunWebsiteThing
         }
 
         // Grabs the entire table of accounts and returns an array of all 6 columns
-        public string[][] GrabAccountsTable()
+        public string[]?[]? GrabAccountsTable()
         {
             try
             {
@@ -568,7 +588,7 @@ namespace FunWebsiteThing
         }
 
         // Deletes a user from the accounts table
-        public bool DeleteUser(int? userid)
+        public void DeleteUser(int? userid)
         {
             bool usercheck = DoesUserExist(userid);
             if (usercheck && (userid != -1 && userid != 0))
@@ -583,21 +603,18 @@ namespace FunWebsiteThing
                         {
                             cmd.Parameters.AddWithValue("@userid", userid);
                             cmd.ExecuteNonQuery();
-                            return true;
                         }
                     }
                 }
                 catch (SqliteException e)
                 {
                     Logger.Write("SQLStuff: An error occured in DeleteUser: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
-                    return false;
                 }
             }
-            return false;
         }
 
         // Makes user an admin
-        public bool AdminUser(int? userid)
+        public void AdminUser(int? userid)
         {
             bool usercheck = DoesUserExist(userid);
             if (usercheck && (userid != -1 && userid != 0))
@@ -613,17 +630,14 @@ namespace FunWebsiteThing
                             cmd.Parameters.AddWithValue("@userid", userid);
                             cmd.Parameters.AddWithValue("@isadmin", IsAdmin(userid) ? 0 : 1);
                             cmd.ExecuteNonQuery();
-                            return true;
                         }
                     }
                 }
                 catch (SqliteException e)
                 {
                     Logger.Write("SQLStuff: An error occured in AdminUser: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
-                    return false;
                 }
             }
-            return false;
         }
     }
 }

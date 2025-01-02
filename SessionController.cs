@@ -31,8 +31,8 @@ public class SessionController: Controller
             Logger.Write("Username " + _h.HttpContext.Session.GetString("Username"), "LOGOUT");
             _h.HttpContext.Session.SetString("Username", "");
             _h.HttpContext.Session.SetInt32("IsLoggedIn", 0);
-            _h.HttpContext.Session.SetInt32("UserId", -999999999);
-            _h.HttpContext.Session.SetInt32("SessionId", -999999999);
+            _h.HttpContext.Session.SetInt32("UserId", -1);
+            _h.HttpContext.Session.SetInt32("SessionId", -1);
             _h.HttpContext.Session.SetInt32("IsAdmin", 0);
         }
 
@@ -44,5 +44,14 @@ public class SessionController: Controller
         Random r = new Random();
         int sid = r.Next(999999999);
         return sid;
+    }
+
+    public bool IsUserLoggedIn()
+    {
+        if (_h.HttpContext.Session.GetInt32("IsLoggedIn") == 1)
+        {
+            return true;
+        }
+        return false;
     }
 }

@@ -15,6 +15,7 @@
 <form method="post">
     <fieldset>
             <textarea style="margin: auto; color: #111" rows="5" col="200" asp-for="Comment"></textarea>
+            <input type="hidden" name="CS" value="@Model.CommentSection" />
         <div>
             <label>&nbsp;</label>
             <input type="submit" value="Submit" class="submit" />
@@ -31,25 +32,49 @@
     .lightmode td {
         border: 2px solid #000;
     }
+
+    .commentsection
+    {
+        position: relative;
+    }
+    table
+    {
+        display: block;
+        overflow-y: scroll;
+        max-height: 150px;
+    }
+
 </style>
 <div class="commentsection">
 <table>
         @{
             s.Init();
-            string[][] array = s.GrabComments();
-            var (usernames, comments, dates) = (array[0], array[1], array[2]);
-            if(usernames.Length == 0)
-        {
-            <tr><td><b>No comments available...</b></td></tr>
-        }
-        else
-        {
-            for (int i = 0; i < usernames.Length; i++)
+            string[][] array = s.GrabComments(Model.CommentSection);
+            var (usernames, comments, dates, ids) = (array[0], array[1], array[2], array[3]);
+            if(usernames.Length == 0 || usernames == null)
             {
-                <tr><td><b>@usernames[i]</b> (@DateTime.ParseExact(dates[i], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture))</td><td>@comments[i]</td></tr>
-                //<div>@usernames[i] at @DateTime.ParseExact(dates[i], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)</div> <div>@comments[i]</div>
+                <tr><td><b>No comments available...</b></td></tr>
             }
-        }
+            else
+            {
+                for (int i = 0; i < usernames.Length; i++)
+                {
+                    <tr>
+                        <td><b>@usernames[i]</b> (@DateTime.ParseExact(dates[i], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).AddHours(-2).ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture))</td>
+                        <td>@comments[i]</td>
+                    @if(HttpContext.Session.GetInt32("IsAdmin") == 1)
+                    {
+                        <td>
+                            <form method="post" asp-page-handler="Delete">
+                            <input type="hidden" name="commentid" value="@ids[i]" />
+                            <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    }
+                    </tr>
+                    //<div>@usernames[i] at @DateTime.ParseExact(dates[i], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)</div> <div>@comments[i]</div>
+                }
+            }
 }
 </table>
 </div>
