@@ -29,12 +29,14 @@ namespace FunWebsiteThing.Pages
 
         public IActionResult OnPostDelete(int? commentid)
         {
+            CommentSection = int.TryParse(Request.Form["CS"], out int cs) ? cs : 0;
+            Logger.Write("CommentSection is " + CommentSection + ", TryParse is " + cs);
             if (HttpContext.Session.GetInt32("IsAdmin") == 1)
             {
                 _s.DeleteComment(commentid);
             }
 
-            return RedirectToPage();
+            return RedirectToPage("/Comments", new { cs = CommentSection });
         }
     }
 }

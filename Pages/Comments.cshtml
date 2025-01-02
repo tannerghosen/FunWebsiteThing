@@ -67,6 +67,7 @@
                         <td>
                             <form method="post" asp-page-handler="Delete">
                             <input type="hidden" name="commentid" value="@ids[i]" />
+                            <input type="hidden" name="CS" value="@Model.CommentSection" />
                             <button type="submit">Delete</button>
                             </form>
                         </td>

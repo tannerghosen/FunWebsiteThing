@@ -279,6 +279,7 @@ namespace FunWebsiteThing
                         cmd.ExecuteNonQuery();
                     }
                 }
+                Logger.Write("Deleted comment with id " + commentid);
             }
             catch (SqliteException e)
             {
