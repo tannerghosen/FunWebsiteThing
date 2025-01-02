@@ -17,8 +17,8 @@ html, body {
 .container {
   /* flexbox */
   max-width: 65%; /* we don't need a lot of space */
-  height: 75vh; /* screen height */
-  max-height: 75vh;
+  height: 45vh; /* screen height */
+  max-height: 45vh; 
   min-width: 60%;
   display: flex;
   flex-direction: column; /* display as a column */
@@ -26,7 +26,7 @@ html, body {
   justify-content: center; /* align content in center horizontally */
   position: relative;
   bottom: 2.5%;
-  overflow: hidden;
+  overflow: visible;
   animation-delay: 2s;
 }
 
@@ -35,6 +35,8 @@ html, body {
   justify-content: space-around;
   align-items: center;
   align-content: flex-start;
+  max-height: 100vh;
+  height: 100vh;
 }
 
 h1 {
