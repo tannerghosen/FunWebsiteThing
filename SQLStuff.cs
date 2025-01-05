@@ -55,7 +55,7 @@ namespace FunWebsiteThing
                 }
 
                 // Blog Table
-                string blog = "CREATE TABLE IF NOT EXISTS blog (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, message TEXT NOT NULL, date DATETIME DEFAULT CURRENT_TIMESTAMP";
+                string blog = "CREATE TABLE IF NOT EXISTS blog (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, message TEXT NOT NULL, date DATETIME DEFAULT CURRENT_TIMESTAMP)";
                 using (var cmd = new SqliteCommand(blog, con))
                 {
                     cmd.ExecuteNonQuery();
