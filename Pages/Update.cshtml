@@ -4,7 +4,7 @@
 @inject SQLStuff s
 @model UpdateModel
 @{
-    ViewData["Title"] = "Updating User";
+    ViewData["Title"] = "Updating " + s.GetUsername(Model.Id);
 }
 
 @{
@@ -32,6 +32,8 @@
                 </div>
             </fieldset>
         </form>
+
+        <a href="/Admin">Admin Page</a>
     }
     else
     {
@@ -47,8 +49,5 @@
 {
     <script>
         alert('@message');
-        window.location.href = "/Admin";
     </script>
 }
-
-<!-- add an if statement to add a link to the admin page to look at accounts, drop and alter the table -->

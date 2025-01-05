@@ -58,3 +58,12 @@
     }
 </script>
 <button onclick="GeneratePass()">Generate Pass</button>
+
+@if (TempData["Result"] != null && TempData["Result"].ToString().Contains("Account Registered. Logged into "))
+{
+    <script>
+        setTimeout(function () {
+            window.location.href = '@Url.Page("Index")';
+        }, 0);
+    </script>
+}

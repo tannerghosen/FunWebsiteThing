@@ -1,4 +1,5 @@
-﻿<!doctype html>
+﻿@inject SessionManager s;
+<!doctype html>
 <html lang="en-US">
 <head>
     <meta name="author" content="Tanner Ghosen">
@@ -20,15 +21,19 @@
                 Links
             </a>
             <div id="links">
-                <a asp-area="" asp-page="/Index">Home</a>
-                <a asp-area="" asp-page="/Sandbox">Sandbox</a>
-                <a asp-area="" asp-page="/Login">Login</a>
-                <a asp-area="" asp-page="/Register">Register</a>
-                <a asp-area="" asp-page="/Comments">Comments</a>
+                <a asp-page="/Index">Home</a>
+                <a asp-page="/Comments">Comments</a>
                 <a href="https://github.com/tannerghosen">GitHub</a>
                 <a href="javascript:;" id="lightswitch"><span id="lightbulb">💡</span> Toggle Light/Dark Mode</a>
                 @{
-                    if (this.ViewContext.HttpContext.Session.GetInt32("IsLoggedIn") == 1)
+                    if (!s.IsUserLoggedIn())
+                    {
+                        <a style="float: right;" asp-page="/Login">Login</a>
+                        <a style="float: right;" asp-page="/Register">Register</a>
+                    }
+                }
+                @{
+                    if (s.IsUserLoggedIn())
                     {
                         <a style="float: right;" asp-page="/Settings">Settings</a> <a style="float: right;" asp-page="/Logout">Logout</a> <b style="float: right;">Hello, @this.ViewContext.HttpContext.Session.GetString("Username")!</b>
                     }

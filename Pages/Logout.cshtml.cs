@@ -5,9 +5,9 @@ namespace FunWebsiteThing.Pages
 {
     public class LogoutModel : PageModel
     {
-        private SessionController _s;
+        private SessionManager _s;
 
-        public LogoutModel(SessionController s)
+        public LogoutModel(SessionManager s)
         {
             _s = s;
         }
@@ -16,10 +16,10 @@ namespace FunWebsiteThing.Pages
         }
         public void OnPost()
         {
-            Console.WriteLine("Logging out this user: " + HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
+            Logger.Write("Logging out this user: " + HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"), "LOGOUT");
             _s.Logout();
 
-            Response.Redirect("/Logout");
+            Response.Redirect("/Index");
         }
     }
 }

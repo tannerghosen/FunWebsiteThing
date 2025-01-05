@@ -22,9 +22,9 @@ namespace FunWebsiteThing.Pages
         private SQLStuff _sq = new SQLStuff();
 
         private readonly ILogger<IndexModel> _logger;
-        private SessionController _s;
+        private SessionManager _s;
 
-        public RegisterModel(ILogger<IndexModel> logger, SessionController s, SQLStuff sq)
+        public RegisterModel(ILogger<IndexModel> logger, SessionManager s, SQLStuff sq)
         {
             _logger = logger;
             _s = s;
@@ -35,7 +35,7 @@ namespace FunWebsiteThing.Pages
         {
 
         }
-        public void OnPost()
+        public async void OnPost()
         {
             int sid = _s.SID();
             if (string.IsNullOrEmpty(Email)) // if email doesn't match regex / is empty
@@ -58,7 +58,7 @@ namespace FunWebsiteThing.Pages
             {
                 if (HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
                 {
-                    (bool result, bool error) = _sq.Register(Email, Username, Password, sid); // Registers our account, hopefully
+                    (bool result, bool error) = await _sq.Register(Email, Username, Password, sid); // Registers our account, hopefully
                     if (result == true)
                     {
                         /* To do, add verification? */

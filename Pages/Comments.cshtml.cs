@@ -20,20 +20,20 @@ namespace FunWebsiteThing.Pages
             CommentSection = Convert.ToInt32(Request.Query["cs"]);
         }
 
-        public void OnPost()
+        public async void OnPost()
         {
             CommentSection = int.TryParse(Request.Form["CS"], out int cs) ? cs : 0;
             string username = HttpContext.Session.GetString("Username") ?? "Anonymous";
-            _s.AddComment(Comment, username, CommentSection);
+            await _s.AddComment(Comment, username, CommentSection);
         }
 
-        public IActionResult OnPostDelete(int? commentid)
+        public async Task<IActionResult> OnPostDelete(int? commentid)
         {
             CommentSection = int.TryParse(Request.Form["CS"], out int cs) ? cs : 0;
             Logger.Write("CommentSection is " + CommentSection + ", TryParse is " + cs);
             if (HttpContext.Session.GetInt32("IsAdmin") == 1)
             {
-                _s.DeleteComment(commentid);
+                await _s.DeleteComment(commentid);
             }
 
             return RedirectToPage("/Comments", new { cs = CommentSection });

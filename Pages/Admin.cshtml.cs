@@ -7,7 +7,7 @@ namespace FunWebsiteThing.Pages
     {
 
         private SQLStuff _sq;
-        private SessionController _s;
+        private SessionManager _s;
 
         private readonly ILogger<IndexModel> _logger;
 
@@ -20,20 +20,20 @@ namespace FunWebsiteThing.Pages
         {
         }
 
-        public IActionResult OnPostDelete(int? userid)
+        public async Task<IActionResult> OnPostDelete(int? userid)
         {
             if (HttpContext.Session.GetInt32("IsAdmin") == 1)
             {
-                _sq.DeleteUser(userid);
+                await _sq.DeleteUser(userid);
             }
 
             return RedirectToPage();
         }
-        public IActionResult OnPostAdmin(int? userid)
+        public async Task<IActionResult> OnPostAdmin(int? userid)
         {
             if (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0)
             {
-                _sq.AdminUser(userid);
+                await _sq.AdminUser(userid);
             }
 
             return RedirectToPage();

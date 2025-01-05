@@ -6,7 +6,7 @@
 
 namespace FunWebsiteThing
 {
-    // This class is for anything involving SQLite in this project, which includes so far: login/registration, account settings and comments.
+    // This class is for anything involving SQL in this project
     public class SQLStuff
     {
         // Connects to our database
@@ -19,6 +19,7 @@ namespace FunWebsiteThing
         // Creates database file and accounts table if the file doesn't exist
         public void Init()
         {
+            // Make database in case it doesn't exist
             if (!File.Exists("database.db"))
             {
                 using (var con = new SqliteConnection($"Data Source=database.db"))
@@ -27,19 +28,41 @@ namespace FunWebsiteThing
                     con.Close();
                 }
             }
+
             using (var con = Connect())
             {
                 con.Open();
-                string command = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, sessionid INTEGER, sessiontoken TEXT, isadmin BOOLEAN DEFAULT 0)";
+                
+                // Accounts Table
+                string command = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, sessionid INTEGER, sessiontoken TEXT, isadmin BOOLEAN DEFAULT 0, FOREIGN KEY (id) REFERENCES comments(userid))";
                 using (var cmd = new SqliteCommand(command, con))
                 {
                     cmd.ExecuteNonQuery();
                 }
-                string com = "CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, commentsid INTEGER NOT NULL, userid INTEGER NOT NULL, comment NVARCHAR(255), date DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (userid) REFERENCES accounts(id))";
+                
+                // Security Questions Table
+                string securityquestions = "CREATE TABLE IF NOT EXISTS securityquestions (id INTEGER PRIMARY KEY, question TEXT NOT NULL, answer TEXT NOT NULL, FOREIGN KEY (id) REFERENCES accounts(id))";
+                using (var cmd = new SqliteCommand(securityquestions, con))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+
+                // Comments Table
+                string com = "CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, commentsid INTEGER NOT NULL, userid INTEGER NOT NULL, comment NVARCHAR(255), date DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (commentsid) REFERENCES blog(id))";
                 using (var cmd = new SqliteCommand(com, con))
                 {
                     cmd.ExecuteNonQuery();
                 }
+
+                // Blog Table
+                string blog = "CREATE TABLE IF NOT EXISTS blog (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, message TEXT NOT NULL, date DATETIME DEFAULT CURRENT_TIMESTAMP";
+                using (var cmd = new SqliteCommand(blog, con))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+
+
+                // Admin Account
                 string isadminalive = "SELECT COUNT(*) FROM accounts WHERE id = 0";
                 using (var c = new SqliteCommand(isadminalive, con))
                 {
@@ -55,6 +78,8 @@ namespace FunWebsiteThing
                         }
                     }
                 }
+
+                // Anonymous Account
                 string youcallanonymously = "SELECT COUNT(*) FROM accounts WHERE id = -1";
                 using (var c = new SqliteCommand(youcallanonymously, con))
                 {
@@ -70,6 +95,7 @@ namespace FunWebsiteThing
                         }
                     }
                 }
+
                 /*string commenttrigger = "DROP TRIGGER IF EXISTS commentdate;CREATE TRIGGER commentdate BEFORE INSERT ON comments FOR EACH ROW BEGIN UPDATE comments SET date = DATETIME('now', 'utc', '-8 hours') WHERE commentsid = NEW.commentsid; END;";
                 using (var c = new SqliteCommand(commenttrigger, con))
                 {
@@ -82,7 +108,7 @@ namespace FunWebsiteThing
         // Registers an account by first running a SQL statement to see if it the account exists. If it does, don't do anything.
         // If it doesn't, run another SQL statement that inserts it into the table, alongside generating a salt to hash our password.
         // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
-        public (bool, bool) Register(string email, string username, string password, int sessionid = 0, string stoken = "")
+        public async Task<(bool, bool)> Register(string email, string username, string password, int sessionid = 0, string stoken = "")
         {
             try
             {
@@ -94,7 +120,7 @@ namespace FunWebsiteThing
                     {
                         cmd.Parameters.AddWithValue("@username", username);
                         cmd.Parameters.AddWithValue("@email", email);
-                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+                        int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
                         if (count > 0)
                         {
                             return (false, false);
@@ -109,7 +135,7 @@ namespace FunWebsiteThing
                         cmd.Parameters.AddWithValue("@username", username);
                         cmd.Parameters.AddWithValue("@password", hashpass);
                         cmd.Parameters.AddWithValue("@sid", sessionid);
-                        cmd.ExecuteNonQuery();
+                        await cmd.ExecuteNonQueryAsync();
                         return (true, false);
                     }
                 }
@@ -125,7 +151,7 @@ namespace FunWebsiteThing
         // If it is, then we run another SQL statement that compares the hashed password with the password given using BCrypt.Verify
         // If it matches, we return true so Login.cshtml.cs can handle setting the session up. If not, we return false.
         // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
-        public (bool, bool) Login(string username, string password, int sessionid = 0, string stoken = "")
+        public async Task <(bool, bool)> Login(string username, string password, int sessionid = 0, string stoken = "")
         {
             try
             {
@@ -136,7 +162,7 @@ namespace FunWebsiteThing
                     using (var cmd = new SqliteCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@username", username);
-                        int count = Convert.ToInt32(cmd.ExecuteScalar());
+                        int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
                         if (count == 0)
                         {
                             return (false, false);
@@ -146,8 +172,9 @@ namespace FunWebsiteThing
                     using (var cmd = new SqliteCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@username", username);
-                        string hash = cmd.ExecuteScalar().ToString();
-                        if (!BCrypt.Net.BCrypt.Verify(password, hash)) // invalid password
+                        var res = await cmd.ExecuteScalarAsync();
+                        string hashedpassword = res.ToString();
+                        if (!BCrypt.Net.BCrypt.Verify(password, hashedpassword)) // invalid password
                         {
                             return (false, false);
                         }
@@ -157,8 +184,8 @@ namespace FunWebsiteThing
                             using (var c = new SqliteCommand(query, con))
                             {
                                 c.Parameters.AddWithValue("@username", username);
-                                var result = c.ExecuteScalar();
-                                int id = (result != null && result != DBNull.Value) ? Convert.ToInt32(result) : -1; // Default the id to 0 if it's null or DBNull
+                                var result = await c.ExecuteScalarAsync();
+                                int id = (result != null && result != DBNull.Value) ? Convert.ToInt32(result) : -1; // Default the id to -1 if it's null or DBNull
                                 if (sessionid != id || id == -1)
                                 {
                                     query = "UPDATE accounts SET sessionid = @sid WHERE username = @username";
@@ -166,7 +193,7 @@ namespace FunWebsiteThing
                                     {
                                         cm.Parameters.AddWithValue("@sid", sessionid);
                                         cm.Parameters.AddWithValue("@username", username);
-                                        cm.ExecuteNonQuery();
+                                        await cm.ExecuteNonQueryAsync();
                                     }
                                     return (true, false);
                                 }
@@ -187,7 +214,7 @@ namespace FunWebsiteThing
         }
 
         // Adds a comment to a specified comment section
-        public void AddComment(string comment, string username = "Anonymous", int commentsection = 0)
+        public async Task AddComment(string comment, string username = "Anonymous", int commentsection = 0)
         {
             int userid, anonymousid = -1;
             if (comment == null)
@@ -213,7 +240,7 @@ namespace FunWebsiteThing
                         cmd.Parameters.AddWithValue("@userid", userid);
                         cmd.Parameters.AddWithValue("@comment", comment);
                         cmd.Parameters.AddWithValue("@commentsection", commentsection);
-                        cmd.ExecuteNonQuery();
+                        await cmd.ExecuteNonQueryAsync();
                     }
                     Logger.Write("Comment added by " + username + " to comment section id " + commentsection);
                 }
@@ -265,7 +292,7 @@ namespace FunWebsiteThing
             }
         }
 
-        public void DeleteComment(int? commentid)
+        public async Task DeleteComment(int? commentid)
         {
             try
             {
@@ -276,7 +303,7 @@ namespace FunWebsiteThing
                     using (var cmd = new SqliteCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@id", commentid);
-                        cmd.ExecuteNonQuery();
+                        await cmd.ExecuteNonQueryAsync();
                     }
                 }
                 Logger.Write("Deleted comment with id " + commentid);
@@ -373,6 +400,29 @@ namespace FunWebsiteThing
             }
         }
 
+        // Get Username by UserID
+        public string? GetUsername(int userid)
+        {
+            try
+            {
+                using (var con = Connect())
+                {
+                    con.Open();
+                    string query = "SELECT username FROM accounts WHERE id = @userid";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@userid", userid);
+                        return cmd.ExecuteScalar()?.ToString();
+                    }
+                }
+            }
+            catch (SqliteException e)
+            {
+                Logger.Write("SQLStuff: An error occured in GetUserID: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                return null;
+            }
+        }
+
         // Does Session ID Match
         public bool DoesSIDMatch(int? userid, int? sid)
         {
@@ -447,7 +497,7 @@ namespace FunWebsiteThing
 
         // Updates various settings of a specified user (by username)'s account.
         // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
-        public (bool, bool) UpdateInfo(int? userid, int option, string input, int? sessionid = 0, bool adminupdate = false)
+        public async Task<(bool, bool)> UpdateInfo(int? userid, int option, string input, int? sessionid = 0, bool adminupdate = false)
         {
             if ((DoesSIDMatch(userid, sessionid) || adminupdate == true) && (userid != -1 && userid != 0))
             {
@@ -465,7 +515,7 @@ namespace FunWebsiteThing
                                     string pass = BCrypt.Net.BCrypt.HashPassword(input);
                                     c.Parameters.AddWithValue("@id", userid);
                                     c.Parameters.AddWithValue("@password", pass);
-                                    c.ExecuteNonQuery();
+                                    await c.ExecuteNonQueryAsync();
                                 }
                                 return (true, false);
                             case 1: // email
@@ -476,7 +526,7 @@ namespace FunWebsiteThing
                                     c.Parameters.AddWithValue("@email", input);
                                     try
                                     {
-                                        c.ExecuteNonQuery();
+                                        await c.ExecuteNonQueryAsync();
                                     }
                                     catch
                                     {
@@ -492,7 +542,7 @@ namespace FunWebsiteThing
                                     c.Parameters.AddWithValue("@newusername", input);
                                     try
                                     {
-                                        c.ExecuteNonQuery();
+                                       await c.ExecuteNonQueryAsync();
                                     }
                                     catch
                                     {
@@ -530,20 +580,20 @@ namespace FunWebsiteThing
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
-                            List<string[]> rows = new List<string[]>();
+                            List<string[]> rows = new List<string[]>(); // create a List of string arrays called rows
                             while (reader.Read())
                             {
-                                string[] row = new string[7];
+                                string[] row = new string[7]; // create a string array called row where all 7 columns are stored in
                                 row[0] = reader.GetInt32(0).ToString(); // id
                                 row[1] = reader.GetString(1); // email
                                 row[2] = reader.GetString(2); // username
                                 row[3] = reader.GetString(3); // password
                                 row[4] = reader.IsDBNull(4) ? "" : reader.GetInt32(4).ToString(); // sessionid
                                 row[5] = reader.IsDBNull(5) ? "" : reader.GetString(5); // sessiontoken
-                                row[6] = reader.IsDBNull(6) ? null : reader.GetBoolean(6).ToString();
-                                rows.Add(row);
+                                row[6] = reader.IsDBNull(6) ? null : reader.GetBoolean(6).ToString(); // is admin?
+                                rows.Add(row); // add row to the rows List
                             }
-                            return rows.ToArray();
+                            return rows.ToArray(); // convert the List to an array and return it
                         }
                     }
                 }
@@ -571,9 +621,9 @@ namespace FunWebsiteThing
                         {
                             cmd.Parameters.AddWithValue("@userid", userid);
                             var result = cmd.ExecuteScalar();
-                            if (result != null && result != DBNull.Value)
+                            if (result != null && result != DBNull.Value) // if result isn't null or result isn't dbnull 
                             {
-                                // Assuming isadmin is stored as a boolean (which might internally be 0 or 1)
+                                // isadmin is stored as a boolean (which defaults to 0 (false) or 1 (true) regardless of how inserted or stored)
                                 return Convert.ToInt32(result) == 1;
                             }
                         }
@@ -589,7 +639,7 @@ namespace FunWebsiteThing
         }
 
         // Deletes a user from the accounts table
-        public void DeleteUser(int? userid)
+        public async Task DeleteUser(int? userid)
         {
             bool usercheck = DoesUserExist(userid);
             if (usercheck && (userid != -1 && userid != 0))
@@ -603,7 +653,7 @@ namespace FunWebsiteThing
                         using (var cmd = new SqliteCommand(query, con))
                         {
                             cmd.Parameters.AddWithValue("@userid", userid);
-                            cmd.ExecuteNonQuery();
+                            await cmd.ExecuteNonQueryAsync();
                         }
                     }
                 }
@@ -615,7 +665,7 @@ namespace FunWebsiteThing
         }
 
         // Makes user an admin
-        public void AdminUser(int? userid)
+        public async Task AdminUser(int? userid)
         {
             bool usercheck = DoesUserExist(userid);
             if (usercheck && (userid != -1 && userid != 0))
@@ -630,7 +680,7 @@ namespace FunWebsiteThing
                         {
                             cmd.Parameters.AddWithValue("@userid", userid);
                             cmd.Parameters.AddWithValue("@isadmin", IsAdmin(userid) ? 0 : 1);
-                            cmd.ExecuteNonQuery();
+                            await cmd.ExecuteNonQueryAsync();
                         }
                     }
                 }
@@ -639,6 +689,18 @@ namespace FunWebsiteThing
                     Logger.Write("SQLStuff: An error occured in AdminUser: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                 }
             }
+        }
+
+        public async Task AddBlogPost(string title, string body)
+        {
+        }
+
+        public async Task UpdateBlogPost(string title, string body, int? blogid)
+        {
+        }
+
+        public async Task DeleteBlogPost(int? blogid)
+        {
         }
     }
 }
