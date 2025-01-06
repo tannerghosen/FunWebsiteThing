@@ -12,7 +12,7 @@ namespace FunWebsiteThing
         // Connects to our database
         public SqliteConnection Connect()
         {
-            string connect = "Data Source=database.db";
+            string connect = "Data Source=database.db;";
             return new SqliteConnection(connect);
         }
 
@@ -22,7 +22,7 @@ namespace FunWebsiteThing
             // Make database in case it doesn't exist
             if (!File.Exists("database.db"))
             {
-                using (var con = new SqliteConnection($"Data Source=database.db"))
+                using (var con = new SqliteConnection($"Data Source=database.db;"))
                 {
                     con.Open();
                     con.Close();
