@@ -12,7 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.0-preview.7.24405.3" />
+    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="9.0.0" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.11-pre20241216174303" />
   </ItemGroup>
 
   <ItemGroup>

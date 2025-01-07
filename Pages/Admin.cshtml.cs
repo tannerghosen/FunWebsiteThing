@@ -6,15 +6,13 @@ namespace FunWebsiteThing.Pages
     public class AdminModel : PageModel
     {
 
-        private SQLStuff _sq;
         private SessionManager _s;
 
         private readonly ILogger<IndexModel> _logger;
 
-        public AdminModel(ILogger<IndexModel> logger, SQLStuff sq)
+        public AdminModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
-            _sq = sq;
         }
         public void OnGet()
         {
@@ -24,7 +22,7 @@ namespace FunWebsiteThing.Pages
         {
             if (HttpContext.Session.GetInt32("IsAdmin") == 1)
             {
-                await _sq.DeleteUser(userid);
+                await SQLStuff.DeleteUser(userid);
             }
 
             return RedirectToPage();
@@ -33,7 +31,7 @@ namespace FunWebsiteThing.Pages
         {
             if (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0)
             {
-                await _sq.AdminUser(userid);
+                await SQLStuff.AdminUser(userid);
             }
 
             return RedirectToPage();

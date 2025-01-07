@@ -16,7 +16,6 @@ namespace FunWebsiteThing.Pages
         [BindProperty]
         public string Result { get; set; }
 
-        private SQLStuff _s = new SQLStuff();
         public void OnGet()
         {
         }
@@ -29,7 +28,7 @@ namespace FunWebsiteThing.Pages
                 {
                     // for these if-elses with xupdated, the expected outcome is either it updates it or not.
                     // because the error could
-                    (bool passwordupdated, bool error) = await _s.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 0, Password, HttpContext.Session.GetInt32("SessionId"));
+                    (bool passwordupdated, bool error) = await SQLStuff.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 0, Password, HttpContext.Session.GetInt32("SessionId"));
                     if (passwordupdated)
                     {
                         Result += "Password has been changed. Be sure to write it down or save it in your browser!"; // Success
@@ -49,7 +48,7 @@ namespace FunWebsiteThing.Pages
 
                 if (!string.IsNullOrEmpty(Email) && Regex.IsMatch(Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
                 {
-                    (bool emailupdated, bool error) = await _s.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 1, Email, HttpContext.Session.GetInt32("SessionId"));
+                    (bool emailupdated, bool error) = await SQLStuff.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 1, Email, HttpContext.Session.GetInt32("SessionId"));
                     if (emailupdated)
                     {
                         Result += "\\nEmail has been updated to " + Email; // Success
@@ -73,7 +72,7 @@ namespace FunWebsiteThing.Pages
 
                 if (!string.IsNullOrEmpty(Username))
                 {
-                    (bool usernameupdated, bool error) = await _s.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 2, Username, HttpContext.Session.GetInt32("SessionId"));
+                    (bool usernameupdated, bool error) = await SQLStuff.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 2, Username, HttpContext.Session.GetInt32("SessionId"));
                     if (usernameupdated)
                     {
                         HttpContext.Session.SetString("Username", Username);

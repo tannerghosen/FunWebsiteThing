@@ -1,10 +1,9 @@
 ﻿@page
 @using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
 @using System.Text.RegularExpressions;
-@inject SQLStuff s
 @model UpdateModel
 @{
-    ViewData["Title"] = "Updating " + s.GetUsername(Model.Id);
+    ViewData["Title"] = "Updating " + SQLStuff.GetUsername(Model.Id);
 }
 
 @{

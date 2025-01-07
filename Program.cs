@@ -4,7 +4,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<SQLStuff>(); // This allows us to inject SQL operations into our files
 builder.Services.AddSingleton<Misc>(); // This  allows us to use the controller MiscController without an error happening
 builder.Services.AddScoped<SessionManager>();
 builder.Services.AddControllers(); // This adds MiscController to the program
@@ -53,6 +52,6 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 
-SQLStuff _s = new SQLStuff(); // grab a copy of our SQLStuff
-_s.Init(); // Create Database file before we start / add missing tables / important users
+Settings.Init();
+SQLStuff.Init(); // Create Database file before we start / add missing tables / important users
 app.Run();

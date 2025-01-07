@@ -6,7 +6,6 @@
 @{
     ViewData["Title"] = "Admin Page";
 }
-@inject SQLStuff s
 @if (HttpContext.Session.GetInt32("IsAdmin") == 1)
 {
 <h1>@ViewData["Title"]</h1>
@@ -18,7 +17,7 @@
         <!--<tr><td>0</td><td>Dummy</td><td>dummy@gmail.com</td><td>true</td></tr>-->
         <!-- for loop to display sql table -->
             @{
-                string[]?[]? info = s.GrabAccountsTable();
+                string[]?[]? info = SQLStuff.GrabAccountsTable();
                 string[][] newinfo = info.Select(row =>
                 {
                     if (Convert.ToBoolean(row[6]) == true)

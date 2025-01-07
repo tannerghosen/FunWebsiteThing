@@ -10,7 +10,6 @@ namespace FunWebsiteThing.Pages
         [BindProperty]
         public string Comment { get; set; }
 
-        private SQLStuff _s = new SQLStuff();
 
         [BindProperty]
         public int CommentSection { get; set; }
@@ -24,7 +23,7 @@ namespace FunWebsiteThing.Pages
         {
             CommentSection = int.TryParse(Request.Form["CS"], out int cs) ? cs : 0;
             string username = HttpContext.Session.GetString("Username") ?? "Anonymous";
-            await _s.AddComment(Comment, username, CommentSection);
+            await SQLStuff.AddComment(Comment, username, CommentSection);
         }
 
         public async Task<IActionResult> OnPostDelete(int? commentid)
@@ -33,7 +32,7 @@ namespace FunWebsiteThing.Pages
             Logger.Write("CommentSection is " + CommentSection + ", TryParse is " + cs);
             if (HttpContext.Session.GetInt32("IsAdmin") == 1)
             {
-                await _s.DeleteComment(commentid);
+                await SQLStuff.DeleteComment(commentid);
             }
 
             return RedirectToPage("/Comments", new { cs = CommentSection });
