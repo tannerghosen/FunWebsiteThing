@@ -3,7 +3,6 @@
 @using Microsoft.Data.Sqlite;
 @using System.Text.RegularExpressions;
 @using System.Globalization
-@inject SQLStuff s;
 @model CommentsModel
 @{
     ViewData["Title"] = "Comments";
@@ -46,8 +45,7 @@
 <div class="commentsection">
 <table>
         @{
-            s.Init();
-            string[][] array = s.GrabComments(Model.CommentSection);
+            string[][] array = SQLStuff.GrabComments(Model.CommentSection);
             var (usernames, comments, dates, ids) = (array[0], array[1], array[2], array[3]);
             if(usernames.Length == 0 || usernames == null)
             {

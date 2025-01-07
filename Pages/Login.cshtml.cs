@@ -13,16 +13,14 @@ namespace FunWebsiteThing.Pages
         [BindProperty]
         public string Result { get; set; }
 
-        private SQLStuff _sq;
         private SessionManager _s;
 
         private readonly ILogger<IndexModel> _logger;
 
-        public LoginModel(ILogger<IndexModel> logger, SessionManager s, SQLStuff sq)
+        public LoginModel(ILogger<IndexModel> logger, SessionManager s)
         {
             _logger = logger;
             _s = s;
-            _sq = sq;
         }
 
         public void OnGet()
@@ -33,12 +31,12 @@ namespace FunWebsiteThing.Pages
         public async void OnPost()
         {
             int sid = _s.SID();
-            (bool result, bool error) = await _sq.Login(Username, Password, sid);
+            (bool result, bool error) = await SQLStuff.Login(Username, Password, sid);
             if ((!string.IsNullOrEmpty(Username) || !string.IsNullOrEmpty(Password)) && HttpContext.Session.GetInt32("IsLoggedIn") != 1)
             {
                 if (result == true)
                 {
-                    _s.Login(Username, _sq.GetUserID(Username), sid);
+                    _s.Login(Username, SQLStuff.GetUserID(Username), sid);
                     Result = "Login successful. Logged in as: " + Username + ".";
                 }
                 else if (result == false && error != true)

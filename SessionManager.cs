@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 public class SessionManager
 {
     private readonly IHttpContextAccessor _h;
-    private SQLStuff _sq = new SQLStuff();
+    //private SQLStuff _sq = new SQLStuff();
 
     public SessionManager(IHttpContextAccessor h)
     {
@@ -15,11 +15,11 @@ public class SessionManager
     public void Login(string username, int id, int sessionid)
     {
         _h.HttpContext.Session.SetString("Username", username);
-        _h.HttpContext.Session.SetInt32("UserId", _sq.GetUserID(username));
+        _h.HttpContext.Session.SetInt32("UserId", SQLStuff.GetUserID(username));
         _h.HttpContext.Session.SetInt32("SessionId", sessionid);
         _h.HttpContext.Session.SetInt32("IsLoggedIn", 1);
-        _h.HttpContext.Session.SetInt32("IsAdmin", _sq.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")) == true ? 1 : 0);
-        Logger.Write("Username: " + username + " id: " + _sq.GetUserID(username) + " ses id: " + sessionid + " is admin?: " + _sq.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")), "LOGIN");
+        _h.HttpContext.Session.SetInt32("IsAdmin", SQLStuff.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")) == true ? 1 : 0);
+        Logger.Write("Username: " + username + " id: " + SQLStuff.GetUserID(username) + " ses id: " + sessionid + " is admin?: " + SQLStuff.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")), "LOGIN");
 
     }
 
