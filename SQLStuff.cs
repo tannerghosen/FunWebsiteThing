@@ -43,7 +43,7 @@ namespace FunWebsiteThing
                 }
 
                 // Comments Table
-                string comments = "CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, commentsid INTEGER NOT NULL, userid INTEGER NOT NULL UNIQUE, comment NVARCHAR(255), date DATETIME DEFAULT CURRENT_TIMESTAMP, FOREIGN KEY (commentsid) REFERENCES blog(id))";
+                string comments = "CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, commentsid INTEGER NOT NULL, userid INTEGER NOT NULL, comment NVARCHAR(255), date DATETIME DEFAULT CURRENT_TIMESTAMP)";
                 using (var cmd = new SqliteCommand(comments, con))
                 {
                     cmd.ExecuteNonQuery();
@@ -95,6 +95,13 @@ namespace FunWebsiteThing
                             cmd.ExecuteNonQuery();
                         }
                     }
+                }
+
+                // Delete Account Trigger
+                string deleteaccounttrigger = "CREATE TRIGGER IF NOT EXISTS deleteaccounttrigger AFTER DELETE ON accounts FOR EACH ROW BEGIN DELETE FROM securityquestions WHERE id = OLD.id; UPDATE comments SET userid = -1 WHERE userid = OLD.id; END";
+                using (var cmd = new SqliteCommand(deleteaccounttrigger, con))
+                {
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
