@@ -718,6 +718,7 @@ namespace FunWebsiteThing
                     }
                 }
                 ConnectionString = NewConnectionString;
+                Settings.UpdateSettings("ConnectionString", ConnectionString);
 
                 // Log the successful password update
                 Logger.Write("Database password updated successfully.");
