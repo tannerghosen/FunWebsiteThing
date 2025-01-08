@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.Sqlite;
+﻿/* to-do: break this into a bunch of smaller static SQL classes for each functionality / feature */
+using Microsoft.Data.Sqlite;
 /*
  * SQLite Error Codes for Results:
  * https://www.sqlite.org/rescode.html
@@ -694,14 +695,141 @@ namespace FunWebsiteThing
 
         public static async Task AddBlogPost(string title, string body)
         {
+            try
+            {
+                using (var con = Connect())
+                {
+                    con.Open();
+                    string query = "INSERT INTO blog (title, message) VALUES (@title, @body)";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@title", title);
+                        cmd.Parameters.AddWithValue("@body", body);
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+                Logger.Write("Added blog post with title " + title);
+            }
+            catch (SqliteException e)
+            {
+                Logger.Write("SQLStuff: An error occured in AddBlogPost: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+            }
         }
 
         public static async Task UpdateBlogPost(string title, string body, int? blogid)
         {
+            try
+            {
+                using (var con = Connect())
+                {
+                    con.Open();
+                    string query = "UPDATE blog SET title = @title, body = @body WHERE id = @id";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@title", title);
+                        cmd.Parameters.AddWithValue("@body", body);
+                        cmd.Parameters.AddWithValue("@id", blogid);
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+                Logger.Write("Updated blog post " + blogid);
+            }
+            catch (SqliteException e)
+            {
+                Logger.Write("SQLStuff: An error occured in UpdateBlogPost: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+            }
         }
 
         public static async Task DeleteBlogPost(int? blogid)
         {
+            try
+            {
+                using (var con = Connect())
+                {
+                    con.Open();
+                    string query = "DELETE FROM blog WHERE id = @id";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", blogid);
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+                }
+                Logger.Write("Deleted blog post " + blogid);
+            }
+            catch (SqliteException e)
+            {
+                Logger.Write("SQLStuff: An error occured in DeleteBlogPost: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+            }
+        }
+
+        public static async Task<(bool, bool)> RegisterSecurityQuestion(int id, string question, string answer)
+        {
+            try
+            {
+                using (var con = Connect())
+                {
+                    con.Open();
+                    string query = "SELECT COUNT(*) FROM securityquestions WHERE id = @id";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+                        int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+                        if (count > 0)
+                        {
+                            return (false, false);
+                        }
+                    }
+                    query = "INSERT INTO securityquestions (id, question, answer) VALUES (@id, @question, @answer)";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.Parameters.AddWithValue("@question", question);
+                        cmd.Parameters.AddWithValue("@answer", answer);
+                        await cmd.ExecuteNonQueryAsync();
+                        return (true, false);
+                    }
+                }
+            }
+            catch (SqliteException e)
+            {
+                Logger.Write("SQLStuff: An error occured in RegisterSecurityQuestions: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                return (false, true);
+            }
+        }
+
+        public static async Task<(bool, bool)> UpdateSecurityQuestion(int id, string question, string answer)
+        {
+            try
+            {
+                using (var con = Connect())
+                {
+                    con.Open();
+                    string query = "SELECT COUNT(*) FROM securityquestions WHERE id = @id";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+                        int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+                        if (count == 0)
+                        {
+                            return (false, false);
+                        }
+                    }
+                    query = "UPDATE securityquestions SET question = @question, answer = @answer WHERE id = @id";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+                        cmd.Parameters.AddWithValue("@question", question);
+                        cmd.Parameters.AddWithValue("@answer", answer);
+                        await cmd.ExecuteNonQueryAsync();
+                        return (true, false);
+                    }
+                }
+            }
+            catch (SqliteException e)
+            {
+                Logger.Write("SQLStuff: An error occured in UpdateSecurityQuestions: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                return (false, true);
+            }
         }
 
         public static void UpdateDatabasePassword(string password)
