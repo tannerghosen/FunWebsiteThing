@@ -14,9 +14,13 @@ namespace FunWebsiteThing.SQL
         // Creates database file and tables if they don't exist
         public static void Init()
         {
+            string cs = Settings.GetSettings()[0];
+            SetConnectionString(cs);
+            string database = cs.Split(";")[0].Replace("Data Source=", "");
             // Make database in case it doesn't exist
-            if (!File.Exists("database.db"))
+            if (!File.Exists(database))
             {
+                Logger.Write("");
                 using (var con = new SqliteConnection(ConnectionString))
                 {
                     Logger.Write("Creating database.db file with following connection string: " + ConnectionString + " .");
@@ -24,6 +28,9 @@ namespace FunWebsiteThing.SQL
                     con.Close();
                 }
             }
+            Blog.Init();
+            Comments.Init();
+            Accounts.Init();
         }
 
         public static void UpdateDatabasePassword(string password)

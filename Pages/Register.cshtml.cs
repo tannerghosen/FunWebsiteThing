@@ -55,12 +55,12 @@ namespace FunWebsiteThing.Pages
             {
                 if (HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
                 {
-                    (bool result, bool error) = await SQLStuff.Register(Email, Username, Password, sid); // Registers our account, hopefully
+                    (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid); // Registers our account, hopefully
                     if (result == true)
                     {
                         /* To do, add verification? */
                         Result = "Account Registered. Logged into " + Username + ".";
-                        _s.Login(Username, SQLStuff.GetUserID(Username), sid);
+                        _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
                         Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
                     }
                     else if (result == false && error != true)

@@ -31,12 +31,12 @@ namespace FunWebsiteThing.Pages
         public async void OnPost()
         {
             int sid = _s.SID();
-            (bool result, bool error) = await SQLStuff.Login(Username, Password, sid);
+            (bool result, bool error) = await SQL.Accounts.Login(Username, Password, sid);
             if ((!string.IsNullOrEmpty(Username) || !string.IsNullOrEmpty(Password)) && HttpContext.Session.GetInt32("IsLoggedIn") != 1)
             {
                 if (result == true)
                 {
-                    _s.Login(Username, SQLStuff.GetUserID(Username), sid);
+                    _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
                     Result = "Login successful. Logged in as: " + Username + ".";
                 }
                 else if (result == false && error != true)

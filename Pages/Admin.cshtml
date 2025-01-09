@@ -6,7 +6,7 @@
 @{
     ViewData["Title"] = "Admin Page";
 }
-@if (HttpContext.Session.GetInt32("IsAdmin") == 1)
+@if (HttpContext.Session.GetInt32("IsAdmin") == 1 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")))
 {
 <h1>@ViewData["Title"]</h1>
 
@@ -17,7 +17,7 @@
         <!--<tr><td>0</td><td>Dummy</td><td>dummy@gmail.com</td><td>true</td></tr>-->
         <!-- for loop to display sql table -->
             @{
-                string[]?[]? info = SQLStuff.GrabAccountsTable();
+                string[]?[]? info = SQL.Admin.GrabAccountsTable();
                 string[][] newinfo = info.Select(row =>
                 {
                     if (Convert.ToBoolean(row[6]) == true)
@@ -38,7 +38,7 @@
                     <tr><td>@row[0]</td><td>@row[2]</td><td>@row[1]</td><td>@row[4]</td><td>@row[5]</td><td>@row[6]</td>
                     @if (row[0] != "0" && row[0] != "-1") // if the entries are not for userids 0 and -1
                     {
-                        if (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0 || HttpContext.Session.GetInt32("IsAdmin") == 1 && row[6] != "Yes") // if admin and userid = 0 or if admin and they are not updating an admin
+                        if ((HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0 || HttpContext.Session.GetInt32("IsAdmin") == 1 && row[6] != "Yes") && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId"))) // if admin and userid = 0 or if admin and they are not updating an admin
                         {
                             <td>
                             <form method="post" asp-page-handler="Delete">
@@ -48,7 +48,7 @@
                             </td>
                             <td><a href=@updateurl>Update</a></td>
                         }
-                        if (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0) // if admin and userid = 0
+                        if (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId"))) // if admin and userid = 0
                         {
                         <td>
                             <form method="post" asp-page-handler="Admin">
