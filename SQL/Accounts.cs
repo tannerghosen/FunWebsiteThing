@@ -114,6 +114,10 @@ namespace FunWebsiteThing.SQL
         // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
         public static async Task<(bool, bool)> Login(string username, string password, int sessionid = 0, string stoken = "")
         {
+            if (username == "Anonymous") // Let's not allow people to use Anonymous as a username to login
+            {
+                return (false, false);
+            }
             try
             {
                 using (var con = Main.Connect())
@@ -178,7 +182,7 @@ namespace FunWebsiteThing.SQL
         // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
         public static async Task<(bool, bool)> UpdateInfo(int? userid, int option, string input, int? sessionid = 0, bool adminupdate = false)
         {
-            if ((DoesSIDMatch(userid, sessionid) || adminupdate == true) && (userid != -1 && userid != 0))
+            if ((DoesSIDMatch(userid, sessionid) || adminupdate == true) && userid != -1)
             {
                 try
                 {
