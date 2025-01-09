@@ -45,7 +45,7 @@
 <div class="commentsection">
 <table>
         @{
-            string[][] array = SQLStuff.GrabComments(Model.CommentSection);
+            string[][] array = SQL.Comments.GrabComments(Model.CommentSection);
             var (usernames, comments, dates, ids) = (array[0], array[1], array[2], array[3]);
             if(usernames.Length == 0 || usernames == null)
             {
@@ -58,7 +58,7 @@
                     <tr>
                         <td><b>@usernames[i]</b> (@DateTime.ParseExact(dates[i], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).AddHours(-2).ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture))</td>
                         <td>@comments[i]</td>
-                    @if(HttpContext.Session.GetInt32("IsAdmin") == 1)
+                        @if (HttpContext.Session.GetInt32("IsAdmin") == 1 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")))
                     {
                         <td>
                             <form method="post" asp-page-handler="Delete">

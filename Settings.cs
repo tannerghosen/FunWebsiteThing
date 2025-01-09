@@ -16,7 +16,7 @@ namespace FunWebsiteThing
         /// <summary>
         /// Our SQL connection string
         /// </summary>
-        public static string ConnectionString { get; set; }
+        private static string ConnectionString { get; set; }
 
         public static void Init()
         {
@@ -24,6 +24,7 @@ namespace FunWebsiteThing
             {
                 // We initialize it with default settings
                 ConnectionString = "Data Source=database.db;Password=your_password_here";
+
 
                 SaveSettings(); // Save the settings
 
@@ -40,7 +41,7 @@ namespace FunWebsiteThing
 
                 Logger.Write("Loaded settings file.");
             }
-            SQLStuff.SetConnectionString(ConnectionString);
+            //SQLStuff.SetConnectionString(ConnectionString);
         }
         /// <summary>
         /// Updates a specified setting.
@@ -100,6 +101,11 @@ namespace FunWebsiteThing
                 writer.Close();
             }
             Logger.Write("Saved Settings.");
+        }
+
+        public static string[] GetSettings()
+        {
+            return new string[] { ConnectionString };
         }
     }
 }

@@ -1,4 +1,5 @@
 using FunWebsiteThing;
+using FunWebsiteThing.SQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,5 +54,6 @@ app.UseAuthorization();
 app.MapRazorPages();
 
 Settings.Init();
-SQLStuff.Init(); // Create Database file before we start / add missing tables / important users
+FunWebsiteThing.SQL.Main.Init();
+
 app.Run();

@@ -20,18 +20,18 @@ namespace FunWebsiteThing.Pages
 
         public async Task<IActionResult> OnPostDelete(int? userid)
         {
-            if (HttpContext.Session.GetInt32("IsAdmin") == 1)
+            if (HttpContext.Session.GetInt32("IsAdmin") == 1 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")))
             {
-                await SQLStuff.DeleteUser(userid);
+                await SQL.Admin.DeleteUser(userid);
             }
 
             return RedirectToPage();
         }
         public async Task<IActionResult> OnPostAdmin(int? userid)
         {
-            if (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0)
+            if (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")))
             {
-                await SQLStuff.AdminUser(userid);
+                await SQL.Admin.AdminUser(userid);
             }
 
             return RedirectToPage();

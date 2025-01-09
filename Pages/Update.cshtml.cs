@@ -26,14 +26,14 @@ namespace FunWebsiteThing.Pages
         public async void OnPost()
         {
             Id = Convert.ToInt32(Request.Form["Id"]);
-            if (HttpContext.Session.GetInt32("IsAdmin") == 1)
+            if (HttpContext.Session.GetInt32("IsAdmin") == 1 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")))
             {
                 if (!string.IsNullOrEmpty(Password))
                 {
                     // for these if-elses with xupdated, the expected outcome is either it updates it or not.
                     // bool error will always be true if xupdated is false
                                                                       // id  option session id (not applicable) 
-                    (bool passwordupdated, bool error) = await SQLStuff.UpdateInfo(Id, 0, Password, null, true); // isadmin is true
+                    (bool passwordupdated, bool error) = await SQL.Accounts.UpdateInfo(Id, 0, Password, null, true); // isadmin is true
                     if (passwordupdated)
                     {
                         Result += "Password has been changed."; // Success
@@ -53,7 +53,7 @@ namespace FunWebsiteThing.Pages
 
                 if (!string.IsNullOrEmpty(Email) && Regex.IsMatch(Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
                 {
-                    (bool emailupdated, bool error) = await SQLStuff.UpdateInfo(Id, 1, Email, null, true);
+                    (bool emailupdated, bool error) = await SQL.Accounts.UpdateInfo(Id, 1, Email, null, true);
                     if (emailupdated)
                     {
                         Result += "\\nEmail has been updated to " + Email; // Success
@@ -77,7 +77,7 @@ namespace FunWebsiteThing.Pages
 
                 if (!string.IsNullOrEmpty(Username))
                 {
-                    (bool usernameupdated, bool error) = await SQLStuff.UpdateInfo(Id, 2, Username, null, true);
+                    (bool usernameupdated, bool error) = await SQL.Accounts.UpdateInfo(Id, 2, Username, null, true);
                     if (usernameupdated)
                     {
                         Result += "\\nUsername updated to " + Username; // Success
