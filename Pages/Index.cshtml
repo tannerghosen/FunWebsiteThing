@@ -2,10 +2,11 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Home";
-    string PageContent = "Hello Tanner, this is where you learn how to use ASP.NET and Razor Pages!";
-    string Time = "The time is " + DateTime.Now + ".";
+    string PageContent = "Hello World!";
+    string Time = "The time is " + Model.GetTime() + ".";
 }
 
 <h1>@ViewData["Title"]</h1>
 <p style="text-align: center;">@PageContent</p>
 <p>@Time</p>
+<p style="font-size: 150%">@Model.RandomEmoji()</p>
