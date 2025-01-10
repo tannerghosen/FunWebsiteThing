@@ -48,7 +48,7 @@
     {
         $.ajax({
             type: "GET",
-            url: "api/Misc/GeneratePassword", // this is the path to get the GeneratePassword function from MiscController. (think of it like API -> ClassName -> MethodName, however paths don't have to follow this structure.)
+            url: "api/Misc/GeneratePassword", // api/Misc(Controller, the controller is omitted when accessing API paths)/GeneratePassword (the HttpGet in the MiscController)
             success: function (data) 
             {
                 document.getElementById("pass").value = data.password; // get the password from our MiscController

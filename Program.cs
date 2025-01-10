@@ -1,3 +1,4 @@
+#pragma warning disable ASP0014
 using FunWebsiteThing;
 using FunWebsiteThing.SQL;
 
@@ -5,9 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddSingleton<Misc>(); // This  allows us to use the controller MiscController without an error happening
-builder.Services.AddScoped<SessionManager>();
-builder.Services.AddControllers(); // This adds MiscController to the program
+builder.Services.AddScoped<SessionManager>(); // adds sessionmanager as a service
+builder.Services.AddControllers(); // This adds all controllers to the servicecollection
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors(options =>
 {
@@ -41,15 +41,15 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
 app.UseSession();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllerRoute("api", "api/Misc/GeneratePassword"); // Adds the endpoint for GeneratePassword (api/Misc/GeneratePassword)
-    endpoints.MapControllers();
-    // Do note; basically endpoints follow this pattern: api/ClassName/MethodNameIfItIsPartOfTheController
-});
 
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers(); // this adds the endpoints of the controllers to the routes for this app
+});
 
 app.MapRazorPages();
 
