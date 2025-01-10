@@ -1,0 +1,18 @@
+td {
+    border: 2px solid #FFF;
+    padding: 0px 5px 0px 5px;
+}
+
+.lightmode td {
+    border: 2px solid #000;
+}
+
+.commentsection {
+    position: relative;
+}
+
+table {
+    display: block;
+    overflow-y: scroll;
+    max-height: 150px;
+}

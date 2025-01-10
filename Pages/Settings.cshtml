@@ -35,7 +35,7 @@
             function GeneratePass() {
                 $.ajax({
                     type: "GET",
-                    url: "api/Misc/GeneratePassword", // this is the path to get the GeneratePassword function from MiscController. (think of it like API -> ClassName -> MethodName, however paths don't have to follow this structure.)
+                    url: "api/Misc/GeneratePassword", // for clarification, look at Register.cshtml's comment on controller routes
                     success: function (data) {
                         document.getElementById("pass").value = data.password; // get the password from our MiscController
                     }

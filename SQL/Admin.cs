@@ -12,7 +12,7 @@ namespace FunWebsiteThing.SQL
                 using (var con = Main.Connect())
                 {
                     con.Open();
-                    string query = "SELECT * FROM accounts";
+                    string query = "SELECT a.*, s.question, (SELECT COUNT(*) FROM comments WHERE userid = a.id) AS CommentCount FROM accounts a LEFT JOIN securityquestion s ON a.id = s.id";
                     using (var cmd = new SqliteCommand(query, con))
                     {
                         using (var reader = cmd.ExecuteReader())
@@ -20,7 +20,7 @@ namespace FunWebsiteThing.SQL
                             List<string[]> rows = new List<string[]>(); // create a List of string arrays called rows
                             while (reader.Read())
                             {
-                                string[] row = new string[7]; // create a string array called row where all 7 columns are stored in
+                                string[] row = new string[9]; // create a string array called row where all 7 columns are stored in
                                 row[0] = reader.GetInt32(0).ToString(); // id
                                 row[1] = reader.GetString(1); // email
                                 row[2] = reader.GetString(2); // username
@@ -28,6 +28,9 @@ namespace FunWebsiteThing.SQL
                                 row[4] = reader.IsDBNull(4) ? "" : reader.GetInt32(4).ToString(); // sessionid
                                 row[5] = reader.IsDBNull(5) ? "" : reader.GetString(5); // sessiontoken
                                 row[6] = reader.IsDBNull(6) ? null : reader.GetBoolean(6).ToString(); // is admin?
+                                row[7] = reader.IsDBNull(7) ? "No security question set!" : reader.GetString(8); // security question
+                                //row[8] = reader.IsDBNull(8) ? "0" : reader.GetInt32(7).ToString(); // comments count
+                                Logger.Write(row[7]);
                                 rows.Add(row); // add row to the rows List
                             }
                             return rows.ToArray(); // convert the List to an array and return it
