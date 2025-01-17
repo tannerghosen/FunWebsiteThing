@@ -29,8 +29,7 @@ namespace FunWebsiteThing.SQL
                                 row[5] = reader.IsDBNull(5) ? "" : reader.GetString(5); // sessiontoken
                                 row[6] = reader.IsDBNull(6) ? null : reader.GetBoolean(6).ToString(); // is admin?
                                 row[7] = reader.IsDBNull(7) ? "No security question set!" : reader.GetString(8); // security question
-                                //row[8] = reader.IsDBNull(8) ? "0" : reader.GetInt32(7).ToString(); // comments count
-                                Logger.Write(row[7]);
+                                row[8] = reader.IsDBNull(8) ? "0" : reader.GetInt32(8).ToString(); // comments count
                                 rows.Add(row); // add row to the rows List
                             }
                             return rows.ToArray(); // convert the List to an array and return it
