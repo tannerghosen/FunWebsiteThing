@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Reflection;
 using System.Xml.Linq;
-
+#pragma warning disable CS8618
 namespace FunWebsiteThing.Pages
 {
     public class CommentsModel : PageModel

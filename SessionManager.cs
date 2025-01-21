@@ -2,7 +2,7 @@
 using FunWebsiteThing.SQL;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-
+#pragma warning disable CS8602
 public class SessionManager
 {
     private readonly IHttpContextAccessor _h;

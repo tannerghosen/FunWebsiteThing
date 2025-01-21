@@ -58,8 +58,9 @@ namespace FunWebsiteThing.SQL
         }
 
         // Grabs usernames, comments, and dates from database and returns them as arrays
-        public static string[][] GrabComments(int section = 0)
+        public static string[][]? GrabComments(int section = 0)
         {
+            // we grab username for the poster's name, comments for the comment, dates for the date of comment posted, and the comment's id
             List<string> usernames = new List<string>();
             List<string> comments = new List<string>();
             List<string> dates = new List<string>();
@@ -69,7 +70,7 @@ namespace FunWebsiteThing.SQL
                 using (var con = Main.Connect())
                 {
                     con.Open();
-                    // SELECT account username, comments comment, comments data FROM comments JOIN accounts on comments userid = accounts id WHERE commentsid = section ORDER BY comments date DESC
+                    // SELECT account username, comments comment, comments date FROM comments JOIN accounts on comments userid = accounts id WHERE commentsid = section ORDER BY comments date DESC
                     string query = @"SELECT a.username, c.comment, c.date, c.id FROM comments c JOIN accounts a ON a.id = c.userid WHERE c.commentsid = @section ORDER BY c.date DESC";
                     using (var cmd = new SqliteCommand(query, con))
                     {

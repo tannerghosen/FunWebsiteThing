@@ -34,18 +34,19 @@
                 for (int i = 0; i < usernames.Length; i++)
                 {
                     <tr>
+                                                    <!-- parse date to -2 hours of the default (EST), change it to string matching MM/dd/yy h:mm:ss tt -->
                         <td><b>@usernames[i]</b> (@DateTime.ParseExact(dates[i], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).AddHours(-2).ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture))</td>
                         <td>@comments[i]</td>
-                        @if (HttpContext.Session.GetInt32("IsAdmin") == 1 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")))
-                    {
-                        <td>
-                            <form method="post" asp-page-handler="Delete">
-                            <input type="hidden" name="commentid" value="@ids[i]" />
-                            <input type="hidden" name="CS" value="@Model.CommentSection" />
-                            <button type="submit">Delete</button>
-                            </form>
-                        </td>
-                    }
+                        @if (HttpContext.Session.GetInt32("IsAdmin") == 1 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId"))) // if the user is admin in session and is admin in the database
+                        {
+                            <td>
+                                <form method="post" asp-page-handler="Delete">
+                                <input type="hidden" name="commentid" value="@ids[i]" />
+                                <input type="hidden" name="CS" value="@Model.CommentSection" />
+                                <button type="submit">Delete</button>
+                                </form>
+                            </td>
+                        }
                     </tr>
                     //<div>@usernames[i] at @DateTime.ParseExact(dates[i], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)</div> <div>@comments[i]</div>
                 }

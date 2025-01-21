@@ -1,5 +1,7 @@
 ﻿using System.IO;
 using System.Text.Json;
+#pragma warning disable CS8618
+#pragma warning disable CS8601
 
 namespace FunWebsiteThing
 {

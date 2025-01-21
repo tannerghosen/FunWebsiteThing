@@ -90,7 +90,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        public static (string, string) GetBlogPost(int? blogid)
+        public static (string?, string?) GetBlogPost(int? blogid)
         {
             string title = "", body = "";
             try
