@@ -103,7 +103,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occured in Register: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in Register: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return (false, true);
             }
         }
@@ -173,7 +173,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occured in Login: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in Login: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return (false, true);
             }
         }
@@ -250,7 +250,7 @@ namespace FunWebsiteThing.SQL
                 }
                 catch (SqliteException e)
                 {
-                    Logger.Write("SQL.Accounts: An error occured in UpdateInfo: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                    Logger.Write("SQL.Accounts: An error occured in UpdateInfo: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
                     return (false, true); // error happened due to sql issue, so yea let's say an error occured
                 }
             }
@@ -286,7 +286,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occured in DoesUserExist (string username parameter variant): " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in DoesUserExist (string username parameter variant): " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return false;
             }
         }
@@ -317,7 +317,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occured in DoesUserExist (int? userid parameter variant): " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in DoesUserExist (int? userid parameter variant): " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return false;
             }
         }
@@ -341,7 +341,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occured in GetUserID: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in GetUserID: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return -1;
             }
         }
@@ -364,7 +364,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occured in GetUserID: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in GetUserID: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return null;
             }
         }
@@ -398,7 +398,7 @@ namespace FunWebsiteThing.SQL
                 }
                 catch (SqliteException e)
                 {
-                    Logger.Write("SQLStuff: An error occured in DoesSIDMatch: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                    Logger.Write("SQL.Accounts: An error occured in DoesSIDMatch: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
                     return false;
                 }
             }
@@ -434,13 +434,13 @@ namespace FunWebsiteThing.SQL
                 }
                 catch (SqliteException e)
                 {
-                    Logger.Write("SQLStuff: An error occured in DoesSTokenMatch: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                    Logger.Write("SQL.Accounts: An error occured in DoesSTokenMatch: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
                     return false;
                 }
             }
             return false;
         }
-        public static (string, string) GetSecurityQuestion(int? userid)
+        public static (string?, string?) GetSecurityQuestion(int? userid)
         {
             try
             {
@@ -521,7 +521,7 @@ namespace FunWebsiteThing.SQL
                             return (false, false);
                         }
                     }
-                    (string q, string a) = GetSecurityQuestion(userid);
+                    (string? q, string? a) = GetSecurityQuestion(userid);
                     question = question == null ? q : question;
                     answer = answer == null ? a : answer;
                     string query = "UPDATE securityquestion SET question = @q, answer = @a WHERE id = @id";

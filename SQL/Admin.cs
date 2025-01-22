@@ -41,7 +41,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occurred in GrabAccountsTable: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Admin: An error occurred in GrabAccountsTable: " + e.Message + "\nSQL.Admin: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return null;
             }
         }
@@ -72,7 +72,7 @@ namespace FunWebsiteThing.SQL
                 }
                 catch (SqliteException e)
                 {
-                    Logger.Write("SQLStuff: An error occured in IsAdmin " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                    Logger.Write("SQL.Admin: An error occured in IsAdmin " + e.Message + "\nSQL.Admin: Error Code: " + e.SqliteErrorCode, "ERROR");
                     return false;
                 }
             }
@@ -100,7 +100,7 @@ namespace FunWebsiteThing.SQL
                 }
                 catch (SqliteException e)
                 {
-                    Logger.Write("SQLStuff: An error occured in DeleteUser: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                    Logger.Write("SQL.Admin: An error occured in DeleteUser: " + e.Message + "\nSQL.Admin: Error Code: " + e.SqliteErrorCode, "ERROR");
                 }
             }
         }
@@ -127,7 +127,7 @@ namespace FunWebsiteThing.SQL
                 }
                 catch (SqliteException e)
                 {
-                    Logger.Write("SQLStuff: An error occured in AdminUser: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                    Logger.Write("SQL.Admin: An error occured in AdminUser: " + e.Message + "\nSQL.Admin: Error Code: " + e.SqliteErrorCode, "ERROR");
                 }
             }
         }

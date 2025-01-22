@@ -40,7 +40,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occured in AddBlogPost: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Blog: An error occured in AddBlogPost: " + e.Message + "\nSQL.Blog: Error Code: " + e.SqliteErrorCode, "ERROR");
             }
         }
 
@@ -64,7 +64,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occured in UpdateBlogPost: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Blog: An error occured in UpdateBlogPost: " + e.Message + "\nSQL.Blog: Error Code: " + e.SqliteErrorCode, "ERROR");
             }
         }
 
@@ -86,7 +86,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occured in DeleteBlogPost: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Blog: An error occured in DeleteBlogPost: " + e.Message + "\nSQL.Blog: Error Code: " + e.SqliteErrorCode, "ERROR");
             }
         }
 
@@ -119,7 +119,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occured in GetBlogPost: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Blog: An error occured in GetBlogPost: " + e.Message + "\nSQL.Blog: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return (null, null);
             }
         }

@@ -53,7 +53,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occured in AddComment: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Comments: An error occured in AddComment: " + e.Message + "\nSQL.Comments: Error Code: " + e.SqliteErrorCode, "ERROR");
             }
         }
 
@@ -94,7 +94,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occured in GrabComments: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Comments: An error occured in GrabComments: " + e.Message + "\nSQL.Comments: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return null;
             }
         }
@@ -117,7 +117,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQLStuff: An error occured in DeleteComment: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Comments: An error occured in DeleteComment: " + e.Message + "\nSQL.Comments: Error Code: " + e.SqliteErrorCode, "ERROR");
             }
         }
     }
