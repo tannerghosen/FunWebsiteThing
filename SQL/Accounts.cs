@@ -189,6 +189,16 @@ namespace FunWebsiteThing.SQL
                     using (var con = Main.Connect())
                     {
                         con.Open();
+                        string query = "SELECT COUNT(*) FROM accounts WHERE id = @id";
+                        using (var cmd = new SqliteCommand(query, con))
+                        {
+                            cmd.Parameters.AddWithValue("@id", userid);
+                            int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+                            if (count == 0)
+                            {
+                                return (false, false);
+                            }
+                        }
                         switch (option)
                         {
                             case 0: // password
@@ -240,7 +250,7 @@ namespace FunWebsiteThing.SQL
                 }
                 catch (SqliteException e)
                 {
-                    Logger.Write("SQLStuff: An error occured in UpdateInfo: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
+                    Logger.Write("SQL.Accounts: An error occured in UpdateInfo: " + e.Message + "\nSQLStuff: Error Code: " + e.SqliteErrorCode, "ERROR");
                     return (false, true); // error happened due to sql issue, so yea let's say an error occured
                 }
             }
@@ -410,7 +420,7 @@ namespace FunWebsiteThing.SQL
                         using (var cmd = new SqliteCommand(query, con))
                         {
                             cmd.Parameters.AddWithValue("@userid", userid);
-                            string token = Convert.ToString(cmd.ExecuteScalar());
+                            var token = Convert.ToString(cmd.ExecuteScalar());
                             if (token != stoken)
                             {
                                 return false;
@@ -429,6 +439,107 @@ namespace FunWebsiteThing.SQL
                 }
             }
             return false;
+        }
+        public static (string, string) GetSecurityQuestion(int? userid)
+        {
+            try
+            {
+                using (var con = Main.Connect())
+                {
+                    con.Open();
+                    string query = "SELECT question, answer FROM securityquestion WHERE id = @id";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", userid);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                string question = reader.GetString(0); 
+                                string answer = reader.GetString(1);
+                                return (question, answer);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (SqliteException e)
+            {
+                Logger.Write("SQL.Accounts: An error occured in SecurityQuestion: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                return (null, null);
+            }
+            return (null, null);
+        }
+        public static async Task<(bool, bool)> CreateSecurityQuestion(int? userid, string? question, string? answer)
+        {
+            try
+            {
+                using (var con = Main.Connect())
+                {
+                    con.Open();
+                    string prequery = "SELECT COUNT(*) FROM securityquestion WHERE id = @id";
+                    using (var cmd = new SqliteCommand(prequery, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", userid);
+                        int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+                        if (count > 0)
+                        {
+                            return (false, false);
+                        }
+                    }
+                    string query = "INSERT INTO securityquestion (id, question, answer) VALUES (@id, @q, @a)";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", userid);
+                        cmd.Parameters.AddWithValue("@q", question);
+                        cmd.Parameters.AddWithValue("@a", answer);
+                        await cmd.ExecuteNonQueryAsync();
+                        return (true, false);
+                    }
+                }
+            }
+            catch (SqliteException e)
+            {
+                Logger.Write("SQL.Accounts: An error occured in CreateSecurityQuestion: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                return (false, true);
+            }
+        }
+        public static async Task<(bool, bool)> UpdateSecurityQuestion(int? userid, string? question = null, string? answer = null)
+        {
+            try
+            {
+                using (var con = Main.Connect())
+                {
+                    con.Open();
+                    string prequery = "SELECT COUNT(*) FROM securityquestion WHERE id = @id";
+                    using (var cmd = new SqliteCommand(prequery, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", userid);
+                        int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
+                        if (count == 0)
+                        {
+                            return (false, false);
+                        }
+                    }
+                    (string q, string a) = GetSecurityQuestion(userid);
+                    question = question == null ? q : question;
+                    answer = answer == null ? a : answer;
+                    string query = "UPDATE securityquestion SET question = @q, answer = @a WHERE id = @id";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", userid);
+                        cmd.Parameters.AddWithValue("@q", question);
+                        cmd.Parameters.AddWithValue("@a", answer);
+                        await cmd.ExecuteNonQueryAsync();
+                        return (true, false);
+                    }
+                }
+            }
+            catch (SqliteException e)
+            {
+                Logger.Write("SQL.Accounts: An error occured in CreateSecurityQuestion: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                return (false, true);
+            }
         }
     }
 }

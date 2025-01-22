@@ -13,7 +13,10 @@ namespace FunWebsiteThing.Pages
         public string Username { get; set; }
         [BindProperty]
         public string Password { get; set; }
-
+        [BindProperty]
+        public string SecurityQuestion { get; set; }
+        [BindProperty]
+        public string Answer { get; set; }
         [BindProperty]
         public bool Checkbox { get; set; }
 
@@ -33,8 +36,9 @@ namespace FunWebsiteThing.Pages
         {
 
         }
-        public async void OnPost()
+        public async Task OnPost()
         {
+            Logger.Write("Email " + Email + " Username " + Username + " Question " + SecurityQuestion + " Answer " + Answer);
             int sid = _s.SID();
             if (string.IsNullOrEmpty(Email)) // if email doesn't match regex / is empty
             {
@@ -46,11 +50,19 @@ namespace FunWebsiteThing.Pages
             }
             else if (string.IsNullOrEmpty(Username)) // if username is empty
             {
-                Result = "Username is blank";
+                Result += "\nUsername is blank";
             }
             else if (string.IsNullOrEmpty(Password)) // if password is empty
             {
-                Result = "Password is blank";
+                Result += "\nPassword is blank";
+            }
+            else if (string.IsNullOrEmpty(SecurityQuestion)) // if security question / answer is empty
+            {
+                Result += "\nThe security question or the answer to it cannot be blank!";
+            }
+            else if (string.IsNullOrEmpty(Answer))
+            {
+                Result += "\nThe security question or the answer to it cannot be blank!";
             }
             else if (Checkbox)
             {
@@ -63,6 +75,7 @@ namespace FunWebsiteThing.Pages
                         Result = "Account Registered. Logged into " + Username + ".";
                         _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
                         Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
+                        await SQL.Accounts.CreateSecurityQuestion(SQL.Accounts.GetUserID(Username), SecurityQuestion, Answer);
                     }
                     else if (result == false && error != true)
                     {
