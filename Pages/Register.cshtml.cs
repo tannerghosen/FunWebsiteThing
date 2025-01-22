@@ -50,19 +50,19 @@ namespace FunWebsiteThing.Pages
             }
             else if (string.IsNullOrEmpty(Username)) // if username is empty
             {
-                Result += "\nUsername is blank";
+                Result += "Username is blank";
             }
             else if (string.IsNullOrEmpty(Password)) // if password is empty
             {
-                Result += "\nPassword is blank";
+                Result += "Password is blank";
             }
             else if (string.IsNullOrEmpty(SecurityQuestion)) // if security question / answer is empty
             {
-                Result += "\nThe security question or the answer to it cannot be blank!";
+                Result += "The security question or the answer to it cannot be blank!";
             }
             else if (string.IsNullOrEmpty(Answer))
             {
-                Result += "\nThe security question or the answer to it cannot be blank!";
+                Result += "The security question or the answer to it cannot be blank!";
             }
             else if (Checkbox)
             {
@@ -71,7 +71,6 @@ namespace FunWebsiteThing.Pages
                     (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid); // Registers our account, hopefully
                     if (result == true)
                     {
-                        /* To do, add verification? */
                         Result = "Account Registered. Logged into " + Username + ".";
                         _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
                         Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
@@ -89,7 +88,7 @@ namespace FunWebsiteThing.Pages
             }
             else
             {
-                Result = "You did not verify your stuff.";
+                Result = "You did not click the verification checkbox.";
             }
             TempData["Result"] = Result;
             Console.WriteLine(TempData["Result"]);
