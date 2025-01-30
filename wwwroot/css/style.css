@@ -337,20 +337,24 @@ thead
 {
     font-weight: 800;
 }
-td {
+td 
+{
     border: 2px solid #FFF;
     padding: 0px 5px 0px 5px;
 }
 
-.lightmode td {
+.lightmode td 
+{
     border: 2px solid #000;
 }
 
-.commentsection {
-    position: relative;
+.commentsection 
+{
+    margin: 0 auto;
 }
 
-table {
+table 
+{
     display: block;
     overflow-y: scroll;
     max-height: 150px;
@@ -360,8 +364,16 @@ table {
 {
     position: relative;
 }
-.adminstuff table {
+.adminstuff table 
+{
     display: block;
     overflow-y: scroll;
     max-height: 350px;
+}
+
+.message 
+{
+    width: 300px;
+    text-align: center;
+    margin: 0 auto;
 }

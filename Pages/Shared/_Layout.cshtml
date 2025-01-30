@@ -22,7 +22,7 @@
             </a>
             <div id="links">
                 <a asp-page="/Index">Home</a>
-                <a asp-page="/Comments">Comments</a>
+                <a asp-page="/Blog" asp-route-post="@SQL.Blog.GetBlogPostCount()">Blog</a>
                 <a href="https://github.com/tannerghosen">GitHub</a>
                 <a href="javascript:;" id="lightswitch"><span id="lightbulb">💡</span> Toggle Light/Dark Mode</a>
                 @{

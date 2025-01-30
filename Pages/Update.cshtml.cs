@@ -33,7 +33,7 @@ namespace FunWebsiteThing.Pages
                 {
                     // for these if-elses with xupdated, the expected outcome is either it updates it or not.
                     // bool error will always be true if xupdated is false
-                                                                      // id  option session id (not applicable) 
+                                                                                   // id option value sid (n/a) isadmin
                     (bool passwordupdated, bool error) = await SQL.Accounts.UpdateInfo(Id, 0, Password, null, true); // isadmin is true
                     if (passwordupdated)
                     {

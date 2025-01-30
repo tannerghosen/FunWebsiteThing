@@ -21,18 +21,18 @@ namespace FunWebsiteThing.SQL
                 con.Close();
             }
         }
-        public static async Task AddBlogPost(string title, string body)
+        public static async Task AddBlogPost(string title, string message)
         {
             try
             {
                 using (var con = Main.Connect())
                 {
                     con.Open();
-                    string query = "INSERT INTO blog (title, message) VALUES (@title, @body)";
+                    string query = "INSERT INTO blog (title, message) VALUES (@title, @message)";
                     using (var cmd = new SqliteCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@title", title);
-                        cmd.Parameters.AddWithValue("@body", body);
+                        cmd.Parameters.AddWithValue("@message", message);
                         await cmd.ExecuteNonQueryAsync();
                     }
                 }
@@ -44,18 +44,18 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        public static async Task UpdateBlogPost(string title, string body, int? blogid)
+        public static async Task UpdateBlogPost(string title, string message, int? blogid)
         {
             try
             {
                 using (var con = Main.Connect())
                 {
                     con.Open();
-                    string query = "UPDATE blog SET title = @title, body = @body WHERE id = @id";
+                    string query = "UPDATE blog SET title = @title, message = @message WHERE id = @id";
                     using (var cmd = new SqliteCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@title", title);
-                        cmd.Parameters.AddWithValue("@body", body);
+                        cmd.Parameters.AddWithValue("@message", message);
                         cmd.Parameters.AddWithValue("@id", blogid);
                         await cmd.ExecuteNonQueryAsync();
                     }
@@ -92,13 +92,13 @@ namespace FunWebsiteThing.SQL
 
         public static (string?, string?) GetBlogPost(int? blogid)
         {
-            string title = "", body = "";
+            string title = "", message = "";
             try
             {
                 using (var con = Main.Connect())
                 {
                     con.Open();
-                    string query = "SELECT (title, body) FROM blog WHERE id = @id";
+                    string query = "SELECT title, message FROM blog WHERE id = @id";
                     using (var cmd = new SqliteCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@id", blogid);
@@ -109,11 +109,11 @@ namespace FunWebsiteThing.SQL
                                 while (reader.Read())
                                 {
                                     title = reader.GetString(0);
-                                    body = reader.GetString(1);
+                                    message = reader.GetString(1);
                                 }
                             }
                         }
-                        return (title, body);
+                        return (title, message);
                     }
                 }
             }
@@ -121,6 +121,38 @@ namespace FunWebsiteThing.SQL
             {
                 Logger.Write("SQL.Blog: An error occured in GetBlogPost: " + e.Message + "\nSQL.Blog: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return (null, null);
+            }
+        }
+
+        public static int GetBlogPostCount()
+        {
+            int count = 0;
+            try
+            {
+                using (var con = Main.Connect())
+                {
+                    con.Open();
+                    string query = "SELECT COUNT(*) FROM blog";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader != null)
+                            {
+                                while (reader.Read())
+                                {
+                                    count = reader.GetInt32(0);
+                                }
+                            }
+                        }
+                    }
+                }
+                return count;
+            }
+            catch (SqliteException e)
+            {
+                Logger.Write("SQL.Blog: An error occured in GetBlogPostCount: " + e.Message + "\nSQL.Blog: Error Code: " + e.SqliteErrorCode, "ERROR");
+                return 0;
             }
         }
     }
