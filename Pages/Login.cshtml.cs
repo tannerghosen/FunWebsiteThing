@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FunWebsiteThing.SQL;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Text.RegularExpressions;
 #pragma warning disable CS8618
 
 namespace FunWebsiteThing.Pages
@@ -32,6 +34,8 @@ namespace FunWebsiteThing.Pages
         public async void OnPost()
         {
             int sid = _s.SID();
+            bool isusernameemail = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+            Username = isusernameemail == true ? SQL.Accounts.GetUsername(Username) : Username;
             (bool result, bool error) = await SQL.Accounts.Login(Username, Password, sid);
             if ((!string.IsNullOrEmpty(Username) || !string.IsNullOrEmpty(Password)) && HttpContext.Session.GetInt32("IsLoggedIn") != 1)
             {

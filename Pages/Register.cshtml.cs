@@ -52,6 +52,10 @@ namespace FunWebsiteThing.Pages
             {
                 Result += "Username is blank";
             }
+            else if (!Regex.IsMatch(Username, @"^(?!\s)(?!.*[\W_]{2,})[a-zA-Z0-9_\s]+$"))
+            {
+                Result += "Invalid Username";
+            }
             else if (string.IsNullOrEmpty(Password)) // if password is empty
             {
                 Result += "Password is blank";

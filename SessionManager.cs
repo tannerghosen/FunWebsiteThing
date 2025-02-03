@@ -5,12 +5,7 @@ using Microsoft.AspNetCore.Http;
 #pragma warning disable CS8602
 public class SessionManager
 {
-    private readonly IHttpContextAccessor _h;
-
-    public SessionManager(IHttpContextAccessor h)
-    {
-        _h = h;
-    }
+    IHttpContextAccessor _h = new HttpContextAccessor();
 
     public void Login(string username, int id, int sessionid)
     {
@@ -45,7 +40,7 @@ public class SessionManager
 
     public bool IsUserLoggedIn()
     {
-        if (_h.HttpContext.Session.GetInt32("IsLoggedIn") == 1)
+        if (_h.HttpContext?.Session.GetInt32("IsLoggedIn") == 1)
         {
             return true;
         }

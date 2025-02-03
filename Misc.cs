@@ -5,14 +5,13 @@ namespace FunWebsiteThing
 {
     public class Misc
     {
-        /* This is the WasspordExtras class partially ripped from Wasspord, pre-changes to how GeneratePassword would store passwords into
+        /* This is the WasspordExtras class partially ripped from Wasspord and very modified, pre-changes to how GeneratePassword would store passwords into
            a file. Therefore, passwords are not saved but kept into memory as long as the server the website's on is running */
         /* Passwords: Generated passwords kept in a HashSet to prevent duplicate passwords from being generated. */
         private static HashSet<string> Passwords = new HashSet<string>();
 
         /* Other Misc Things: characters, regexpattern, regex */
         private static string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*";
-        private static string regexpattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])(?!.*(.)\\1{5,}).{8,32}$";
         /* It checks for:
         1 uppercase letter
         1 lowercase letter
@@ -21,7 +20,8 @@ namespace FunWebsiteThing
         should not repeat characters more than 5 times consecutively
         8-32 characters in width
         */
-        private static Regex regex = new Regex(regexpattern);
+        private static string passregexpattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])(?!.*(.)\\1{5,}).{8,32}$";
+        private static Regex passregex = new Regex(passregexpattern);
 
         public static string GeneratePassword(int attempt = 0)
         {
@@ -34,7 +34,7 @@ namespace FunWebsiteThing
             }
             string GeneratedPass = password.ToString();
             // if Passwords doesn't contain GeneratedPass and it's good according to our regex
-            if (!Passwords.Contains(GeneratedPass) && regex.IsMatch(GeneratedPass))
+            if (!Passwords.Contains(GeneratedPass) && passregex.IsMatch(GeneratedPass))
             {
                 Passwords.Add(GeneratedPass); // add it to the list
                 //Logger.Write("Generated Password Successfully!");

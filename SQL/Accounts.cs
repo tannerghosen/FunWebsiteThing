@@ -369,6 +369,29 @@ namespace FunWebsiteThing.SQL
             }
         }
 
+        //  Get Email by Username
+        public static string? GetUsername(string email)
+        {
+            try
+            {
+                using (var con = Main.Connect())
+                {
+                    con.Open();
+                    string query = "SELECT username FROM accounts WHERE email = @email";
+                    using (var cmd = new SqliteCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@email", email);
+                        return cmd.ExecuteScalar()?.ToString();
+                    }
+                }
+            }
+            catch (SqliteException e)
+            {
+                Logger.Write("SQL.Accounts: An error occured in GetEmail: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                return null;
+            }
+        }
+
         // Does Session ID Match
         public static bool DoesSIDMatch(int? userid, int? sid)
         {
