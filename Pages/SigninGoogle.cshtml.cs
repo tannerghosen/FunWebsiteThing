@@ -16,9 +16,9 @@ namespace FunWebsiteThing.Pages
             _s = s;
             _a = a;
         }
-        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
+        public async Task<IActionResult> OnGetAsync()
         {
-            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme); // Get the result of the Google login, including the claims if possible;
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme); // Get the result of the Google OAuth2 login, including the claims if possible;
             if (result.Succeeded)
             {
                 // Claims are the data that Google sends back to us
@@ -30,20 +30,21 @@ namespace FunWebsiteThing.Pages
 
                 if (!SQL.Accounts.DoesUserExist(username)) 
                 {
-                    string password = Misc.GeneratePassword();
-                    TempData["TempPassword"] = password;
-                    _a.Register(email, username, password, null, null);
+                    string password = Misc.GeneratePassword(); // generate a password
+                    TempData["TempPassword"] = password; // we store this for WelcomeExternal's message
+                    _a.Register(email, username, password, null, null); // register the user!
                 }
                 else
                 {
-                    _s.Login(username, SQL.Accounts.GetUserID(username), _s.SID());
+                    _s.Login(username, SQL.Accounts.GetUserID(username), _s.SID()); // login!
                 }
 
-                // Redirect to return URL or default page
-                return LocalRedirect(returnUrl ?? Url.Page("/WelcomeExternal"));
+                // Redirect to WelcomeExternal (Index immediately if this isn't he user's first time)
+                return RedirectToPage(Url.Page("/WelcomeExternal"));
             }
 
-            // Handle failure
+            Logger.Write("Google login failed!");
+            // Redirect to Login and set Result to login failed.
             return RedirectToPage("/Login", new { Result = "Google login failed." });
         }
     }
