@@ -10,13 +10,13 @@ namespace FunWebsiteThing
         IHttpContextAccessor _h = new HttpContextAccessor();
         public async Task<IActionResult> Login(string Username, string Password)
         {
-            int sid = _s.SID();
-            bool isusernameemail = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
-            Username = isusernameemail == true ? SQL.Accounts.GetUsername(Username) : Username;
-            (bool result, bool error) = await SQL.Accounts.Login(Username, Password, sid);
-
             if ((!string.IsNullOrEmpty(Username) || !string.IsNullOrEmpty(Password)) && _h.HttpContext.Session.GetInt32("IsLoggedIn") != 1)
             {
+                int sid = _s.SID();
+                bool isusernameemail = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+                Username = isusernameemail == true ? SQL.Accounts.GetUsername(Username) : Username;
+                (bool result, bool error) = await SQL.Accounts.Login(Username, Password, sid);
+
                 if (result == true)
                 {
                     _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);

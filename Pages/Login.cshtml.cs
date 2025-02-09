@@ -43,8 +43,6 @@ namespace FunWebsiteThing.Pages
         public async void OnPost()
         {
             int sid = _s.SID();
-            bool isusernameemail = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
-            Username = isusernameemail == true ? SQL.Accounts.GetUsername(Username) : Username;
             IActionResult result = await _a.Login(Username, Password);
             if (result is OkObjectResult)
             {
@@ -68,7 +66,7 @@ namespace FunWebsiteThing.Pages
         // This method initiates our login process with google
         public async Task<IActionResult> OnPostGoogleLoginAsync()
         {
-            var redirect = Url.Page("/SignInGoogle");  // this is our callback page which will handle the login
+            var redirect = Url.Page("/SignInGoogle");  // this is our page which contains our callback method
             var properties = new AuthenticationProperties { RedirectUri = redirect }; // set the properties for the login challenge
             return Challenge(properties, GoogleDefaults.AuthenticationScheme); // create the challenge
         }
