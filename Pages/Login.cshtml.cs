@@ -63,12 +63,13 @@ namespace FunWebsiteThing.Pages
             TempData["Result"] = Result;
         }
 
-        // This method initiates our login process with google
+        // This method initiates the OAuth2 authentication flow with Google
+        // By the time we get to redirect (SignInGoogle), we should have a token that can be validated and its data accessed.
         public async Task<IActionResult> OnPostGoogleLoginAsync()
         {
             var redirect = Url.Page("/SignInGoogle");  // this is our page which contains our callback method
             var properties = new AuthenticationProperties { RedirectUri = redirect }; // set the properties for the login challenge
-            return Challenge(properties, GoogleDefaults.AuthenticationScheme); // create the challenge
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme); // create a challenge the makes the user grant access to their Google account for the OAuth2 flow, along with a redirect after that.
         }
     }
 }
