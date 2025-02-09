@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.RegularExpressions;
+using System.Security.Claims;
 #pragma warning disable CS8618
 
 namespace FunWebsiteThing.Pages
@@ -64,11 +65,12 @@ namespace FunWebsiteThing.Pages
             TempData["Result"] = Result;
         }
 
+        // This method initiates our login process with google
         public async Task<IActionResult> OnPostGoogleLoginAsync()
         {
-            var redirect = Url.Page("https://localhost:7081/login?method=google"); 
-            var properties = new AuthenticationProperties { RedirectUri = redirect };
-            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+            var redirect = Url.Page("/SignInGoogle");  // this is our callback page which will handle the login
+            var properties = new AuthenticationProperties { RedirectUri = redirect }; // set the properties for the login challenge
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme); // create the challenge
         }
     }
 }

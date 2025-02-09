@@ -1,0 +1,14 @@
+﻿@page
+@model FunWebsiteThing.Pages.WelcomeExternalModel
+@{
+}
+@if (TempData["TempPassword"] != null)
+{
+    <h1>Welcome!</h1>
+    <p>Your generated password is: @TempData["TempPassword"]</p>
+    <p>While you can still log in via the provider of your choice, this password allows you to log in directly!</p>
+    <p>Please change it as soon as possible <a href="/Settings">here!</a></p>
+}
+else
+{
+}

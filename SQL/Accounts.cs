@@ -356,6 +356,10 @@ namespace FunWebsiteThing.SQL
                     {
                         cmd.Parameters.AddWithValue("@username", username);
                         int id = Convert.ToInt32(cmd.ExecuteScalar());
+                        if (id == 0 && username != GetUsername(0))
+                        {
+                            return -1;
+                        }
                         return id;
                     }
                 }

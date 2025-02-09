@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 
+Console.WriteLine($"GOOGLE_CLIENT_ID: {Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID")}");
+Console.WriteLine($"GOOGLE_CLIENT_SECRET: {Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET")}");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,12 +37,13 @@ builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme; // default auth scheme is cookie, which is what Sessions use
 })
-.AddCookie()
+.AddCookie("Identity.External") // Register the external identity scheme
 .AddGoogle(options => // add google oauth as an authentication option
 {
-    options.ClientId = "404091962983-67t5s4t8voodam372eomnodsiio1r8e4.apps.googleusercontent.com"; // client id
-    options.ClientSecret = "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"; // client secret
-    options.CallbackPath = "/login?method=google"; // this is the redirect path after loggin in which middleware (us) will handle the login by grabbing vital info
+
+    options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID"); // retrieve client id from environment variable
+    options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET"); // retrieve client secret from environment variable
+    options.CallbackPath = "/signin-google"; // this is the redirect path after logging in
     options.SignInScheme = IdentityConstants.ExternalScheme; // we sign in with the external scheme as the default scheme is cookie otherwise, which is not what we want 
     options.Scope.Add("email");
     options.Scope.Add("profile");
