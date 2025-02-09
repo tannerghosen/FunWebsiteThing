@@ -25,11 +25,12 @@ namespace FunWebsiteThing.Pages
 
         private readonly ILogger<IndexModel> _logger;
         private SessionManager _s;
-
-        public RegisterModel(ILogger<IndexModel> logger, SessionManager s)
+        private AccountController _a;
+        public RegisterModel(ILogger<IndexModel> logger, SessionManager s, AccountController a)
         {
             _logger = logger;
             _s = s;
+            _a = a;
         }
 
         public void OnGet()
@@ -70,24 +71,22 @@ namespace FunWebsiteThing.Pages
             }
             else if (Checkbox)
             {
-                if (HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
+                IActionResult result = await _a.Register(Email, Username, Password, SecurityQuestion, Answer);
+                if (result is OkObjectResult)
                 {
-                    (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid); // Registers our account, hopefully
-                    if (result == true)
-                    {
-                        Result = "Account Registered. Logged into " + Username + ".";
-                        _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
-                        Console.WriteLine(HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"));
-                        await SQL.Accounts.CreateSecurityQuestion(SQL.Accounts.GetUserID(Username), SecurityQuestion, Answer);
-                    }
-                    else if (result == false && error != true)
-                    {
-                        Result = "Duplicate account.";
-                    }
-                    else if (error == true)
-                    {
-                        Result = "An error occured while registering the account.";
-                    }
+                    Result = "Account Registered. Logged into " + Username + ".";
+                }
+                else if (result is BadRequestObjectResult)
+                {
+                    Result = "Duplicate Account";
+                }
+                else if (result is StatusCodeResult)
+                {
+                    Result = "An error occured while registering the account.";
+                }
+                else
+                {
+                    Result = "You're already logged in, no need to register an account!";
                 }
             }
             else

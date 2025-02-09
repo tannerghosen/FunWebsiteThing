@@ -11,7 +11,7 @@ namespace FunWebsiteThing.SQL
                 con.Open();
 
                 // Accounts Table
-                string accounts = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE, password TEXT NOT NULL, sessionid INTEGER, sessiontoken TEXT, isadmin BOOLEAN DEFAULT 0)";
+                string accounts = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE, password TEXT, sessionid INTEGER, sessiontoken TEXT, isadmin BOOLEAN DEFAULT 0)";
                 using (var cmd = new SqliteCommand(accounts, con))
                 {
                     cmd.ExecuteNonQuery();
@@ -261,32 +261,53 @@ namespace FunWebsiteThing.SQL
         }
 
         // Used to ensure the user does actually exist before we get too far in with various methods
-        public static bool DoesUserExist(string username)
+        public static bool DoesUserExist(string value, string search = "username")
         {
             try
             {
                 using (var con = Main.Connect())
                 {
-                    con.Open();
-                    string query = "SELECT COUNT(*) FROM accounts WHERE username = @username";
-                    using (var cmd = new SqliteCommand(query, con))
+                    if (search == "username")
                     {
-                        cmd.Parameters.AddWithValue("@username", username);
-                        int count = Convert.ToInt32(cmd.ExecuteScalar());
-                        if (count == 0)
+                        con.Open();
+                        string query = "SELECT COUNT(*) FROM accounts WHERE username = @username";
+                        using (var cmd = new SqliteCommand(query, con))
                         {
-                            return false;
+                            cmd.Parameters.AddWithValue("@username", value);
+                            int count = Convert.ToInt32(cmd.ExecuteScalar());
+                            if (count == 0)
+                            {
+                                return false;
+                            }
+                            else
+                            {
+                                return true;
+                            }
                         }
-                        else
+                    }
+                    else
+                    {
+                        con.Open();
+                        string query = "SELECT COUNT(*) FROM accounts WHERE email = @email";
+                        using (var cmd = new SqliteCommand(query, con))
                         {
-                            return true;
+                            cmd.Parameters.AddWithValue("@email", value);
+                            int count = Convert.ToInt32(cmd.ExecuteScalar());
+                            if (count == 0)
+                            {
+                                return false;
+                            }
+                            else
+                            {
+                                return true;
+                            }
                         }
                     }
                 }
             }
             catch (SqliteException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in DoesUserExist (string username parameter variant): " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in DoesUserExist (string value, string search parameters variant): " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
                 return false;
             }
         }
@@ -463,7 +484,7 @@ namespace FunWebsiteThing.SQL
             }
             return false;
         }
-        public static (string?, string?) GetSecurityQuestion(int? userid)
+        public static string[] GetSecurityQuestion(int? userid)
         {
             try
             {
@@ -480,7 +501,7 @@ namespace FunWebsiteThing.SQL
                             {
                                 string question = reader.GetString(0); 
                                 string answer = reader.GetString(1);
-                                return (question, answer);
+                                return new string[] { question, answer };
                             }
                         }
                     }
@@ -489,9 +510,9 @@ namespace FunWebsiteThing.SQL
             catch (SqliteException e)
             {
                 Logger.Write("SQL.Accounts: An error occured in SecurityQuestion: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
-                return (null, null);
+                return new string[] { null, null };
             }
-            return (null, null);
+            return new string[] { null, null };
         }
         public static async Task<(bool, bool)> CreateSecurityQuestion(int? userid, string? question, string? answer)
         {
@@ -544,7 +565,9 @@ namespace FunWebsiteThing.SQL
                             return (false, false);
                         }
                     }
-                    (string? q, string? a) = GetSecurityQuestion(userid);
+                    
+                    string? q = GetSecurityQuestion(userid)[0];
+                    string? a = GetSecurityQuestion(userid)[1];
                     question = question == null ? q : question;
                     answer = answer == null ? a : answer;
                     string query = "UPDATE securityquestion SET question = @q, answer = @a WHERE id = @id";

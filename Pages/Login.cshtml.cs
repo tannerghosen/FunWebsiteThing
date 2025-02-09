@@ -1,4 +1,6 @@
 ﻿using FunWebsiteThing.SQL;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.RegularExpressions;
@@ -16,14 +18,20 @@ namespace FunWebsiteThing.Pages
         [BindProperty]
         public string Result { get; set; }
 
+        [BindProperty]
+        public string Method { get; set; }
+
         private SessionManager _s;
 
         private readonly ILogger<IndexModel> _logger;
 
-        public LoginModel(ILogger<IndexModel> logger, SessionManager s)
+        private AccountController _a;
+
+        public LoginModel(ILogger<IndexModel> logger, SessionManager s, AccountController a)
         {
             _logger = logger;
             _s = s;
+            _a = a;
         }
 
         public void OnGet()
@@ -36,24 +44,31 @@ namespace FunWebsiteThing.Pages
             int sid = _s.SID();
             bool isusernameemail = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
             Username = isusernameemail == true ? SQL.Accounts.GetUsername(Username) : Username;
-            (bool result, bool error) = await SQL.Accounts.Login(Username, Password, sid);
-            if ((!string.IsNullOrEmpty(Username) || !string.IsNullOrEmpty(Password)) && HttpContext.Session.GetInt32("IsLoggedIn") != 1)
+            IActionResult result = await _a.Login(Username, Password);
+            if (result is OkObjectResult)
             {
-                if (result == true)
-                {
-                    _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
-                    Result = "Login successful. Logged in as: " + Username + ".";
-                }
-                else if (result == false && error != true)
-                {
-                    Result = "Invalid login";
-                }
-                else if (error == true)
-                {
-                    Result = "An error occured while logging in";
-                }
+                Result = "Login successful. Logged in as: " + Username + ".";
+            }
+            else if (result is BadRequestObjectResult)
+            {
+                Result = "Invalid login";
+            }
+            else if (result is StatusCodeResult)
+            {
+                Result = "An error occurred while logging in";
+            }
+            else
+            {
+                Result = "Either username or password is blank, or you're already logged in.";
             }
             TempData["Result"] = Result;
+        }
+
+        public async Task<IActionResult> OnPostGoogleLoginAsync()
+        {
+            var redirect = Url.Page("https://localhost:7081/login?method=google"); 
+            var properties = new AuthenticationProperties { RedirectUri = redirect };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
     }
 }

@@ -1,4 +1,50 @@
 ﻿@page
 @model FunWebsiteThing.Pages.SecurityQuestionModel
 @{
+    ViewData["Title"] = "Security Question";
+    SessionManager s = new SessionManager();
+}
+
+@if(Model.Id != null)
+{
+    if(Model.Question != null)
+    {
+    <h1>@ViewData["Title"]</h1>
+    <p>Hi @SQL.Accounts.GetUsername(Convert.ToInt32(Model.Id))!<br />To recover your account you will need to answer your security question!<br />It is as follows: "@Model.Question"</p>
+        <form method="post">
+            <fieldset>
+                <div>
+                    <label for="username">Answer:</label>
+                    <input type="text" name="answer" asp-for="Answer" value="" id="answer" class="text-black" />
+                </div>
+                <input type="hidden" name="Id" value="@Model.Id" />
+                <input type="hidden" name="CorrectAnswer" value="@Model.CorrectAnswer" />
+                <div>
+                    <label>&nbsp;</label>
+                    <input type="submit" value="Submit" class="submit" />
+                </div>
+            </fieldset>
+        </form>
+    }
+    else
+    {
+        <h1>Sorry!</h1>
+        <p>As your account does not have a security question or answer, it cannot be recovered via this method. Please contact the admins.</p>
+    }
+}
+else
+{
+<h1>Nothing here!</h1>
+<p>Nothing at all! Nothing at all!</p>
+}
+
+@{
+    var message = TempData["Result"] as string;
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <script>
+        alert('@message');
+    </script>
 }

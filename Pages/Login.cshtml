@@ -3,6 +3,7 @@
 @using System.Text.RegularExpressions;
 @model LoginModel
 @{
+    SessionManager s = new SessionManager();
     #pragma warning disable CS8602
     ViewData["Title"] = "Login";
 }
@@ -27,6 +28,10 @@
                 <input type="submit" value="Submit" class="submit" />
             </div>
         </fieldset>
+    <a href="/ForgetPassword">Forgot Password?</a>
+    </form>
+    <form method="post" asp-page-handler="GoogleLogin">
+        <button type="submit">Sign in with Google</button>
     </form>
 }
 else
