@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using System.Globalization;
 
 namespace FunWebsiteThing.SQL
 {
@@ -40,7 +41,8 @@ namespace FunWebsiteThing.SQL
                 using (var con = Main.Connect())
                 {
                     con.Open();
-                    string q = "INSERT INTO comments (userid, commentsid, comment, date) VALUES (@userid, @commentsection, @comment, DATETIME('now', 'utc', '-8 hours'))";
+                    // "INSERT INTO comments (userid, commentsid, comment, date) VALUES (@userid, @commentsection, @comment, DATETIME('now', 'utc', '-8 hours'))";
+                    string q = "INSERT INTO comments (userid, commentsid, comment, date) VALUES (@userid, @commentsection, @comment, NOW())";
                     using (var cmd = new MySqlCommand(q, con))
                     {
                         cmd.Parameters.AddWithValue("@userid", userid);
@@ -83,8 +85,9 @@ namespace FunWebsiteThing.SQL
                                 {
                                     usernames.Add(reader.GetString(0));
                                     comments.Add(reader.GetString(1));
-                                    dates.Add(reader.GetString(2));
-                                    ids.Add(reader.GetString(3));
+                                   // var date = DateTime.ParseExact(reader.GetDateTime(2), "g", CultureInfo.InvariantCulture);
+                                    dates.Add(Convert.ToString(reader.GetDateTime(2)));
+                                    ids.Add(Convert.ToString(reader.GetInt32(3)));
                                 }
                             }
                         }
