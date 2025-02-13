@@ -25,7 +25,7 @@ namespace FunWebsiteThing
             if (!File.Exists(SettingsFile)) // if settings.json file doesn't exist
             {
                 // We initialize it with default settings
-                ConnectionString = "Data Source=database.db;Password=your_password_here";
+                ConnectionString = "Server=localhost;Database=FWTDatabase;User ID=Tanner Ghosen;Password=tanner;";
 
 
                 SaveSettings(); // Save the settings

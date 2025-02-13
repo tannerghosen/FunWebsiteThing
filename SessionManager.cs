@@ -12,8 +12,14 @@ using System;
 #pragma warning disable CS8602
 public class SessionManager
 {
-    IHttpContextAccessor _h = new HttpContextAccessor();
 
+    //private readonly IHttpContextAccessor _h = new HttpContextAccessor();
+    private readonly IHttpContextAccessor _h;
+
+    public SessionManager(IHttpContextAccessor h)
+    {
+        _h = h;
+    }
     public void Login(string username, int id, int sessionid)
     {
         _h.HttpContext.Session.SetString("Username", username);
@@ -22,7 +28,6 @@ public class SessionManager
         _h.HttpContext.Session.SetInt32("IsLoggedIn", 1);
         _h.HttpContext.Session.SetInt32("IsAdmin", FunWebsiteThing.SQL.Admin.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")) == true ? 1 : 0);
         Logger.Write("Username: " + username + " id: " + FunWebsiteThing.SQL.Accounts.GetUserID(username) + " ses id: " + sessionid + " is admin?: " + FunWebsiteThing.SQL.Admin.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")), "LOGIN");
-
     }
 
     public void Logout()

@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using MySql.Data.MySqlClient;
 
 namespace FunWebsiteThing.SQL
 {
@@ -11,38 +11,29 @@ namespace FunWebsiteThing.SQL
                 con.Open();
 
                 // Accounts Table
-                string accounts = "CREATE TABLE IF NOT EXISTS accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, username TEXT NOT NULL UNIQUE, password TEXT, sessionid INTEGER, sessiontoken TEXT, isadmin BOOLEAN DEFAULT 0)";
-                using (var cmd = new SqliteCommand(accounts, con))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-
-                // Security Questions Table
-                string securityquestion = "CREATE TABLE IF NOT EXISTS securityquestion (id INTEGER PRIMARY KEY, question TEXT NOT NULL, answer TEXT NOT NULL, FOREIGN KEY (id) REFERENCES accounts(id))";
-                using (var cmd = new SqliteCommand(securityquestion, con))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-
-                // Delete Account Trigger
-                string deleteaccounttrigger = "CREATE TRIGGER IF NOT EXISTS deleteaccounttrigger AFTER DELETE ON accounts FOR EACH ROW BEGIN DELETE FROM securityquestion WHERE id = OLD.id; UPDATE comments SET userid = -1 WHERE userid = OLD.id; END";
-                using (var cmd = new SqliteCommand(deleteaccounttrigger, con))
+                string accounts = "CREATE TABLE IF NOT EXISTS accounts (id INT(11) PRIMARY KEY AUTO_INCREMENT, email VARCHAR(255) NOT NULL UNIQUE, username VARCHAR(50) NOT NULL UNIQUE, password TEXT, sessionid INT(11), sessiontoken TEXT, isadmin TINYINT DEFAULT 0)";
+                using (var cmd = new MySqlCommand(accounts, con))
                 {
                     cmd.ExecuteNonQuery();
                 }
 
                 // Admin Account
                 string doesadminexist = "SELECT COUNT(*) FROM accounts WHERE id = 0";
-                using (var c = new SqliteCommand(doesadminexist, con))
+                using (var c = new MySqlCommand(doesadminexist, con))
                 {
                     int count = Convert.ToInt32(c.ExecuteScalar());
                     if (count == 0)
                     {
                         string pass = BCrypt.Net.BCrypt.HashPassword("test");
                         string createadmin = "INSERT INTO accounts (id, email, username, password, isadmin) VALUES (0, 'admin@email.com', 'admin', @pass, 1)";
-                        using (var cmd = new SqliteCommand(createadmin, con))
+                        using (var cmd = new MySqlCommand(createadmin, con))
                         {
                             cmd.Parameters.AddWithValue("@pass", pass);
+                            cmd.ExecuteNonQuery();
+                        }
+                        string updateadmin = "UPDATE accounts SET id = 0 WHERE email = 'admin@email.com'";
+                        using (var cmd = new MySqlCommand(updateadmin, con))
+                        {
                             cmd.ExecuteNonQuery();
                         }
                     }
@@ -50,20 +41,35 @@ namespace FunWebsiteThing.SQL
 
                 // Anonymous Account
                 string doesanonymousexist = "SELECT COUNT(*) FROM accounts WHERE id = -1";
-                using (var c = new SqliteCommand(doesanonymousexist, con))
+                using (var c = new MySqlCommand(doesanonymousexist, con))
                 {
                     int count = Convert.ToInt32(c.ExecuteScalar());
                     if (count == 0)
                     {
                         string pass = BCrypt.Net.BCrypt.HashPassword("tSFSDAKFSDJKGFISDJTR89324JR283JI213HE812H3E8D1H2IKASKFHDASKDFHKASHDKASHDKAH1231241251241231;;'===---+++SDA");
                         string createanonymous = "INSERT INTO accounts (id, email, username, password) VALUES (-1, 'anonymous@email.com', 'Anonymous', @pass)";
-                        using (var cmd = new SqliteCommand(createanonymous, con))
+                        using (var cmd = new MySqlCommand(createanonymous, con))
                         {
                             cmd.Parameters.AddWithValue("@pass", pass);
                             cmd.ExecuteNonQuery();
                         }
                     }
                 }
+
+                // Security Questions Table
+                string securityquestion = "CREATE TABLE IF NOT EXISTS securityquestion (id INT(11) PRIMARY KEY, question VARCHAR(255) NOT NULL, answer VARCHAR(255) NOT NULL, FOREIGN KEY (id) REFERENCES accounts(id))";
+                using (var cmd = new MySqlCommand(securityquestion, con))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+
+                // Delete Account Trigger
+                string deleteaccounttrigger = "CREATE TRIGGER IF NOT EXISTS deleteaccounttrigger AFTER DELETE ON accounts FOR EACH ROW BEGIN DELETE FROM securityquestion WHERE id = OLD.id; UPDATE comments SET userid = -1 WHERE userid = OLD.id; END";
+                using (var cmd = new MySqlCommand(deleteaccounttrigger, con))
+                {
+                    cmd.ExecuteNonQuery();
+                }
+
             }
         }
         // Registers an account by first running a SQL statement to see if it the account exists. If it does, don't do anything.
@@ -77,7 +83,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string query = "SELECT COUNT(*) FROM accounts WHERE email = @email OR username = @username";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@username", username);
                         cmd.Parameters.AddWithValue("@email", email);
@@ -88,7 +94,7 @@ namespace FunWebsiteThing.SQL
                         }
                     }
                     query = "INSERT INTO accounts (email, username, password, sessionid) VALUES (@email, @username, @password, @sid)";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         string salt = BCrypt.Net.BCrypt.GenerateSalt(12);
                         string hashpass = BCrypt.Net.BCrypt.HashPassword(password, salt);
@@ -101,9 +107,9 @@ namespace FunWebsiteThing.SQL
                     }
                 }
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in Register: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in Register: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return (false, true);
             }
         }
@@ -124,7 +130,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string query = "SELECT COUNT(*) FROM accounts WHERE username = @username";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@username", username);
                         int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
@@ -134,7 +140,7 @@ namespace FunWebsiteThing.SQL
                         }
                     }
                     query = "SELECT password FROM accounts WHERE username = @username";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@username", username);
                         var res = await cmd.ExecuteScalarAsync();
@@ -146,7 +152,7 @@ namespace FunWebsiteThing.SQL
                         else // valid password
                         {
                             query = "SELECT sessionid FROM accounts WHERE username = @username";
-                            using (var c = new SqliteCommand(query, con))
+                            using (var c = new MySqlCommand(query, con))
                             {
                                 c.Parameters.AddWithValue("@username", username);
                                 var result = await c.ExecuteScalarAsync();
@@ -154,7 +160,7 @@ namespace FunWebsiteThing.SQL
                                 if (sessionid != id || id == -1)
                                 {
                                     query = "UPDATE accounts SET sessionid = @sid WHERE username = @username";
-                                    using (var cm = new SqliteCommand(query, con))
+                                    using (var cm = new MySqlCommand(query, con))
                                     {
                                         cm.Parameters.AddWithValue("@sid", sessionid);
                                         cm.Parameters.AddWithValue("@username", username);
@@ -171,9 +177,9 @@ namespace FunWebsiteThing.SQL
                     }
                 }
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in Login: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in Login: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return (false, true);
             }
         }
@@ -190,7 +196,7 @@ namespace FunWebsiteThing.SQL
                     {
                         con.Open();
                         string query = "SELECT COUNT(*) FROM accounts WHERE id = @id";
-                        using (var cmd = new SqliteCommand(query, con))
+                        using (var cmd = new MySqlCommand(query, con))
                         {
                             cmd.Parameters.AddWithValue("@id", userid);
                             int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
@@ -203,7 +209,7 @@ namespace FunWebsiteThing.SQL
                         {
                             case 0: // password
                                 string updatepassword = "UPDATE accounts SET password = @password WHERE id = @id";
-                                using (var c = new SqliteCommand(updatepassword, con))
+                                using (var c = new MySqlCommand(updatepassword, con))
                                 {
                                     string pass = BCrypt.Net.BCrypt.HashPassword(input);
                                     c.Parameters.AddWithValue("@id", userid);
@@ -213,7 +219,7 @@ namespace FunWebsiteThing.SQL
                                 return (true, false);
                             case 1: // email
                                 string updateemail = "UPDATE accounts SET email = @email WHERE id = @id";
-                                using (var c = new SqliteCommand(updateemail, con))
+                                using (var c = new MySqlCommand(updateemail, con))
                                 {
                                     c.Parameters.AddWithValue("@id", userid);
                                     c.Parameters.AddWithValue("@email", input);
@@ -229,7 +235,7 @@ namespace FunWebsiteThing.SQL
                                 return (true, false);
                             case 2: // username
                                 string updateusername = "UPDATE accounts SET username = @newusername WHERE id = @id";
-                                using (var c = new SqliteCommand(updateusername, con))
+                                using (var c = new MySqlCommand(updateusername, con))
                                 {
                                     c.Parameters.AddWithValue("@id", userid);
                                     c.Parameters.AddWithValue("@newusername", input);
@@ -248,9 +254,9 @@ namespace FunWebsiteThing.SQL
                         }
                     }
                 }
-                catch (SqliteException e)
+                catch (MySqlException e)
                 {
-                    Logger.Write("SQL.Accounts: An error occured in UpdateInfo: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                    Logger.Write("SQL.Accounts: An error occured in UpdateInfo: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                     return (false, true); // error happened due to sql issue, so yea let's say an error occured
                 }
             }
@@ -271,7 +277,7 @@ namespace FunWebsiteThing.SQL
                     {
                         con.Open();
                         string query = "SELECT COUNT(*) FROM accounts WHERE username = @username";
-                        using (var cmd = new SqliteCommand(query, con))
+                        using (var cmd = new MySqlCommand(query, con))
                         {
                             cmd.Parameters.AddWithValue("@username", value);
                             int count = Convert.ToInt32(cmd.ExecuteScalar());
@@ -289,7 +295,7 @@ namespace FunWebsiteThing.SQL
                     {
                         con.Open();
                         string query = "SELECT COUNT(*) FROM accounts WHERE email = @email";
-                        using (var cmd = new SqliteCommand(query, con))
+                        using (var cmd = new MySqlCommand(query, con))
                         {
                             cmd.Parameters.AddWithValue("@email", value);
                             int count = Convert.ToInt32(cmd.ExecuteScalar());
@@ -305,9 +311,9 @@ namespace FunWebsiteThing.SQL
                     }
                 }
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in DoesUserExist (string value, string search parameters variant): " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in DoesUserExist (string value, string search parameters variant): " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return false;
             }
         }
@@ -321,7 +327,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string query = "SELECT COUNT(*) FROM accounts WHERE id = @userid";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@userid", userid);
                         int count = Convert.ToInt32(cmd.ExecuteScalar());
@@ -336,9 +342,9 @@ namespace FunWebsiteThing.SQL
                     }
                 }
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in DoesUserExist (int? userid parameter variant): " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in DoesUserExist (int? userid parameter variant): " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return false;
             }
         }
@@ -352,7 +358,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string query = "SELECT id FROM accounts WHERE username = @username";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@username", username);
                         int id = Convert.ToInt32(cmd.ExecuteScalar());
@@ -364,9 +370,9 @@ namespace FunWebsiteThing.SQL
                     }
                 }
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in GetUserID: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in GetUserID: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return -1;
             }
         }
@@ -380,16 +386,16 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string query = "SELECT username FROM accounts WHERE id = @userid";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@userid", userid);
                         return cmd.ExecuteScalar()?.ToString();
                     }
                 }
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in GetUserID: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in GetUserID: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return null;
             }
         }
@@ -403,16 +409,16 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string query = "SELECT username FROM accounts WHERE email = @email";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@email", email);
                         return cmd.ExecuteScalar()?.ToString();
                     }
                 }
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in GetEmail: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in GetEmail: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return null;
             }
         }
@@ -429,7 +435,7 @@ namespace FunWebsiteThing.SQL
                     {
                         con.Open();
                         string query = "SELECT sessionid FROM accounts WHERE id = @userid";
-                        using (var cmd = new SqliteCommand(query, con))
+                        using (var cmd = new MySqlCommand(query, con))
                         {
                             cmd.Parameters.AddWithValue("@userid", userid);
                             int id = Convert.ToInt32(cmd.ExecuteScalar());
@@ -444,9 +450,9 @@ namespace FunWebsiteThing.SQL
                         }
                     }
                 }
-                catch (SqliteException e)
+                catch (MySqlException e)
                 {
-                    Logger.Write("SQL.Accounts: An error occured in DoesSIDMatch: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                    Logger.Write("SQL.Accounts: An error occured in DoesSIDMatch: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                     return false;
                 }
             }
@@ -465,7 +471,7 @@ namespace FunWebsiteThing.SQL
                     {
                         con.Open();
                         string query = "SELECT sessiontoken FROM accounts WHERE id = @userid";
-                        using (var cmd = new SqliteCommand(query, con))
+                        using (var cmd = new MySqlCommand(query, con))
                         {
                             cmd.Parameters.AddWithValue("@userid", userid);
                             var token = Convert.ToString(cmd.ExecuteScalar());
@@ -480,9 +486,9 @@ namespace FunWebsiteThing.SQL
                         }
                     }
                 }
-                catch (SqliteException e)
+                catch (MySqlException e)
                 {
-                    Logger.Write("SQL.Accounts: An error occured in DoesSTokenMatch: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                    Logger.Write("SQL.Accounts: An error occured in DoesSTokenMatch: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                     return false;
                 }
             }
@@ -496,7 +502,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string query = "SELECT question, answer FROM securityquestion WHERE id = @id";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@id", userid);
                         using (var reader = cmd.ExecuteReader())
@@ -511,9 +517,9 @@ namespace FunWebsiteThing.SQL
                     }
                 }
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in SecurityQuestion: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in SecurityQuestion: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return new string[] { null, null };
             }
             return new string[] { null, null };
@@ -526,7 +532,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string prequery = "SELECT COUNT(*) FROM securityquestion WHERE id = @id";
-                    using (var cmd = new SqliteCommand(prequery, con))
+                    using (var cmd = new MySqlCommand(prequery, con))
                     {
                         cmd.Parameters.AddWithValue("@id", userid);
                         int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
@@ -536,7 +542,7 @@ namespace FunWebsiteThing.SQL
                         }
                     }
                     string query = "INSERT INTO securityquestion (id, question, answer) VALUES (@id, @q, @a)";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@id", userid);
                         cmd.Parameters.AddWithValue("@q", question);
@@ -546,9 +552,9 @@ namespace FunWebsiteThing.SQL
                     }
                 }
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in CreateSecurityQuestion: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in CreateSecurityQuestion: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return (false, true);
             }
         }
@@ -560,7 +566,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string prequery = "SELECT COUNT(*) FROM securityquestion WHERE id = @id";
-                    using (var cmd = new SqliteCommand(prequery, con))
+                    using (var cmd = new MySqlCommand(prequery, con))
                     {
                         cmd.Parameters.AddWithValue("@id", userid);
                         int count = Convert.ToInt32(await cmd.ExecuteScalarAsync());
@@ -575,7 +581,7 @@ namespace FunWebsiteThing.SQL
                     question = question == null ? q : question;
                     answer = answer == null ? a : answer;
                     string query = "UPDATE securityquestion SET question = @q, answer = @a WHERE id = @id";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@id", userid);
                         cmd.Parameters.AddWithValue("@q", question);
@@ -585,9 +591,9 @@ namespace FunWebsiteThing.SQL
                     }
                 }
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in CreateSecurityQuestion: " + e.Message + "\nSQL.Accounts: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in CreateSecurityQuestion: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return (false, true);
             }
         }

@@ -40,7 +40,8 @@ namespace FunWebsiteThing.Pages
 
         }
 
-        public async void OnPost()
+        // Changed from void to IActionResult because void doesn't actually wait for methods. For some reason, this was not an issue before we switched to MySQL, funny enough.
+        public async Task<IActionResult> OnPost()
         {
             int sid = _s.SID();
             IActionResult result = await _a.Login(Username, Password);
@@ -61,6 +62,8 @@ namespace FunWebsiteThing.Pages
                 Result = "Either username or password is blank, or you're already logged in.";
             }
             TempData["Result"] = Result;
+
+            return Page();
         }
 
         // This method initiates the OAuth2 authentication flow with Google

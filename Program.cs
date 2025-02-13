@@ -12,9 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddScoped<SessionManager>(); // adds SessionManager as a service
-builder.Services.AddScoped<AccountController>(); // adds AccountController as a service
-builder.Services.AddControllers(); // This adds all controllers to the servicecollection
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors(options =>
 {
@@ -31,8 +28,12 @@ builder.Services.AddSession(options =>
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Lax;
-    options.IdleTimeout = TimeSpan.FromHours(3); 
+    options.IdleTimeout = TimeSpan.FromHours(3);
 });
+builder.Services.AddScoped<SessionManager>(); // adds SessionManager as a service
+builder.Services.AddScoped<AccountController>(); // adds AccountController as a service
+builder.Services.AddControllers(); // This adds all controllers to the servicecollection
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme; // default auth scheme is cookie, which is what Sessions use

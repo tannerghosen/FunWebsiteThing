@@ -6,7 +6,7 @@ namespace FunWebsiteThing.Pages
 {
     public class SecurityQuestionModel : PageModel
     {
-        SessionManager _s = new SessionManager();
+        SessionManager _s;// = new SessionManager();
         [BindProperty]
         public string Id { get; set; }
         public string Question { get; set; }
@@ -32,7 +32,7 @@ namespace FunWebsiteThing.Pages
             {
             }
          }
-        public void OnPost()
+        public async Task<IActionResult> OnPost()
         {
             Id = Request.Form["Id"]; // pass the Id from the form
             int id = int.TryParse(Id, out int newid) ? newid : 0;
@@ -58,6 +58,7 @@ namespace FunWebsiteThing.Pages
                 TempData["Id"] = Id; // ensure tempdata is still set to id
                 Response.Redirect("/SecurityQuestion?id=" + Id);
             }
+            return Page();
         }
     }
 }

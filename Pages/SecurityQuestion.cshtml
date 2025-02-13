@@ -2,7 +2,7 @@
 @model FunWebsiteThing.Pages.SecurityQuestionModel
 @{
     ViewData["Title"] = "Security Question";
-    SessionManager s = new SessionManager();
+    SessionManager s;// = new SessionManager();
 }
 
 @if(Model.Id != null)

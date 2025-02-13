@@ -6,7 +6,7 @@ namespace FunWebsiteThing.Pages
 {
     public class ForgetPasswordModel : PageModel
     {
-        SessionManager _s = new SessionManager();
+        SessionManager _s;// = new SessionManager();
         [BindProperty]
         public string Username { get; set; }
 
@@ -15,7 +15,7 @@ namespace FunWebsiteThing.Pages
         public void OnGet()
         {
         }
-        public void OnPost()
+        public async Task<IActionResult> OnPost()
         {
             bool isusernameemail = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
             Username = isusernameemail == true ? SQL.Accounts.GetUsername(Username) : Username;
@@ -29,6 +29,7 @@ namespace FunWebsiteThing.Pages
             {
                 Result = "User does not exist with either email or username used!";
             }
+            return Page();
         }
     }
 }

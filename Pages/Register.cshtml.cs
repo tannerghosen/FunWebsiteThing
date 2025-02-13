@@ -37,7 +37,7 @@ namespace FunWebsiteThing.Pages
         {
 
         }
-        public async Task OnPost()
+        public async Task<IActionResult> OnPost()
         {
             Logger.Write("Email " + Email + " Username " + Username + " Question " + SecurityQuestion + " Answer " + Answer);
             int sid = _s.SID();
@@ -95,6 +95,7 @@ namespace FunWebsiteThing.Pages
             }
             TempData["Result"] = Result;
             Console.WriteLine(TempData["Result"]);
+            return Page();
         }
     }
 }

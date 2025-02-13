@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using MySql.Data.MySqlClient;
 
 namespace FunWebsiteThing.SQL
 {
@@ -13,7 +13,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string query = "SELECT a.*, s.question, (SELECT COUNT(*) FROM comments WHERE userid = a.id) AS CommentCount FROM accounts a LEFT JOIN securityquestion s ON a.id = s.id";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -39,9 +39,9 @@ namespace FunWebsiteThing.SQL
                     }
                 }
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Admin: An error occurred in GrabAccountsTable: " + e.Message + "\nSQL.Admin: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Admin: An error occurred in GrabAccountsTable: " + e.Message + "\nSQL.Admin: Error Code: " + e.ErrorCode, "ERROR");
                 return null;
             }
         }
@@ -58,7 +58,7 @@ namespace FunWebsiteThing.SQL
                     {
                         con.Open();
                         string query = "SELECT isadmin FROM accounts WHERE id = @userid";
-                        using (var cmd = new SqliteCommand(query, con))
+                        using (var cmd = new MySqlCommand(query, con))
                         {
                             cmd.Parameters.AddWithValue("@userid", userid);
                             var result = cmd.ExecuteScalar();
@@ -70,9 +70,9 @@ namespace FunWebsiteThing.SQL
                         }
                     }
                 }
-                catch (SqliteException e)
+                catch (MySqlException e)
                 {
-                    Logger.Write("SQL.Admin: An error occured in IsAdmin " + e.Message + "\nSQL.Admin: Error Code: " + e.SqliteErrorCode, "ERROR");
+                    Logger.Write("SQL.Admin: An error occured in IsAdmin " + e.Message + "\nSQL.Admin: Error Code: " + e.ErrorCode, "ERROR");
                     return false;
                 }
             }
@@ -91,16 +91,16 @@ namespace FunWebsiteThing.SQL
                     {
                         con.Open();
                         string query = "DELETE FROM accounts WHERE id = @userid";
-                        using (var cmd = new SqliteCommand(query, con))
+                        using (var cmd = new MySqlCommand(query, con))
                         {
                             cmd.Parameters.AddWithValue("@userid", userid);
                             await cmd.ExecuteNonQueryAsync();
                         }
                     }
                 }
-                catch (SqliteException e)
+                catch (MySqlException e)
                 {
-                    Logger.Write("SQL.Admin: An error occured in DeleteUser: " + e.Message + "\nSQL.Admin: Error Code: " + e.SqliteErrorCode, "ERROR");
+                    Logger.Write("SQL.Admin: An error occured in DeleteUser: " + e.Message + "\nSQL.Admin: Error Code: " + e.ErrorCode, "ERROR");
                 }
             }
         }
@@ -117,7 +117,7 @@ namespace FunWebsiteThing.SQL
                     {
                         con.Open();
                         string query = "UPDATE accounts SET isadmin = @isadmin WHERE id = @userid";
-                        using (var cmd = new SqliteCommand(query, con))
+                        using (var cmd = new MySqlCommand(query, con))
                         {
                             cmd.Parameters.AddWithValue("@userid", userid);
                             cmd.Parameters.AddWithValue("@isadmin", IsAdmin(userid) ? 0 : 1);
@@ -125,9 +125,9 @@ namespace FunWebsiteThing.SQL
                         }
                     }
                 }
-                catch (SqliteException e)
+                catch (MySqlException e)
                 {
-                    Logger.Write("SQL.Admin: An error occured in AdminUser: " + e.Message + "\nSQL.Admin: Error Code: " + e.SqliteErrorCode, "ERROR");
+                    Logger.Write("SQL.Admin: An error occured in AdminUser: " + e.Message + "\nSQL.Admin: Error Code: " + e.ErrorCode, "ERROR");
                 }
             }
         }

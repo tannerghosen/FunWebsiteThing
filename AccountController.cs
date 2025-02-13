@@ -6,10 +6,16 @@ namespace FunWebsiteThing
 {
     public class AccountController : Controller
     {
-        public SessionManager _s = new SessionManager();
-        IHttpContextAccessor _h = new HttpContextAccessor();
+        IHttpContextAccessor _h;
+        SessionManager _s;
+        public AccountController(SessionManager s, IHttpContextAccessor h)
+        {
+            _s = s;
+            _h = h;
+        }
         public async Task<IActionResult> Login(string Username, string Password)
         {
+            Logger.Write(Username + " " + Password);
             if ((!string.IsNullOrEmpty(Username) || !string.IsNullOrEmpty(Password)) && _h.HttpContext.Session.GetInt32("IsLoggedIn") != 1)
             {
                 int sid = _s.SID();

@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+﻿using MySql.Data.MySqlClient;
 
 namespace FunWebsiteThing.SQL
 {
@@ -10,8 +10,8 @@ namespace FunWebsiteThing.SQL
             {
                 con.Open();
 
-                string comments = "CREATE TABLE IF NOT EXISTS comments (id INTEGER PRIMARY KEY AUTOINCREMENT, commentsid INTEGER NOT NULL, userid INTEGER NOT NULL, comment NVARCHAR(255), date DATETIME DEFAULT CURRENT_TIMESTAMP)";
-                using (var cmd = new SqliteCommand(comments, con))
+                string comments = "CREATE TABLE IF NOT EXISTS comments (id INT(11) PRIMARY KEY AUTO_INCREMENT, commentsid INT(11) NOT NULL, userid INT(11) NOT NULL, comment NVARCHAR(255), date DATETIME DEFAULT CURRENT_TIMESTAMP)";
+                using (var cmd = new MySqlCommand(comments, con))
                 {
                     cmd.ExecuteNonQuery();
                 }
@@ -41,7 +41,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string q = "INSERT INTO comments (userid, commentsid, comment, date) VALUES (@userid, @commentsection, @comment, DATETIME('now', 'utc', '-8 hours'))";
-                    using (var cmd = new SqliteCommand(q, con))
+                    using (var cmd = new MySqlCommand(q, con))
                     {
                         cmd.Parameters.AddWithValue("@userid", userid);
                         cmd.Parameters.AddWithValue("@comment", comment);
@@ -51,9 +51,9 @@ namespace FunWebsiteThing.SQL
                     Logger.Write("Comment added by " + username + " to comment section id " + commentsection);
                 }
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Comments: An error occured in AddComment: " + e.Message + "\nSQL.Comments: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Comments: An error occured in AddComment: " + e.Message + "\nSQL.Comments: Error Code: " + e.ErrorCode, "ERROR");
             }
         }
 
@@ -72,7 +72,7 @@ namespace FunWebsiteThing.SQL
                     con.Open();
                     // SELECT account username, comments comment, comments date FROM comments JOIN accounts on comments userid = accounts id WHERE commentsid = section ORDER BY comments date DESC
                     string query = @"SELECT a.username, c.comment, c.date, c.id FROM comments c JOIN accounts a ON a.id = c.userid WHERE c.commentsid = @section ORDER BY c.date DESC";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@section", section);
                         using (var reader = cmd.ExecuteReader())
@@ -92,9 +92,9 @@ namespace FunWebsiteThing.SQL
                     return new string[][] { usernames.ToArray(), comments.ToArray(), dates.ToArray(), ids.ToArray() };
                 }
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Comments: An error occured in GrabComments: " + e.Message + "\nSQL.Comments: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Comments: An error occured in GrabComments: " + e.Message + "\nSQL.Comments: Error Code: " + e.ErrorCode, "ERROR");
                 return null;
             }
         }
@@ -107,7 +107,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string query = "DELETE FROM comments WHERE id = @id";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@id", commentid);
                         await cmd.ExecuteNonQueryAsync();
@@ -115,9 +115,9 @@ namespace FunWebsiteThing.SQL
                 }
                 Logger.Write("Deleted comment with id " + commentid);
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Comments: An error occured in DeleteComment: " + e.Message + "\nSQL.Comments: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Comments: An error occured in DeleteComment: " + e.Message + "\nSQL.Comments: Error Code: " + e.ErrorCode, "ERROR");
             }
         }
     }

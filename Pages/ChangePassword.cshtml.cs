@@ -5,7 +5,7 @@ namespace FunWebsiteThing.Pages
 {
     public class ChangePasswordModel : PageModel
     {
-        SessionManager _s = new SessionManager();
+        SessionManager _s;
         [BindProperty]
         public string Id { get; set; }
 
@@ -20,7 +20,7 @@ namespace FunWebsiteThing.Pages
             Id = TempData["Id"]?.ToString(); // get tempdata Id from securityquestion which comes from forgetpassword
         }
 
-        public void OnPost()
+        public async Task<IActionResult> OnPost()
         {
             Id = Request.Form["Id"];
             if (!string.IsNullOrEmpty(Password))
@@ -29,13 +29,13 @@ namespace FunWebsiteThing.Pages
                 SQL.Accounts.UpdateInfo(id, 0, Password, 0, true); 
                 Result = "Password has been changed.";
                 TempData["Id"] = null; // to prevent abuse, we set tempdata id to null
-                Response.Redirect("/Login");
+                return Redirect("/Login");
             }
             else
             {
                 Result = "Invalid password";
                 TempData["Id"] = Id; // ensure tempdata is still set to id
-                Response.Redirect("/ChangePassword");
+                return Redirect("/ChangePassword");
             }
         }
 

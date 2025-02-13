@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
-using System.Xml.Linq;
+﻿using MySql.Data.MySqlClient;
 
 namespace FunWebsiteThing.SQL
 {
@@ -12,8 +11,8 @@ namespace FunWebsiteThing.SQL
             {
                 con.Open();
 
-                string blog = "CREATE TABLE IF NOT EXISTS blog (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, message TEXT NOT NULL, date DATETIME DEFAULT CURRENT_TIMESTAMP)";
-                using (var cmd = new SqliteCommand(blog, con))
+                string blog = "CREATE TABLE IF NOT EXISTS blog (id INT(11) PRIMARY KEY AUTO_INCREMENT, title VARCHAR(255) NOT NULL, message VARCHAR(255) NOT NULL, date DATETIME DEFAULT CURRENT_TIMESTAMP)";
+                using (var cmd = new MySqlCommand(blog, con))
                 {
                     cmd.ExecuteNonQuery();
                 }
@@ -29,7 +28,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string query = "INSERT INTO blog (title, message) VALUES (@title, @message)";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@title", title);
                         cmd.Parameters.AddWithValue("@message", message);
@@ -38,9 +37,9 @@ namespace FunWebsiteThing.SQL
                 }
                 Logger.Write("Added blog post with title " + title);
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Blog: An error occured in AddBlogPost: " + e.Message + "\nSQL.Blog: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Blog: An error occured in AddBlogPost: " + e.Message + "\nSQL.Blog: Error Code: " + e.ErrorCode, "ERROR");
             }
         }
 
@@ -52,7 +51,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string query = "UPDATE blog SET title = @title, message = @message WHERE id = @id";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@title", title);
                         cmd.Parameters.AddWithValue("@message", message);
@@ -62,9 +61,9 @@ namespace FunWebsiteThing.SQL
                 }
                 Logger.Write("Updated blog post " + blogid);
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Blog: An error occured in UpdateBlogPost: " + e.Message + "\nSQL.Blog: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Blog: An error occured in UpdateBlogPost: " + e.Message + "\nSQL.Blog: Error Code: " + e.ErrorCode, "ERROR");
             }
         }
 
@@ -76,7 +75,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string query = "DELETE FROM blog WHERE id = @id";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@id", blogid);
                         await cmd.ExecuteNonQueryAsync();
@@ -84,9 +83,9 @@ namespace FunWebsiteThing.SQL
                 }
                 Logger.Write("Deleted blog post " + blogid);
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Blog: An error occured in DeleteBlogPost: " + e.Message + "\nSQL.Blog: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Blog: An error occured in DeleteBlogPost: " + e.Message + "\nSQL.Blog: Error Code: " + e.ErrorCode, "ERROR");
             }
         }
 
@@ -99,7 +98,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string query = "SELECT title, message FROM blog WHERE id = @id";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@id", blogid);
                         using (var reader = cmd.ExecuteReader())
@@ -117,9 +116,9 @@ namespace FunWebsiteThing.SQL
                     }
                 }
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Blog: An error occured in GetBlogPost: " + e.Message + "\nSQL.Blog: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Blog: An error occured in GetBlogPost: " + e.Message + "\nSQL.Blog: Error Code: " + e.ErrorCode, "ERROR");
                 return (null, null);
             }
         }
@@ -133,7 +132,7 @@ namespace FunWebsiteThing.SQL
                 {
                     con.Open();
                     string query = "SELECT COUNT(*) FROM blog";
-                    using (var cmd = new SqliteCommand(query, con))
+                    using (var cmd = new MySqlCommand(query, con))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -149,9 +148,9 @@ namespace FunWebsiteThing.SQL
                 }
                 return count;
             }
-            catch (SqliteException e)
+            catch (MySqlException e)
             {
-                Logger.Write("SQL.Blog: An error occured in GetBlogPostCount: " + e.Message + "\nSQL.Blog: Error Code: " + e.SqliteErrorCode, "ERROR");
+                Logger.Write("SQL.Blog: An error occured in GetBlogPostCount: " + e.Message + "\nSQL.Blog: Error Code: " + e.ErrorCode, "ERROR");
                 return 0;
             }
         }
