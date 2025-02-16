@@ -32,6 +32,13 @@ namespace FunWebsiteThing.Pages
                 // We login / register the user based on email
                 if (!SQL.Accounts.DoesUserExist(email, "email")) 
                 {
+                    // to prevent conflicts if the username already exists, we check to see if the username exists
+                    if (SQL.Accounts.DoesUserExist(username, "username"))
+                    {
+                        Random random = new Random();
+                        int num = random.Next(1, 9999);
+                        username = username + num.ToString();
+                    }
                     string password = Misc.GeneratePassword(); // generate a password
                     TempData["TempPassword"] = password; // we store this for WelcomeExternal's message
                     _a.Register(email, username, password, null, null); // register the user!
