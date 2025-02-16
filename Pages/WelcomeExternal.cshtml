@@ -6,8 +6,8 @@
 {
     <h1>Welcome!</h1>
     <p>Your generated password is: @TempData["TempPassword"]</p>
-    <p>While you can still log in via the provider of your choice, this password allows you to log in directly!</p>
-    <p>Please change it as soon as possible <a href="/Settings">here!</a></p>
+    <p>You can still log in via @TempData["LoginSource"], however this password allows you to directly log in without going through @TempData["LoginSource"].</p>
+    <p>You can change it <a href="/Settings">in your settings</a> at any time.</p>
 }
 else
 {
