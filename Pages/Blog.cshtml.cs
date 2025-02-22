@@ -22,11 +22,11 @@ namespace FunWebsiteThing.Pages
         public void OnGet()
         {
             Post = Convert.ToInt32(Request.Query["post"]);
-            if (Post < 1)
+            if (Post < 1) // if post is less than 1 we went too far back
             {
                 Post = 1;
             }
-            else if (Post > SQL.Blog.GetBlogPostCount())
+            else if (Post > SQL.Blog.GetBlogPostCount()) // if post is greater than the total amount of posts, we went too far forward
             {
                 Post = SQL.Blog.GetBlogPostCount();
             }

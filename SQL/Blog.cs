@@ -11,7 +11,7 @@ namespace FunWebsiteThing.SQL
             {
                 con.Open();
 
-                string blog = "CREATE TABLE IF NOT EXISTS blog (id INT(11) PRIMARY KEY AUTO_INCREMENT, title VARCHAR(255) NOT NULL, message VARCHAR(255) NOT NULL, date DATETIME DEFAULT CURRENT_TIMESTAMP)";
+                string blog = "CREATE TABLE IF NOT EXISTS blog (id INT(11) PRIMARY KEY AUTO_INCREMENT, title VARCHAR(255) NOT NULL, message VARCHAR(255) NOT NULL, date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP)";
                 using (var cmd = new MySqlCommand(blog, con))
                 {
                     cmd.ExecuteNonQuery();
@@ -89,9 +89,10 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        public static (string?, string?) GetBlogPost(int? blogid)
+        // to do - get date of blog post, maybe change return from tuple to array
+        public static (string? title, string? message) GetBlogPost(int? blogid)
         {
-            string title = "", message = "";
+            string? title = null, message = null; // Initialize as null
             try
             {
                 using (var con = Main.Connect())
@@ -103,17 +104,18 @@ namespace FunWebsiteThing.SQL
                         cmd.Parameters.AddWithValue("@id", blogid);
                         using (var reader = cmd.ExecuteReader())
                         {
-                            if (reader != null)
+                            if (reader.Read()) // if there are rows
                             {
-                                while (reader.Read())
-                                {
-                                    title = reader.GetString(0);
-                                    message = reader.GetString(1);
-                                }
+                                title = reader.GetString(0);
+                                message = reader.GetString(1);
+                            }
+                            else
+                            {
+                                return (null, null);
                             }
                         }
-                        return (title, message);
                     }
+                    return (title, message);
                 }
             }
             catch (MySqlException e)
