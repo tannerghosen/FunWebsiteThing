@@ -11,7 +11,7 @@ namespace FunWebsiteThing.SQL
                 con.Open();
 
                 // Accounts Table
-                string accounts = "CREATE TABLE IF NOT EXISTS accounts (id INT(11) PRIMARY KEY AUTO_INCREMENT, email VARCHAR(255) NOT NULL UNIQUE, username VARCHAR(50) NOT NULL UNIQUE, password TEXT NOT NULL, sessionid INT(11), sessiontoken TEXT, isadmin TINYINT DEFAULT 0)";
+                string accounts = "CREATE TABLE IF NOT EXISTS accounts (id INT(11) PRIMARY KEY AUTO_INCREMENT, email VARCHAR(255) NOT NULL UNIQUE, username VARCHAR(50) NOT NULL UNIQUE, password TEXT NOT NULL, sessionid INT(11), ipaddress TEXT, isadmin TINYINT DEFAULT 0)";
                 using (var cmd = new MySqlCommand(accounts, con))
                 {
                     cmd.ExecuteNonQuery();

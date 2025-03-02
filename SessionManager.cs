@@ -43,6 +43,7 @@ public class SessionManager
         }
     }
 
+    // Session ID generator
     public int SID()
     {
         Random r = new Random();

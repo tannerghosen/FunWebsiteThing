@@ -12,22 +12,23 @@
 
 <div class="adminstuff">
     <table>
-    <thead><tr><td>User ID</td><td>Username</td><td>Email</td><td>Session ID</td><td>Session Token</td><td>Security Question</td><td>Are they Admin?</td><td>Delete User</td><td>Update User</td><td>Admin User</td></tr></thead>
+    <thead><tr><td>User ID</td><td>Username</td><td>Email</td><td>IP Address</td><td>Session ID</td><td>Security Question</td><td>Are they Admin?</td><td>Delete User</td><td>Update User</td><td>Admin User</td></tr></thead>
     <tbody>
         <!-- will look like below: -->
         <!--<tr><td>0</td><td>Dummy</td><td>dummy@gmail.com</td><td>true</td></tr>-->
         <!-- for loop to display sql table -->
             @{
                 string[]?[]? info = SQL.Admin.GrabAccountsTable();
+                // newinfo is the same outside of row[6] being modified from being a boolean true/false to a Yes/No via a select statement
                 string[][] newinfo = info.Select(row =>
                 {
-                    if (Convert.ToBoolean(row[6]) == true)
+                    if (Convert.ToBoolean(row[5]) == true)
                     {
-                        row[6] = "Yes";
+                        row[5] = "Yes";
                     }
                     else
                     {
-                        row[6] = "No";
+                        row[5] = "No";
                     }
                     return row;
                 }).ToArray();
@@ -35,8 +36,7 @@
                 foreach(string[] row in newinfo)
                 {
                     string updateurl = "/Update?userid="+row[0];
-                    Console.WriteLine(Convert.ToInt32(row[0]));
-                    <tr><td>@row[0]</td><td>@row[2]</td><td>@row[1]</td><td>@row[4]</td><td>Not Implemented<!--@row[5]--></td><td>@row[7]</td><td>@row[6]</td>
+                    <tr><td>@row[0]</td><td>@row[2]</td><td>@row[1]</td><td>@row[7]</td><td>@row[4]</td><td>@row[6]</td><td>@row[5]</td>
                     @if (row[0] != "0" && row[0] != "-1") // if the entries are not for userids 0 and -1
                     {
                         if (SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0 || HttpContext.Session.GetInt32("IsAdmin") == 1 && row[6] != "Yes")) // if admin and userid = 0 or if admin and they are not updating an admin

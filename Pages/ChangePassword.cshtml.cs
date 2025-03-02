@@ -28,13 +28,13 @@ namespace FunWebsiteThing.Pages
                 int id = int.TryParse(Id, out int newid) ? newid : 0;
                 SQL.Accounts.UpdateInfo(id, 0, Password, 0, true); 
                 Result = "Password has been changed.";
-                TempData["Id"] = null; // to prevent abuse, we set tempdata id to null
+                TempData["Id"] = null; // to prevent abuse, we set TempData Id back to null
                 return Redirect("/Login");
             }
             else
             {
                 Result = "Invalid password";
-                TempData["Id"] = Id; // ensure tempdata is still set to id
+                TempData["Id"] = Id; // ensure tempdata is still set to Id
                 return Redirect("/ChangePassword");
             }
         }

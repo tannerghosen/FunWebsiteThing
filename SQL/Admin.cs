@@ -12,7 +12,7 @@ namespace FunWebsiteThing.SQL
                 using (var con = Main.Connect())
                 {
                     con.Open();
-                    string query = "SELECT a.*, s.question, (SELECT COUNT(*) FROM comments WHERE userid = a.id) AS CommentCount FROM accounts a LEFT JOIN securityquestion s ON a.id = s.id";
+                    string query = "SELECT a.*, s.question FROM accounts a LEFT JOIN securityquestion s ON a.id = s.id";
                     using (var cmd = new MySqlCommand(query, con))
                     {
                         using (var reader = cmd.ExecuteReader())
@@ -27,10 +27,9 @@ namespace FunWebsiteThing.SQL
                                 row[2] = reader.GetString(2); // username
                                 row[3] = reader.GetString(3); // password
                                 row[4] = reader.IsDBNull(4) ? "" : reader.GetInt32(4).ToString(); // sessionid
-                                row[5] = reader.IsDBNull(5) ? "" : reader.GetString(5); // sessiontoken
-                                row[6] = reader.IsDBNull(6) ? null : reader.GetBoolean(6).ToString(); // is admin?
-                                row[7] = reader.IsDBNull(7) ? "No security question set!" : reader.GetString(7); // security question
-                                //row[8] = reader.IsDBNull(8) ? "0" : reader.GetInt32(8).ToString(); // comments count
+                                row[5] = reader.IsDBNull(6) ? null : reader.GetBoolean(6).ToString(); // is admin?
+                                row[6] = reader.IsDBNull(7) ? "No security question set!" : reader.GetString(7); // security question
+                                row[7] = reader.IsDBNull(5) ? "No IP address" : reader.GetString(5); // ip address
                                 rows.Add(row); // add row to the rows List
                                 #pragma warning restore CS8601
                             }

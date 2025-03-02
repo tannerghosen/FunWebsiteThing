@@ -2,10 +2,10 @@
 @model FunWebsiteThing.Pages.SecurityQuestionModel
 @{
     ViewData["Title"] = "Security Question";
-    SessionManager s;// = new SessionManager();
+    SessionManager s;
 }
 
-@if(Model.Id != null)
+@if(Model.Id != null) // we make sure the TempData Id is set, otherwise we don't show anything'
 {
     if(Model.Question != null)
     {
@@ -34,8 +34,8 @@
 }
 else
 {
-<h1>Nothing here!</h1>
-<p>Nothing at all! Nothing at all!</p>
+    <h1>Nothing here!</h1>
+    <p>Nothing at all! Nothing at all!</p>
 }
 
 @{
