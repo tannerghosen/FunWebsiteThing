@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using System.Buffers.Text;
 
+Settings.Init();
 Console.WriteLine($"GOOGLE_CLIENT_ID: {Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID")}");
 Console.WriteLine($"GOOGLE_CLIENT_SECRET: {Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET")}");
 
@@ -81,7 +82,6 @@ app.UseEndpoints(endpoints =>
 
 app.MapRazorPages();
 
-Settings.Init();
 FunWebsiteThing.SQL.Main.Init();
 
 app.Run();

@@ -4,7 +4,7 @@
 namespace FunWebsiteThing
 {
     // Route for controller APIs is /api/Controller/Action
-    // example: To access GeneratePassword, route would be /api/Misc/GeneratePassword
+    // example: To access GeneratePassword, route would be /api/Misc/GeneratePassword because the Controller part of the class name is omitted, and GeneratePassword is the GET
     [ApiController]
     [Route("api/[controller]")]
     public class MiscController : ControllerBase

@@ -365,3 +365,4 @@ FodyWeavers.xsd
 # Additional ones added post-auto generation of this file
 *.db
 *.json
+*.txt

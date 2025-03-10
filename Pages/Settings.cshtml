@@ -32,12 +32,19 @@
             </fieldset>
         </form>
         <script>
-            function GeneratePass() {
+            function GeneratePass()
+            {
+                // jQuery AJAX method below
                 $.ajax({
-                    type: "GET",
-                    url: "api/Misc/GeneratePassword", // for clarification, look at Register.cshtml's comment on controller routes
-                    success: function (data) {
+                    type: "GET", // GeneratePassword via MiscController is a GET
+                    url: "api/Misc/GeneratePassword", // api/Misc(Controller, the controller is omitted when accessing API paths)/GeneratePassword (the HttpGet in the MiscController)
+                    success: function (data)
+                    {
                         document.getElementById("pass").value = data.password; // get the password from our MiscController
+                    },
+                    error: function()
+                    {
+                        console.error("Unable to get a generated password from route api/Misc/GeneratePassword");
                     }
                 });
             }

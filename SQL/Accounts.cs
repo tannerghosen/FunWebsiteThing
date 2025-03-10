@@ -75,7 +75,7 @@ namespace FunWebsiteThing.SQL
         // Registers an account by first running a SQL statement to see if it the account exists. If it does, don't do anything.
         // If it doesn't, run another SQL statement that inserts it into the table, alongside generating a salt to hash our password.
         // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
-        public static async Task<(bool, bool)> Register(string email, string username, string password, int sessionid = 0, string stoken = "")
+        public static async Task<(bool, bool)> Register(string email, string username, string password, int sessionid = 0, string ipaddress = "")
         {
             try
             {
@@ -93,7 +93,7 @@ namespace FunWebsiteThing.SQL
                             return (false, false);
                         }
                     }
-                    query = "INSERT INTO accounts (email, username, password, sessionid) VALUES (@email, @username, @password, @sid)";
+                    query = "INSERT INTO accounts (email, username, password, sessionid, ipaddress) VALUES (@email, @username, @password, @sid, @ipa)";
                     using (var cmd = new MySqlCommand(query, con))
                     {
                         string salt = BCrypt.Net.BCrypt.GenerateSalt(12);
@@ -102,6 +102,7 @@ namespace FunWebsiteThing.SQL
                         cmd.Parameters.AddWithValue("@username", username);
                         cmd.Parameters.AddWithValue("@password", hashpass);
                         cmd.Parameters.AddWithValue("@sid", sessionid);
+                        cmd.Parameters.AddWithValue("@ipa", ipaddress);
                         await cmd.ExecuteNonQueryAsync();
                         return (true, false);
                     }
@@ -118,7 +119,7 @@ namespace FunWebsiteThing.SQL
         // If it is, then we run another SQL statement that compares the hashed password with the password given using BCrypt.Verify
         // If it matches, we return true so Login.cshtml.cs can handle setting the session up. If not, we return false.
         // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
-        public static async Task<(bool, bool)> Login(string username, string password, int sessionid = 0, string stoken = "")
+        public static async Task<(bool, bool)> Login(string username, string password, int sessionid = 0, string ipaddress = "No IP Address")
         {
             if (username == "Anonymous") // Let's not allow people to use Anonymous as a username to login
             {
@@ -166,13 +167,34 @@ namespace FunWebsiteThing.SQL
                                         cm.Parameters.AddWithValue("@username", username);
                                         await cm.ExecuteNonQueryAsync();
                                     }
-                                    return (true, false);
+                                }
+                            }
+                            query = "SELECT ipaddress FROM accounts WHERE username = @username";
+                            using (var c = new MySqlCommand(query, con))
+                            {
+                                c.Parameters.AddWithValue("@username", username);
+                                var result = await c.ExecuteScalarAsync();
+                                string ipa;
+                                if (result == DBNull.Value)
+                                {
+                                    ipa = "No IP Address";
                                 }
                                 else
                                 {
-                                    return (true, false);
+                                    ipa = Convert.ToString(result) != null ? Convert.ToString(result) : "No IP Address";
+                                }
+                                if (ipaddress != ipa || ipa == "No IP Address")
+                                {
+                                    query = "UPDATE accounts SET ipaddress = @ipa WHERE username = @username";
+                                    using (var cm = new MySqlCommand(query, con))
+                                    {
+                                        cm.Parameters.AddWithValue("@ipa", ipaddress);
+                                        cm.Parameters.AddWithValue("@username", username);
+                                        await cm.ExecuteNonQueryAsync();
+                                    }
                                 }
                             }
+                            return (true, false);
                         }
                     }
                 }
