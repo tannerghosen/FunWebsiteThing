@@ -1,12 +1,10 @@
 ﻿using System.Text.RegularExpressions;
 using System.Text;
 
-namespace FunWebsiteThing
+namespace FunWebsiteThing.APIControllers.Classes
 {
-    public class Misc
+    public class Password
     {
-        /* This is the WasspordExtras class partially ripped from Wasspord and very modified, pre-changes to how GeneratePassword would store passwords into
-           a file. Therefore, passwords are not saved but kept into memory as long as the server the website's on is running */
         /* Passwords: Generated passwords kept in a HashSet to prevent duplicate passwords from being generated. */
         private static HashSet<string> Passwords = new HashSet<string>();
 

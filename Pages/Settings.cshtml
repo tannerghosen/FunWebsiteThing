@@ -32,21 +32,23 @@
             </fieldset>
         </form>
         <script>
-            function GeneratePass()
+            async function GeneratePass()
             {
-                // jQuery AJAX method below
-                $.ajax({
-                    type: "GET", // GeneratePassword via MiscController is a GET
-                    url: "api/Misc/GeneratePassword", // api/Misc(Controller, the controller is omitted when accessing API paths)/GeneratePassword (the HttpGet in the MiscController)
-                    success: function (data)
+                try
+                {
+                    const response = await fetch("api/Password/Generate"); // we set the response to the results of the fetch
+                    if(!response.ok) // if response isn't ok (not found, internal server error, forbidden, bad request, network issues)
                     {
-                        document.getElementById("pass").value = data.password; // get the password from our MiscController
-                    },
-                    error: function()
-                    {
-                        console.error("Unable to get a generated password from route api/Misc/GeneratePassword");
+                        console.error("GeneratePass got a not-ok response.\n" + response.status);
                     }
-                });
+
+                    const data = await response.json(); // we set data to the response parsed in json
+                    document.getElementById("pass").value = data.password; // so we just set the value of pass to data.password, which is the password received in the response body
+                }
+                catch(error) // if some odd error occurs, it's caught here
+                {
+                    console.error("GeneratePassword got an error in its try-catch.\n" + error.message);
+                }
             }
         </script>
         <button onclick="GeneratePass()">Generate Pass</button>
@@ -70,5 +72,3 @@
         alert('@message');
     </script>
 }
-
-<!-- add an if statement to add a link to the admin page to look at accounts, drop and alter the table -->

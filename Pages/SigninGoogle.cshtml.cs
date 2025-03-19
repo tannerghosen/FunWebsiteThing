@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
+using FunWebsiteThing.APIControllers.Classes;
 
 namespace FunWebsiteThing.Pages
 {
@@ -39,7 +40,7 @@ namespace FunWebsiteThing.Pages
                         int num = random.Next(1, 9999);
                         username = username + num.ToString();
                     }
-                    string password = Misc.GeneratePassword(); // generate a password
+                    string password = Password.GeneratePassword(); // generate a password
                     TempData["TempPassword"] = password; // we store this for WelcomeExternal's message
                     _a.Register(email, username, password, null, null); // register the user!
                 }

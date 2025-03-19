@@ -14,12 +14,10 @@
     <table>
     <thead><tr><td>User ID</td><td>Username</td><td>Email</td><td>IP Address</td><td>Session ID</td><td>Security Question</td><td>Are they Admin?</td><td>Delete User</td><td>Update User</td><td>Admin User</td></tr></thead>
     <tbody>
-        <!-- will look like below: -->
-        <!--<tr><td>0</td><td>Dummy</td><td>dummy@gmail.com</td><td>true</td></tr>-->
-        <!-- for loop to display sql table -->
             @{
+                // Accounts Table as a 2d array (row, column). each user entry is 1 row, with multiple columns
                 string[]?[]? info = SQL.Admin.GrabAccountsTable();
-                // newinfo is the same outside of row[6] being modified from being a boolean true/false to a Yes/No via a select statement
+                // newinfo is the same as the above Accounts Table outside of row[5] being modified from being a boolean true/false to a Yes/No via a select statement
                 string[][] newinfo = info.Select(row =>
                 {
                     if (Convert.ToBoolean(row[5]) == true)
@@ -33,6 +31,7 @@
                     return row;
                 }).ToArray();
 
+                // for-each to add a row to our table for each account in accounts table, alongside add functionality to drop/alter them without having to open up MySQL's command prompt
                 foreach(string[] row in newinfo)
                 {
                     string updateurl = "/Update?userid="+row[0];
@@ -59,7 +58,7 @@
                         </td>
                         }
                     }
-                    else
+                    else // blank entries
                     {
                         <td></td>
                         <td></td>
