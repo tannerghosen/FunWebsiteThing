@@ -615,7 +615,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (MySqlException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in CreateSecurityQuestion: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in UpdateSecurityQuestion: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return (false, true);
             }
         }

@@ -60,7 +60,7 @@ namespace FunWebsiteThing.SQL
         }
 
         // Grabs usernames, comments, and dates from database and returns them as arrays
-        public static string[][]? GrabComments(int section = 0)
+        public static string[][] GrabComments(int section = 0)
         {
             // we grab username for the poster's name, comments for the comment, dates for the date of comment posted, and the comment's id
             List<string> usernames = new List<string>();
