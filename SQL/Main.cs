@@ -19,6 +19,7 @@ namespace FunWebsiteThing.SQL
             Blog.Init();
             Comments.Init();
             Accounts.Init();
+            Files.Init();
         }
         public static void SetConnectionString(string cs)
         {

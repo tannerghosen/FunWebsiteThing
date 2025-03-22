@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
-using FunWebsiteThing.APIControllers.Classes;
+using FunWebsiteThing.Controllers.Classes;
 
 namespace FunWebsiteThing.Pages
 {

@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using System.Text;
 
-namespace FunWebsiteThing.APIControllers.Classes
+namespace FunWebsiteThing.Controllers.Classes
 {
     public class Password
     {
