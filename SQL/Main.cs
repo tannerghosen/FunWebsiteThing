@@ -16,10 +16,10 @@ namespace FunWebsiteThing.SQL
         {
             string cs = Settings.GetSettings()[0];
             SetConnectionString(cs);
-            Blog.Init();
-            Comments.Init();
-            Accounts.Init();
-            Files.Init();
+            Accounts.Init(); // accounts and securityquestion tables
+            Blog.Init(); // blog table
+            Comments.Init(); // comments table
+            Files.Init(); // files and filesdescription tables
         }
         public static void SetConnectionString(string cs)
         {
