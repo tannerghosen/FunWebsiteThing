@@ -64,7 +64,7 @@ namespace FunWebsiteThing.SQL
                 }
 
                 // Delete Account Trigger
-                string deleteaccounttrigger = "CREATE TRIGGER IF NOT EXISTS deleteaccounttrigger AFTER DELETE ON accounts FOR EACH ROW BEGIN DELETE FROM securityquestion WHERE id = OLD.id; UPDATE comments SET userid = -1 WHERE userid = OLD.id; END";
+                string deleteaccounttrigger = "CREATE TRIGGER IF NOT EXISTS deleteaccounttrigger AFTER DELETE ON accounts FOR EACH ROW BEGIN DELETE FROM securityquestion WHERE id = OLD.id; UPDATE comments SET userid = -1 WHERE userid = OLD.id; UPDATE files SET userid = -1 WHERE userid = OLD.id; END";
                 using (var cmd = new MySqlCommand(deleteaccounttrigger, con))
                 {
                     cmd.ExecuteNonQuery();
