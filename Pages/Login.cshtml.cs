@@ -43,6 +43,11 @@ namespace FunWebsiteThing.Pages
         // Changed from void to IActionResult because void doesn't actually wait for methods. For some reason, this was not an issue before we switched to MySQL, funny enough.
         public async Task<IActionResult> OnPost()
         {
+            if ((Username == null || Username == "") || (Password == null || Password == ""))
+            {
+                Result = "Username or Password is blank.";
+                return Page();
+            }
             int sid = _s.SID();
             IActionResult result = await _a.Login(Username, Password);
             if (result is OkObjectResult)
@@ -53,13 +58,13 @@ namespace FunWebsiteThing.Pages
             {
                 Result = "Invalid login";
             }
-            else if (result is StatusCodeResult)
+            else if (result is StatusCodeResult scr && scr.StatusCode == 500)
             {
                 Result = "An error occurred while logging in";
             }
-            else
+            else if (result is StatusCodeResult scr2 && scr2.StatusCode == 409)
             {
-                Result = "Either username or password is blank, or you're already logged in.";
+                Result = "You are already logged in.";
             }
             TempData["Result"] = Result;
 

@@ -377,3 +377,9 @@ table
     text-align: center;
     margin: 0 auto;
 }
+
+#Comment 
+{
+    resize: none;
+    width: 100%;
+}

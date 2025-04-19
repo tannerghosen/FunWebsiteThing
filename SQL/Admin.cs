@@ -20,8 +20,8 @@ namespace FunWebsiteThing.SQL
                             List<string[]> rows = new List<string[]>(); // create a List of string arrays called rows
                             while (reader.Read())
                             {
-                                #pragma warning disable CS8601 // Nullability of reference types in value doesn't match target type.
-                                string[] row = new string[9]; // create a string array called row where all 7 columns are stored in
+                                #pragma warning disable CS8601 
+                                string[] row = new string[9];
                                 row[0] = reader.GetInt32(0).ToString(); // id
                                 row[1] = reader.GetString(1); // email
                                 row[2] = reader.GetString(2); // username
@@ -30,7 +30,7 @@ namespace FunWebsiteThing.SQL
                                 row[5] = reader.IsDBNull(6) ? null : reader.GetBoolean(6).ToString(); // is admin?
                                 row[6] = reader.IsDBNull(7) ? "No security question set!" : reader.GetString(7); // security question
                                 row[7] = reader.IsDBNull(5) ? "No IP address" : reader.GetString(5); // ip address
-                                rows.Add(row); // add row to the rows List
+                                rows.Add(row);
                                 #pragma warning restore CS8601
                             }
                             return rows.ToArray(); // convert the List to an array and return it
@@ -61,9 +61,8 @@ namespace FunWebsiteThing.SQL
                         {
                             cmd.Parameters.AddWithValue("@userid", userid);
                             var result = cmd.ExecuteScalar();
-                            if (result != null && result != DBNull.Value) // if result isn't null or result isn't dbnull 
+                            if (result != null && result != DBNull.Value) 
                             {
-                                // isadmin is stored as a boolean (which defaults to 0 (false) or 1 (true) regardless of how inserted or stored)
                                 return Convert.ToInt32(result) == 1;
                             }
                         }

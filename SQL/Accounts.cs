@@ -146,11 +146,11 @@ namespace FunWebsiteThing.SQL
                         cmd.Parameters.AddWithValue("@username", username);
                         var res = await cmd.ExecuteScalarAsync();
                         string hashedpassword = res.ToString();
-                        if (!BCrypt.Net.BCrypt.Verify(password, hashedpassword)) // invalid password
+                        if (!BCrypt.Net.BCrypt.Verify(password, hashedpassword))
                         {
                             return (false, false);
                         }
-                        else // valid password
+                        else
                         {
                             query = "SELECT sessionid FROM accounts WHERE username = @username";
                             using (var c = new MySqlCommand(query, con))
@@ -279,12 +279,12 @@ namespace FunWebsiteThing.SQL
                 catch (MySqlException e)
                 {
                     Logger.Write("SQL.Accounts: An error occured in UpdateInfo: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
-                    return (false, true); // error happened due to sql issue, so yea let's say an error occured
+                    return (false, true); 
                 }
             }
             else
             {
-                return (false, true);
+                return (false, false);
             }
         }
 

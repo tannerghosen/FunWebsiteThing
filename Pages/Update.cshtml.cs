@@ -32,23 +32,23 @@ namespace FunWebsiteThing.Pages
                 if (!string.IsNullOrEmpty(Password))
                 {
                     // for these if-elses with xupdated, the expected outcome is either it updates it or not.
-                    // bool error will always be true if xupdated is false
+                    // bool error is true if either a sql exception occurs, sql issues =/= bool error is true. ONLY if it causes an exception.
                                                                                    // id option value sid (n/a) isadmin
-                    (bool passwordupdated, bool error) = await SQL.Accounts.UpdateInfo(Id, 0, Password, null, true); // isadmin is true
+                    (bool passwordupdated, bool error) = await SQL.Accounts.UpdateInfo(Id, 0, Password, null, true); // isadmin is true as we are admin
                     if (passwordupdated)
                     {
-                        Result += "Password has been changed."; // Success
+                        Result += "Password has been changed."; 
                     }
                     else if (!passwordupdated && !error)
                     {
-                        Result += "An unknown error occurred while changing the Password."; // unlike below where dups can happen, this should never happen
+                        Result += "An unknown error occurred while changing the Password.";
                     }
                     else if (!passwordupdated && error)
                     {
-                        Result += "An error occurred while changing the Password."; // SQL Error
+                        Result += "An error occurred while changing the Password."; 
                     }
                 }
-                else if (string.IsNullOrEmpty(Password)) // No need to show an error if it's empty
+                else if (string.IsNullOrEmpty(Password)) 
                 {
                 }
 
@@ -57,18 +57,18 @@ namespace FunWebsiteThing.Pages
                     (bool emailupdated, bool error) = await SQL.Accounts.UpdateInfo(Id, 1, Email, null, true);
                     if (emailupdated)
                     {
-                        Result += "\\nEmail has been updated to " + Email; // Success
+                        Result += "\\nEmail has been updated to " + Email; 
                     }
                     else if (!emailupdated && !error)
                     {
-                        Result += "\\nEmail is already in use by another account!"; // SQL Conflict (Email used by another account)
+                        Result += "\\nEmail is already in use by another account!"; 
                     }
                     else if (!emailupdated && error)
                     {
-                        Result += "\\nAn error occurred while changing the Email."; // Error / SQL Error
+                        Result += "\\nAn error occurred while changing the Email."; 
                     }
                 }
-                else if (string.IsNullOrEmpty(Email)) // No need to show an error if it's empty
+                else if (string.IsNullOrEmpty(Email)) 
                 { 
                 }
                 else if (!Regex.IsMatch(Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
@@ -81,15 +81,15 @@ namespace FunWebsiteThing.Pages
                     (bool usernameupdated, bool error) = await SQL.Accounts.UpdateInfo(Id, 2, Username, null, true);
                     if (usernameupdated)
                     {
-                        Result += "\\nUsername updated to " + Username; // Success
+                        Result += "\\nUsername updated to " + Username;
                     }
                     else if (!usernameupdated && !error)
                     {
-                        Result += "\\nUsername is already in use by another account!"; // SQL Conflict (Username used by another account)
+                        Result += "\\nUsername is already in use by another account!";
                     }
                     else if (!usernameupdated && error)
                     {
-                        Result += "\\nAn error occurred while changing the Username."; // Error / SQL Error
+                        Result += "\\nAn error occurred while changing the Username."; 
                     }
                 }
                 else if (string.IsNullOrEmpty(Username))  // No need to show an error if it's empty

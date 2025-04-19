@@ -2,15 +2,7 @@
 @model FunWebsiteThing.Pages.WelcomeExternalModel
 @{
 }
-@if (TempData["TempPassword"] != null)
-{
-    <h1>Welcome!</h1>
-    <p>Your generated password is: @TempData["TempPassword"]</p>
-    <p>You can still log in via @TempData["LoginSource"], however this password allows you to directly log in without going through @TempData["LoginSource"].</p>
-    <p>You can change it <a href="/Settings">in your settings</a> at any time.</p>
-}
-else
-{
-    // No need to add anything here, user should not be here if this isn't their first time logging in via OAuth2
-    // OR if they just randomly navigated to this page
-}
+<h1>Welcome!</h1>
+<p>Your generated password is: @TempData["TempPassword"]</p>
+<p>You can still log in via @TempData["LoginSource"], however this password allows you to directly log in without going through @TempData["LoginSource"].</p>
+<p>You can change it <a href="/Settings">in your settings</a> at any time.</p>

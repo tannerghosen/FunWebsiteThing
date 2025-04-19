@@ -16,7 +16,7 @@ namespace FunWebsiteThing
         public async Task<IActionResult> Login(string Username, string Password)
         {
             Logger.Write(Username + " " + Password);
-            if ((!string.IsNullOrEmpty(Username) || !string.IsNullOrEmpty(Password)) && _h.HttpContext.Session.GetInt32("IsLoggedIn") != 1)
+            if (_h.HttpContext.Session.GetInt32("IsLoggedIn") != 1)
             {
                 int sid = _s.SID();
                 bool isusernameemail = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
@@ -37,7 +37,7 @@ namespace FunWebsiteThing
                     return StatusCode(500, "An error occurred while logging in");
                 }
             }
-            return BadRequest("Either username or password is blank, or you're already logged in.");
+            return StatusCode(409, "You're already logged in.");
         }
         public async Task<IActionResult> Register(string Email, string Username, string Password, string? SecurityQuestion = null, string? Answer = null)
         {
@@ -61,7 +61,7 @@ namespace FunWebsiteThing
                     StatusCode(500, "An error occured while registering the account.");
                 }
             }
-            return BadRequest("You're already logged in, no need to register an account!");
+            return StatusCode(409, "You're already logged in, no need to register an account!");
         }
 
         public async Task<IActionResult> Logout()

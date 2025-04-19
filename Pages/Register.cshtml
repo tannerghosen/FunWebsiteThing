@@ -60,7 +60,7 @@
             const response = await fetch("api/Password/Generate"); // we set the response to the results of the fetch
             if(!response.ok) // if response isn't ok (not found, internal server error, forbidden, bad request, network issues)
             {
-                console.error("GeneratePass got a not-ok response.\n" + response.status);
+                console.error("GeneratePass got a not ok response.\n" + response.status);
             }
 
             const data = await response.json(); // we set data to the response parsed in json

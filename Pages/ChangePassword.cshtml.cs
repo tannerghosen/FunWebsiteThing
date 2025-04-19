@@ -17,7 +17,7 @@ namespace FunWebsiteThing.Pages
 
         public void OnGet()
         {
-            Id = TempData["Id"]?.ToString(); // get tempdata Id from securityquestion which comes from forgetpassword
+            Id = TempData["Id"]?.ToString(); 
         }
 
         public async Task<IActionResult> OnPost()
@@ -34,7 +34,7 @@ namespace FunWebsiteThing.Pages
             else
             {
                 Result = "Invalid password";
-                TempData["Id"] = Id; // ensure tempdata is still set to Id
+                TempData["Id"] = Id;
                 return Redirect("/ChangePassword");
             }
         }

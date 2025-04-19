@@ -8,9 +8,11 @@
 }
 @if(Model.Title != null)
 {
+    <!-- Blog -->
     <h1>@ViewData["Title"]</h1>
-    <p class="blogmessage" style="text-align: center;">@Model.Message</p>
+    <div style="text-align: center; margin: auto;"><p class="blogmessage">@Model.Message</p></div>
     <span><a href="/Blog?post=@(Model.Post-1)">Back</a>   <a href="/Blog?post=@(Model.Post + 1)">Next</a></span>
+    <!-- Comment Section -->
     <div>
         <form method="post">
             <fieldset>

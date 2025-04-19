@@ -80,13 +80,13 @@ namespace FunWebsiteThing.Pages
                 {
                     Result = "Duplicate Account";
                 }
-                else if (result is StatusCodeResult)
+                else if (result is StatusCodeResult scr && scr.StatusCode == 500)
                 {
                     Result = "An error occured while registering the account.";
                 }
-                else
+                else if (result is StatusCodeResult scr2 && scr2.StatusCode == 409)
                 {
-                    Result = "You're already logged in, no need to register an account!";
+                    Result = "You are already logged in.";
                 }
             }
             else

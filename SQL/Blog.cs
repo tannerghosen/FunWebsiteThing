@@ -92,7 +92,7 @@ namespace FunWebsiteThing.SQL
         // to do - get date of blog post, maybe change return from tuple to array
         public static (string? title, string? message) GetBlogPost(int? blogid)
         {
-            string? title = null, message = null; // Initialize as null
+            string? title = null, message = null; 
             try
             {
                 using (var con = Main.Connect())
@@ -104,7 +104,7 @@ namespace FunWebsiteThing.SQL
                         cmd.Parameters.AddWithValue("@id", blogid);
                         using (var reader = cmd.ExecuteReader())
                         {
-                            if (reader.Read()) // if there are rows
+                            if (reader.Read()) 
                             {
                                 title = reader.GetString(0);
                                 message = reader.GetString(1);
