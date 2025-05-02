@@ -11,7 +11,7 @@ namespace FunWebsiteThing.SQL
             string connect = ConnectionString;
             return new MySqlConnection(connect);
         }
-        // Creates database file and tables if they don't exist
+        // Creates database and tables if they don't exist
         public static void Init()
         {
             string cs = Settings.GetSettings()[0];

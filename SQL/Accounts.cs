@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using System.Text.RegularExpressions;
 
 namespace FunWebsiteThing.SQL
 {
@@ -77,6 +78,10 @@ namespace FunWebsiteThing.SQL
         // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
         public static async Task<(bool, bool)> Register(string email, string username, string password, int sessionid = 0, string ipaddress = "")
         {
+            // Ensure it meets regex before we even consider registering
+            if (!Regex.IsMatch(email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$") || !Regex.IsMatch(username, @"^(?!\s)(?!.*[\W_]{2,})[a-zA-Z0-9_\s]+$"))
+                return (false, false);
+
             try
             {
                 using (var con = Main.Connect())
@@ -240,37 +245,45 @@ namespace FunWebsiteThing.SQL
                                 }
                                 return (true, false);
                             case 1: // email
-                                string updateemail = "UPDATE accounts SET email = @email WHERE id = @id";
-                                using (var c = new MySqlCommand(updateemail, con))
+                                if (Regex.IsMatch(input, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
                                 {
-                                    c.Parameters.AddWithValue("@id", userid);
-                                    c.Parameters.AddWithValue("@email", input);
-                                    try
+                                    string updateemail = "UPDATE accounts SET email = @email WHERE id = @id";
+                                    using (var c = new MySqlCommand(updateemail, con))
                                     {
-                                        await c.ExecuteNonQueryAsync();
+                                        c.Parameters.AddWithValue("@id", userid);
+                                        c.Parameters.AddWithValue("@email", input);
+                                        try
+                                        {
+                                            await c.ExecuteNonQueryAsync();
+                                        }
+                                        catch
+                                        {
+                                            return (false, false); // dup email
+                                        }
                                     }
-                                    catch
-                                    {
-                                        return (false, false); // dup email
-                                    }
+                                    return (true, false);
                                 }
-                                return (true, false);
+                                return (false, false);
                             case 2: // username
-                                string updateusername = "UPDATE accounts SET username = @newusername WHERE id = @id";
-                                using (var c = new MySqlCommand(updateusername, con))
+                                if (Regex.IsMatch(input, @"^(?!\s)(?!.*[\W_]{2,})[a-zA-Z0-9_\s]+$"))
                                 {
-                                    c.Parameters.AddWithValue("@id", userid);
-                                    c.Parameters.AddWithValue("@newusername", input);
-                                    try
+                                    string updateusername = "UPDATE accounts SET username = @newusername WHERE id = @id";
+                                    using (var c = new MySqlCommand(updateusername, con))
                                     {
-                                        await c.ExecuteNonQueryAsync();
+                                        c.Parameters.AddWithValue("@id", userid);
+                                        c.Parameters.AddWithValue("@newusername", input);
+                                        try
+                                        {
+                                            await c.ExecuteNonQueryAsync();
+                                        }
+                                        catch
+                                        {
+                                            return (false, false); // dup username
+                                        }
                                     }
-                                    catch
-                                    {
-                                        return (false, false); // dup username
-                                    }
+                                    return (true, false);
                                 }
-                                return (true, false);
+                                return (false, false);
                             default:
                                 return (false, false);
                         }
