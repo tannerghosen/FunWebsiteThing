@@ -5,9 +5,33 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using System.Buffers.Text;
 
-Settings.Init();
-Console.WriteLine($"GOOGLE_CLIENT_ID: {Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID")}");
-Console.WriteLine($"GOOGLE_CLIENT_SECRET: {Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET")}");
+string sqlconstr = Environment.GetEnvironmentVariable("FWTConnectionString"); // FWTConnectionString, MySQL Connction String, syntax looks like this: Server=(server);Database=(db);User ID=(user);Password=(pass);
+string gclientid = Environment.GetEnvironmentVariable("FWTGoogleClientId"); // FWTGoogleClientId, Google Client Id, used for OAuth 2.0 login
+string gclientsec = Environment.GetEnvironmentVariable("FWTGoogleClientSecret"); // FWTGoogleClientSecret, Google Client Secret, used for OAuth 2.0 login
+/* To set up Google Login:
+   1. Go to console.cloud.google.com
+   2. Create an OAuth 2.0 Client ID
+   3. Set an Authorized redirect URI to https://(website)/signin-google (if hosted locally, https://localhost:7081/signin-google)
+   4. Save and wait roughly 5 minutes for it to take effect.
+*/
+
+bool[] setcheck = { sqlconstr != null, gclientid != null, gclientsec != null };
+
+if (setcheck.Contains(false))
+{
+    // Log Fatal Error to FWT.log
+    Logger.Write($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error.", "ERROR");
+    Logger.Write($"For more clarification, see the project's code in Program.cs", "ERROR");
+    Logger.Write($"FWTConnectionString Set: {setcheck[0]} FWTGoogleClientId Set: {setcheck[1]} FWTGoogleClientSecret Set: {setcheck[2]}","ERROR");
+
+    // Display Fatal Error in console
+    Console.WriteLine($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error.");
+    Console.WriteLine($"For more clarification, see the project's code in Program.cs");
+    Console.WriteLine($"FWTConnectionString Set: {setcheck[0]} FWTGoogleClientId Set: {setcheck[1]} FWTGoogleClientSecret Set: {setcheck[2]}");
+    Console.ReadKey();
+
+    Environment.Exit(0);
+}
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,13 +68,12 @@ builder.Services.AddAuthentication(options =>
 .AddGoogle(options => // add google oauth
 {
 
-    options.ClientId = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID"); // retrieve client id from environment variable
-    options.ClientSecret = Environment.GetEnvironmentVariable("GOOGLE_CLIENT_SECRET"); // retrieve client secret from environment variable
-    options.CallbackPath = "/signin-google"; 
+    options.ClientId = gclientid; // retrieve client id from environment variable
+    options.ClientSecret = gclientsec; // retrieve client secret from environment variable
+    options.CallbackPath = "/signin-google"; // do not change, /login or /login?method=google or similar would all be invalid, it has to be specific.
     // This is the callback path. ASP.NET Core middleware will handle the authentication process at this path, including
     // •	Validating the authentication token received from Google.
     // •	Creating a user principal (user identity) based on the claims (data given by a provider that creates an user's identity) provided by Google.
-    // It is not /login or /login?method=google (the same page that initiates the login authorization) because the middleware doesn't like that and throws an irrecoverable oauth state error.
     options.SignInScheme = IdentityConstants.ExternalScheme; // we sign in with the external scheme as the default scheme is cookie otherwise, which is not what we want 
     options.Scope.Add("email");
     options.Scope.Add("profile");
@@ -82,6 +105,6 @@ app.UseEndpoints(endpoints =>
 
 app.MapRazorPages();
 
-FunWebsiteThing.SQL.Main.Init();
+FunWebsiteThing.SQL.Main.Init(sqlconstr);
 
 app.Run();

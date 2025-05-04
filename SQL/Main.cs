@@ -12,10 +12,9 @@ namespace FunWebsiteThing.SQL
             return new MySqlConnection(connect);
         }
         // Creates database and tables if they don't exist
-        public static void Init()
+        public static void Init(string sqlconstr)
         {
-            string cs = Settings.GetSettings()[0];
-            SetConnectionString(cs);
+            SetConnectionString(sqlconstr);
             Accounts.Init(); // accounts and securityquestion tables
             Blog.Init(); // blog table
             Comments.Init(); // comments table
