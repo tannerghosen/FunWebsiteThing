@@ -17,8 +17,10 @@ namespace FunWebsiteThing.Pages
             _s = s;
             _a = a;
         }
-        // This method accesses the data from the Google OAuth2 login with the token we received from Google.
+        // This method accesses the data from the Google OAuth2 login challenge with the token we received from Google.
         // Additionally, based on the data, we either login the user or register them.
+        // The next step is to redirect to WelcomeExternal, which either is the end of the process or it redirects to Index and stops there
+        // SigninGoogle -> WelcomeExternal
         public async Task<IActionResult> OnGetAsync()
         {
             var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme); // We validate the authentication token and make sure it was sent by Google
