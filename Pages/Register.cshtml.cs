@@ -39,7 +39,6 @@ namespace FunWebsiteThing.Pages
         }
         public async Task<IActionResult> OnPost()
         {
-            Logger.Write("Email " + Email + " Username " + Username + " Question " + SecurityQuestion + " Answer " + Answer);
             int sid = _s.SID();
             if (string.IsNullOrEmpty(Email)) // if email doesn't match regex / is empty
             {

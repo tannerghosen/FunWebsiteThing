@@ -21,7 +21,8 @@ namespace FunWebsiteThing
                 int sid = _s.SID();
                 bool isusernameemail = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
                 Username = isusernameemail == true ? SQL.Accounts.GetUsername(Username) : Username;
-                (bool result, bool error) = await SQL.Accounts.Login(Username, Password, sid);
+                string ip = _s.GetIP();
+                (bool result, bool error) = await SQL.Accounts.Login(Username, Password, sid, ip);
 
                 if (result == true)
                 {
@@ -44,7 +45,8 @@ namespace FunWebsiteThing
             int sid = _s.SID();
             if (_h.HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
             {
-                (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid); // Registers our account, hopefully
+                string ip = _s.GetIP();
+                (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid, ip); // Registers our account, hopefully
                 if (result == true)
                 {
                     _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);

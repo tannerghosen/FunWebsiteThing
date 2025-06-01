@@ -1,5 +1,7 @@
 ﻿using FunWebsiteThing;
 using Microsoft.AspNetCore.Authentication;
+using Org.BouncyCastle.Asn1.Ocsp;
+
 #pragma warning disable CS8602
 public class SessionManager
 {
@@ -49,5 +51,10 @@ public class SessionManager
             return true;
         }
         return false;
+    }
+
+    public string GetIP()
+    {
+        return _h.HttpContext.Connection.RemoteIpAddress.ToString();
     }
 }
