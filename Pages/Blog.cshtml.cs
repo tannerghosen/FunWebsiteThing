@@ -30,15 +30,13 @@ namespace FunWebsiteThing.Pages
             {
                 Post = SQL.Blog.GetBlogPostCount();
             }
-            (Title, Message) = SQL.Blog.GetBlogPost(Post);
+            (Title, Message) = SQL.Blog.GetBlogPost(Post); //  Get the post to be displayed in the page
         }
 
         public async Task<IActionResult> OnPost()
         {
-            Post = int.TryParse(Request.Form["CS"], out int cs) ? cs : 0;
-            Title = Request.Form["Title"];
-            Message = Request.Form["Message"];
-            string username = HttpContext.Session.GetString("Username") ?? "Anonymous";
+            Post = int.TryParse(Request.Form["CS"], out int cs) ? cs : 0; // What post this comment belongs to (CS input in form on page)
+            string username = HttpContext.Session.GetString("Username") ?? "Anonymous"; // if the user is not logged in, use anonymous
             await SQL.Comments.AddComment(Comment, username, Post);
 
             return RedirectToPage("/Blog", new { post = Post});
@@ -46,10 +44,6 @@ namespace FunWebsiteThing.Pages
 
         public async Task<IActionResult> OnPostDelete(int? commentid)
         {
-            Post = int.TryParse(Request.Form["CS"], out int post) ? post : 0;
-            Title = Request.Form["Title"];
-            Message = Request.Form["Message"];
-            Logger.Write("CommentSection is " + Post + ", TryParse is " + post);
             if (HttpContext.Session.GetInt32("IsAdmin") == 1 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")))
             {
                 await SQL.Comments.DeleteComment(commentid);

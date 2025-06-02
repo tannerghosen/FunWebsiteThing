@@ -15,7 +15,6 @@ namespace FunWebsiteThing
         }
         public async Task<IActionResult> Login(string Username, string Password)
         {
-            Logger.Write(Username + " " + Password);
             if (_h.HttpContext.Session.GetInt32("IsLoggedIn") != 1)
             {
                 int sid = _s.SID();
@@ -43,14 +42,13 @@ namespace FunWebsiteThing
         public async Task<IActionResult> Register(string Email, string Username, string Password, string? SecurityQuestion = null, string? Answer = null)
         {
             int sid = _s.SID();
-            if (_h.HttpContext.Session.GetInt32("IsLoggedIn") != 1) // If we get a result, return the results
+            if (_h.HttpContext.Session.GetInt32("IsLoggedIn") != 1) 
             {
                 string ip = _s.GetIP();
-                (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid, ip); // Registers our account, hopefully
+                (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid, ip); 
                 if (result == true)
                 {
                     _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
-                    //Logger.Write(_h.HttpContext.Session.GetString("Username") + " " + _h.HttpContext.Session.GetInt32("UserId") + " " + _h.HttpContext.Session.GetInt32("SessionId") + " " + _h.HttpContext.Session.GetInt32("IsLoggedIn"), "REGISTER");
                     await SQL.Accounts.CreateSecurityQuestion(SQL.Accounts.GetUserID(Username), SecurityQuestion, Answer);
                     return Ok("Account Registered. Logged into " + Username + ".");
                 }

@@ -11,7 +11,7 @@
     <!-- Blog -->
     <h1>@ViewData["Title"]</h1>
     <div style="text-align: center; margin: auto;"><p class="blogmessage">@Model.Message</p></div>
-    <span><a href="/Blog?post=@(Model.Post-1)">Back</a>   <a href="/Blog?post=@(Model.Post + 1)">Next</a></span>
+    <span><a href="/Blog?post=@(Model.Post - 1)">Back</a>   <a href="/Blog?post=@(Model.Post + 1)">Next</a></span>
     <!-- Comment Section -->
     <div>
         <form method="post">
@@ -49,14 +49,13 @@
                                     <form method="post" asp-page-handler="Delete">
                                         <input type="hidden" name="commentid" value="@ids[i]" />
                                         <input type="hidden" name="CS" value="@Model.Post" />
-                                        <input type="hidden" asp-for="Title" value="@Model.Title" />
+                                        <input type="hidden" asp-for="Title" value="@Model.Title" /> 
                                         <input type="hidden" asp-for="Message" value="@Model.Message" />
                                         <button type="submit">Delete</button>
                                     </form>
                                 </td>
                             }
                         </tr>
-                        //<div>@usernames[i] at @DateTime.ParseExact(dates[i], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture).ToString("MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture)</div> <div>@comments[i]</div>
                     }
                 }
             }

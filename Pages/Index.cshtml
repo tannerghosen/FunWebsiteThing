@@ -4,9 +4,10 @@
     ViewData["Title"] = "Home";
     string PageContent = "Hello World!";
     string Time = "The time is " + Model.GetTime() + ".";
+    string Emoji = Model.RandomEmoji();
 }
 
 <h1>@ViewData["Title"]</h1>
 <p style="text-align: center;">@PageContent</p>
 <p>@Time</p>
-<p style="font-size: 150%">@Model.RandomEmoji()</p>
+<p style="font-size: 150%">@Emoji</p>
