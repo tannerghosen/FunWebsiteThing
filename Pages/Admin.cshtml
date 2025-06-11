@@ -8,66 +8,82 @@
 }
 @if (HttpContext.Session.GetInt32("IsAdmin") == 1 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")))
 {
-<h1>@ViewData["Title"]</h1>
+    <h1>@ViewData["Title"]</h1>
 
-<div class="adminstuff">
-    <table>
-    <thead><tr><td>User ID</td><td>Username</td><td>Email</td><td>IP Address</td><td>Session ID</td><td>Security Question</td><td>Are they Admin?</td><td>Delete User</td><td>Update User</td><td>Admin User</td></tr></thead>
-    <tbody>
-            @{
-                // Accounts Table as a 2d array (row, column). each user entry is 1 row, with multiple columns
-                string[]?[]? info = SQL.Admin.GrabAccountsTable();
-                // newinfo is the same as the above Accounts Table outside of row[5] being modified from being a boolean true/false to a Yes/No via a select statement
-                string[][] newinfo = info.Select(row =>
-                {
-                    if (Convert.ToBoolean(row[5]) == true) // if the result of column 5 (Are they Admin?) is true, set it to Yes, else No
+    <div class="adminstuff">
+        <table>
+            <thead><tr><td>User ID</td><td>Username</td><td>Email</td><td>IP Address</td><td>Session ID</td><td>Security Question</td><td>Are they Admin?</td><td>Delete User</td><td>Update User</td><td>Admin User</td></tr></thead>
+            <tbody>
+                @{
+                    // Accounts Table as a 2d array (row, column). each user entry is 1 row, with multiple columns
+                    string[]?[]? info = SQL.Admin.GrabAccountsTable();
+                    // newinfo is the same as the above Accounts Table outside of row[5] being modified from being a boolean true/false to a Yes/No via a select statement
+                    string[][] newinfo = info.Select(row =>
                     {
-                        row[5] = "Yes";
-                    }
-                    else
-                    {
-                        row[5] = "No";
-                    }
-                    return row;
-                }).ToArray();
+                        if (Convert.ToBoolean(row[5]) == true) // if the result of column 5 (Are they Admin?) is true, set it to Yes, else No
+                        {
+                            row[5] = "Yes";
+                        }
+                        else
+                        {
+                            row[5] = "No";
+                        }
+                        return row;
+                    }).ToArray();
 
-                // for-each to add a row to our table for each account in accounts table, alongside add functionality to drop/alter them without having to open up MySQL's command prompt
-                foreach(string[] row in newinfo)
-                {
-                    string updateurl = "/Update?userid="+row[0];
-                    // Yes, the columns aren't in order, they were switched around to look better, not exactly great but it works.
-                    <tr><td>@row[0]</td><td>@row[2]</td><td>@row[1]</td><td>@row[7]</td><td>@row[4]</td><td>@row[6]</td><td>@row[5]</td>
-                    @if (row[0] != "0" && row[0] != "-1") // if the entries are not for userids 0 and -1 (super admin and anonymous respectively)
+                    // for-each to add a row to our table for each account in accounts table, alongside add functionality to drop/alter them without having to open up MySQL's command prompt
+                    foreach(string[] row in newinfo)
                     {
-                        if (SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0 || HttpContext.Session.GetInt32("IsAdmin") == 1 && row[6] != "Yes")) // if admin and userid = 0 or if admin and they are not updating an admin
-                        {
-                            <td>
-                            <form method="post" asp-page-handler="Delete">
-                                <input type="hidden" name="userid" value="@row[0]" />
-                                <button type="submit">Delete</button>
-                            </form>
-                            </td>
-                            <td><a href=@updateurl>Update</a></td>
-                        }
-                        if (SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0)) // if admin and userid = 0
-                        {
-                        <td>
-                            <form method="post" asp-page-handler="Admin">
-                            <input type="hidden" name="userid" value="@row[0]" />
-                            <button type="submit">Update Admin Status</button>
-                            </form>
-                        </td>
-                        }
+                        string updateurl = "/Update?userid="+row[0];
+                        // Yes, the columns aren't in order, they were switched around to look better, not exactly great but it works.
+                        <tr><td>@row[0]</td><td>@row[2]</td><td>@row[1]</td><td>@row[7]</td><td>@row[4]</td><td>@row[6]</td><td>@row[5]</td>
+                            @if (row[0] != "0" && row[0] != "-1") // if the entries are not for userids 0 and -1 (super admin and anonymous respectively)
+                            {
+                                if (SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0 || HttpContext.Session.GetInt32("IsAdmin") == 1 && row[6] != "Yes")) // if admin and userid = 0 or if admin and they are not updating an admin
+                                {
+                                    <td>
+                                        <form method="post" asp-page-handler="Delete">
+                                            <input type="hidden" name="userid" value="@row[0]" />
+                                            <button type="submit">Delete</button>
+                                        </form>
+                                    </td>
+                                    <td><a href=@updateurl>Update</a></td>
+                                }
+                                if (SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0)) // if admin and userid = 0
+                                {
+                                    <td>
+                                        <form method="post" asp-page-handler="Admin">
+                                            <input type="hidden" name="userid" value="@row[0]" />
+                                            <button type="submit">Update Admin Status</button>
+                                        </form>
+                                    </td>
+                                }
+                            }
+                            else // blank entries for userid 0 and -1
+                            {
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            }
+                        </tr>
                     }
-                    else // blank entries for userid 0 and -1
-                    {
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    }
-                    </tr>
                 }
-            }
+            </tbody>
+        </table>
+
+        @{
+            Stats stats = await Statistics.GetStats();
+        }
+<table>
+    <tbody>
+        <tr><td>Stat</td><td>Count</td></tr>
+        <tr><td>Logins</td><td>@stats.Logins</td></tr>
+        <tr><td>Registrations</td><td>@stats.Registrations</td></tr>
+        <tr><td>
+                        <form method="post" asp-page-handler="ResetStats">
+                            <button type="submit">Reset Stats</button>
+                        </form>
+        </td></tr>
     </tbody>
 </table>
 </div>

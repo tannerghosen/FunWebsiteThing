@@ -18,7 +18,8 @@ namespace FunWebsiteThing.SQL
             Accounts.Init(); // accounts and securityquestion tables
             Blog.Init(); // blog table
             Comments.Init(); // comments table
-            Files.Init(); // files and filesdescription tables
+            Stats.Init(); // stats table
+            //Files.Init(); // files and filesdescription tables
         }
         public static void SetConnectionString(string cs)
         {

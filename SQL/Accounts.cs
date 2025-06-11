@@ -58,19 +58,11 @@ namespace FunWebsiteThing.SQL
                 }
 
                 // Security Questions Table
-                string securityquestion = "CREATE TABLE IF NOT EXISTS securityquestion (id INT(11) PRIMARY KEY, question VARCHAR(255) NOT NULL, answer VARCHAR(255) NOT NULL, FOREIGN KEY (id) REFERENCES accounts(id))";
+                string securityquestion = "CREATE TABLE IF NOT EXISTS securityquestion (id INT(11) PRIMARY KEY, question VARCHAR(255) NOT NULL, answer VARCHAR(255) NOT NULL, FOREIGN KEY (id) REFERENCES accounts(id) ON DELETE CASCADE)";
                 using (var cmd = new MySqlCommand(securityquestion, con))
                 {
                     cmd.ExecuteNonQuery();
                 }
-
-                // Delete Account Trigger
-                string deleteaccounttrigger = "CREATE TRIGGER IF NOT EXISTS deleteaccounttrigger AFTER DELETE ON accounts FOR EACH ROW BEGIN DELETE FROM securityquestion WHERE id = OLD.id; UPDATE comments SET userid = -1 WHERE userid = OLD.id; UPDATE files SET userid = -1 WHERE userid = OLD.id; END";
-                using (var cmd = new MySqlCommand(deleteaccounttrigger, con))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-
             }
         }
         // Registers an account by first running a SQL statement to see if it the account exists. If it does, don't do anything.

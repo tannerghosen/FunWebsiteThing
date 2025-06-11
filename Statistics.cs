@@ -7,27 +7,29 @@
     }
     public static class Statistics
     {
-        public static int Logins;
-        public static int Registrations;
-        public static void IncrementLogins()
+        public async static void IncrementLogins()
         {
+            Logger.Write("Increasementing logins", "STATS");
+            await SQL.Stats.UpdateStat("logins");
         }
 
-        public static void IncrementRegistrations()
+        public async static void IncrementRegistrations()
         {
+            Logger.Write("Increasementing registration", "STATS");
+            await SQL.Stats.UpdateStat("registrations");
         }
 
-        public static void ResetStats()
+        public async static void ResetStats()
         {
+            Logger.Write("Resetting stats", "STATS");
+            await SQL.Stats.ResetStats();
         }
 
-        public static Stats GetStats()
+        public async static Task<Stats> GetStats()
         {
-            return new Stats() { Logins = Logins, Registrations = Registrations };
+            int[] stats = await SQL.Stats.GetStats();
+            return new Stats() { Logins = stats[0], Registrations = stats[1] };
         }
 
-        public static void SaveStats()
-        {
-        }
     }
 }

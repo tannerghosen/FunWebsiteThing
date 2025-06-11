@@ -26,6 +26,7 @@ namespace FunWebsiteThing
                 if (result == true)
                 {
                     _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
+                    IncrementLogins();
                     return Ok("Login successful. Logged in as: " + Username + ".");
                 }
                 else if (result == false && error != true)
@@ -50,6 +51,7 @@ namespace FunWebsiteThing
                 {
                     _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
                     await SQL.Accounts.CreateSecurityQuestion(SQL.Accounts.GetUserID(Username), SecurityQuestion, Answer);
+                    IncrementRegistrations();
                     return Ok("Account Registered. Logged into " + Username + ".");
                 }
                 else if (result == false && error != true)
@@ -76,10 +78,12 @@ namespace FunWebsiteThing
 
         public async void IncrementLogins()
         {
+            Statistics.IncrementLogins();
         }
 
         public async void IncrementRegistrations()
         {
+            Statistics.IncrementRegistrations();
         }
     }
 }

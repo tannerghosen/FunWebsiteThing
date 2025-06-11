@@ -11,7 +11,8 @@ namespace FunWebsiteThing.SQL
                 con.Open();
 
                 // Files Table
-                string files = "CREATE TABLE IF NOT EXISTS files (fileid INT(11) PRIMARY KEY AUTO_INCREMENT, filename VARCHAR(255) NOT NULL, filetype TEXT NOT NULL, filelocation TEXT NOT NULL, userid INT(11), FOREIGN KEY (userid) REFERENCES accounts(id))";
+                //                 string files = "CREATE TABLE IF NOT EXISTS files (fileid INT(11) PRIMARY KEY AUTO_INCREMENT, filename VARCHAR(255) NOT NULL, filetype TEXT NOT NULL, filelocation TEXT NOT NULL, userid INT(11), FOREIGN KEY (userid) REFERENCES accounts(id))";
+                string files = "CREATE TABLE IF NOT EXISTS files (fileid INT(11) PRIMARY KEY AUTO_INCREMENT, filename VARCHAR(255) NOT NULL, filetype TEXT NOT NULL, filelocation TEXT NOT NULL, userid INT(11))";
                 using (var cmd = new MySqlCommand(files, con))
                 {
                     cmd.ExecuteNonQuery();
