@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace FunWebsiteThing.SQL
 {
-    public class Comments
+    public static class Comments
     {
         public static void Init()
         {

@@ -2,7 +2,7 @@
 
 namespace FunWebsiteThing.SQL
 {
-    public class Files
+    public static class Files
     {
         public static void Init()
         {

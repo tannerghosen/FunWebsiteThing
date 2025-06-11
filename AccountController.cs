@@ -73,5 +73,13 @@ namespace FunWebsiteThing
             }
             return BadRequest("You're not logged in.");
         }
+
+        public async void IncrementLogins()
+        {
+        }
+
+        public async void IncrementRegistrations()
+        {
+        }
     }
 }

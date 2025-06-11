@@ -2,9 +2,8 @@
 
 namespace FunWebsiteThing.SQL
 {
-    public class Blog
+    public static class Blog
     {
-
         public static void Init()
         {
             using (var con = Main.Connect())

@@ -2,7 +2,7 @@
 
 namespace FunWebsiteThing.SQL
 {
-    public class Main
+    public static class Main
     {
         public static string ConnectionString = "";
         // Connects to our database

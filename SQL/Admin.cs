@@ -2,7 +2,7 @@
 
 namespace FunWebsiteThing.SQL
 {
-    public class Admin
+    public static class Admin
     {
         // Grabs the entire table of accounts and returns an array of all 6 columns
         public static string[]?[]? GrabAccountsTable()

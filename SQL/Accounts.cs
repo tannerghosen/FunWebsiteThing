@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace FunWebsiteThing.SQL
 {
-    public class Accounts
+    public static class Accounts
     {
         public static void Init()
         {
