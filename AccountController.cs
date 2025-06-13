@@ -1,5 +1,6 @@
 ﻿using FunWebsiteThing.SQL;
 using Microsoft.AspNetCore.Mvc;
+using MySqlX.XDevAPI;
 using System.Text.RegularExpressions;
 
 namespace FunWebsiteThing
@@ -13,7 +14,8 @@ namespace FunWebsiteThing
             _s = s;
             _h = h;
         }
-        public async Task<IActionResult> Login(string Username, string Password)
+        // To-do: change this to work with external login sources? (Google)
+        public async Task<IActionResult> Login(string Username, string Password, bool External = false)
         {
             if (_h.HttpContext.Session.GetInt32("IsLoggedIn") != 1)
             {
@@ -21,7 +23,18 @@ namespace FunWebsiteThing
                 bool isusernameemail = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
                 Username = isusernameemail == true ? SQL.Accounts.GetUsername(Username) : Username;
                 string ip = _s.GetIP();
-                (bool result, bool error) = await SQL.Accounts.Login(Username, Password, sid, ip);
+                (bool result, bool error) = (false, false);
+                // If non-external login source (the website only)
+                if (External == false)
+                {
+                    (result, error) = await SQL.Accounts.Login(Username, Password, sid, ip);
+                }
+                // If it's an external website and this method is being called, it's a successful result
+                // So all we need to really prove here is the user does actually exist
+                else
+                {
+                    (result, error) = (SQL.Accounts.DoesUserExist(Username), false);
+                }
 
                 if (result == true)
                 {
@@ -40,16 +53,22 @@ namespace FunWebsiteThing
             }
             return StatusCode(409, "You're already logged in.");
         }
-        public async Task<IActionResult> Register(string Email, string Username, string Password, string? SecurityQuestion = null, string? Answer = null)
+        public async Task<IActionResult> Register(string Email, string Username, string Password, string? SecurityQuestion = null, string? Answer = null, bool External = false)
         {
             int sid = _s.SID();
             if (_h.HttpContext.Session.GetInt32("IsLoggedIn") != 1) 
             {
                 string ip = _s.GetIP();
+                Logger.Write(ip, "debug");
                 (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid, ip); 
                 if (result == true)
                 {
-                    _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
+                    Logger.Write("We got a good result, logging in");
+                    Logger.Write(Username + " " + Accounts.GetUserID(Username) + " " + sid);
+                    if (External == false) // We'll handle setting the session in the callback page as the session from sessionmanager is null there.
+                    {
+                        _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
+                    }
                     await SQL.Accounts.CreateSecurityQuestion(SQL.Accounts.GetUserID(Username), SecurityQuestion, Answer);
                     IncrementRegistrations();
                     return Ok("Account Registered. Logged into " + Username + ".");

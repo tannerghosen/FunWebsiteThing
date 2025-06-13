@@ -4,23 +4,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 using FunWebsiteThing.Controllers.Classes;
+using System.Configuration;
+using MySqlX.XDevAPI;
 
 namespace FunWebsiteThing.Pages
 {
+    // This is the callback page after we initiated the OAuth2 login challenge in Login. We redirect to WelcomeExternal.
     public class SigninGoogleModel : PageModel
     {
         private readonly SessionManager _s;
         private readonly AccountController _a;
+        private IHttpContextAccessor _h;
 
-        public SigninGoogleModel(SessionManager s, AccountController a)
+        public SigninGoogleModel(SessionManager s, AccountController a, IHttpContextAccessor h)
         {
             _s = s;
             _a = a;
+            _h = h;
         }
         // This method accesses the data from the Google OAuth2 login challenge with the token we received from Google.
         // Additionally, based on the data, we either login the user or register them.
         // The next step is to redirect to WelcomeExternal, which either is the end of the process or it redirects to Index and stops there
-        // SigninGoogle -> WelcomeExternal
         public async Task<IActionResult> OnGetAsync()
         {
             var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme); // We validate the authentication token and make sure it was sent by Google
@@ -44,11 +48,18 @@ namespace FunWebsiteThing.Pages
                     }
                     string password = Password.GeneratePassword(); 
                     TempData["TempPassword"] = password; // we store this for WelcomeExternal's message so the user can see their password
-                    _a.Register(email, username, password, null, null);
+                    _a.Register(email, username, password, "", "", true);
+                    // ugly work-around as the session is null when we register from an OAuth source.
+                    _h.HttpContext.Session.SetString("Username", username);
+                    _h.HttpContext.Session.SetInt32("UserId", FunWebsiteThing.SQL.Accounts.GetUserID(username));
+                    _h.HttpContext.Session.SetInt32("SessionId", 0); // we'll just have no sid for registration
+                    _h.HttpContext.Session.SetInt32("IsLoggedIn", 1);
+                    _h.HttpContext.Session.SetInt32("IsAdmin", FunWebsiteThing.SQL.Admin.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")) == true ? 1 : 0);
+                    Logger.Write("Username: " + username + " id: " + FunWebsiteThing.SQL.Accounts.GetUserID(username) + " ses id: N/A (0)" + " is admin?: " + FunWebsiteThing.SQL.Admin.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")), "GOOGLE FIRST-TIME LOGIN");
                 }
                 else
                 {
-                    _s.Login(username, SQL.Accounts.GetUserID(username), _s.SID()); 
+                    _a.Login(email, "", true);
                 }
 
                 return RedirectToPage(Url.Page("/WelcomeExternal"));
