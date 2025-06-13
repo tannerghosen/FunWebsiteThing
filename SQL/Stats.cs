@@ -111,8 +111,8 @@ namespace FunWebsiteThing.SQL
                 using (var con = Main.Connect())
                 {
                     con.Open();
-                    string query = "SELECT count FROM stats WHERE stat = 'logins'";
-                    using (var cmd = new MySqlCommand(query, con))
+                    string logquery = "SELECT count FROM stats WHERE stat = 'logins'";
+                    using (var cmd = new MySqlCommand(logquery, con))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
@@ -126,8 +126,8 @@ namespace FunWebsiteThing.SQL
                             }
                         }
                     }
-                    string query2 = "SELECT count FROM stats WHERE stat = 'registrations'";
-                    using (var cmd = new MySqlCommand(query, con))
+                    string regquery = "SELECT count FROM stats WHERE stat = 'registrations'";
+                    using (var cmd = new MySqlCommand(regquery, con))
                     {
                         using (var reader = cmd.ExecuteReader())
                         {
