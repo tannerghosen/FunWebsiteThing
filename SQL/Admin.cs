@@ -94,12 +94,6 @@ namespace FunWebsiteThing.SQL
                             cmd.Parameters.AddWithValue("@userid", userid);
                             await cmd.ExecuteNonQueryAsync();
                         }
-                        string query2 = "DELETE FROM accounts WHERE id = @userid";
-                        using (var cmd = new MySqlCommand(query2, con))
-                        {
-                            cmd.Parameters.AddWithValue("@userid", userid);
-                            await cmd.ExecuteNonQueryAsync();
-                        }
                     }
                 }
                 catch (MySqlException e)
