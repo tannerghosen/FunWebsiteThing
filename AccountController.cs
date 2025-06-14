@@ -59,12 +59,9 @@ namespace FunWebsiteThing
             if (_h.HttpContext.Session.GetInt32("IsLoggedIn") != 1) 
             {
                 string ip = _s.GetIP();
-                Logger.Write(ip, "debug");
                 (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid, ip); 
                 if (result == true)
                 {
-                    Logger.Write("We got a good result, logging in");
-                    Logger.Write(Username + " " + Accounts.GetUserID(Username) + " " + sid);
                     if (External == false) // We'll handle setting the session in the callback page as the session from sessionmanager is null there.
                     {
                         _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);

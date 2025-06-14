@@ -49,7 +49,7 @@ namespace FunWebsiteThing.Pages
                     string password = Password.GeneratePassword(); 
                     TempData["TempPassword"] = password; // we store this for WelcomeExternal's message so the user can see their password
                     _a.Register(email, username, password, "", "", true);
-                    // ugly work-around as the session is null when we register from an OAuth source.
+                    // ugly work-around as the session of SessionManager is null when we try to register from Google OAuth.
                     _h.HttpContext.Session.SetString("Username", username);
                     _h.HttpContext.Session.SetInt32("UserId", FunWebsiteThing.SQL.Accounts.GetUserID(username));
                     _h.HttpContext.Session.SetInt32("SessionId", 0); // we'll just have no sid for registration
