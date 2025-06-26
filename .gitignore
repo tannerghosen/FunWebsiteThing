@@ -366,3 +366,5 @@ FodyWeavers.xsd
 *.db
 *.json
 *.txt
+*.sh
+!backupdb.sh

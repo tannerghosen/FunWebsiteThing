@@ -46,7 +46,7 @@ namespace FunWebsiteThing.Pages
             }
             else if (!Regex.IsMatch(Email, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
             {
-                Result = "Invalid Email";
+                Result += "Invalid Email";
             }
             else if (string.IsNullOrEmpty(Username)) // if username is empty
             {
