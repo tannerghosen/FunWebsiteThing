@@ -11,7 +11,7 @@ namespace FunWebsiteThing.SQL
             {
                 con.Open();
 
-                string comments = "CREATE TABLE IF NOT EXISTS comments (id INT(11) PRIMARY KEY AUTO_INCREMENT, commentsid INT(11) NOT NULL, userid INT(11) NOT NULL, comment NVARCHAR(255), date DATETIME DEFAULT CURRENT_TIMESTAMP)";
+                string comments = "CREATE TABLE IF NOT EXISTS comments (id INT(11) PRIMARY KEY AUTO_INCREMENT, commentsid INT(11) NOT NULL, userid INT(11) NOT NULL, comment VARCHAR(2550), date DATETIME DEFAULT CURRENT_TIMESTAMP)";
                 using (var cmd = new MySqlCommand(comments, con))
                 {
                     cmd.ExecuteNonQuery();

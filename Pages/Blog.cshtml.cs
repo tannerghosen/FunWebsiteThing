@@ -19,6 +19,10 @@ namespace FunWebsiteThing.Pages
         [BindProperty]
         public string Message { get; set; }
 
+
+        [BindProperty]
+        public string Date { get; set; }
+
         public void OnGet()
         {
             Post = Convert.ToInt32(Request.Query["post"]);
@@ -30,7 +34,7 @@ namespace FunWebsiteThing.Pages
             {
                 Post = SQL.Blog.GetBlogPostCount();
             }
-            (Title, Message) = SQL.Blog.GetBlogPost(Post); //  Get the post to be displayed in the page
+            (Title, Message, Date) = SQL.Blog.GetBlogPost(Post); //  Get the post to be displayed in the page
         }
 
         public async Task<IActionResult> OnPost()

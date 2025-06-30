@@ -10,7 +10,7 @@ namespace FunWebsiteThing.SQL
             {
                 con.Open();
 
-                string blog = "CREATE TABLE IF NOT EXISTS blog (id INT(11) PRIMARY KEY AUTO_INCREMENT, title VARCHAR(255) NOT NULL, message VARCHAR(255) NOT NULL, date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP)";
+                string blog = "CREATE TABLE IF NOT EXISTS blog (id INT(11) PRIMARY KEY AUTO_INCREMENT, title VARCHAR(255) NOT NULL, message TEXT(65025) NOT NULL, date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP)";
                 using (var cmd = new MySqlCommand(blog, con))
                 {
                     cmd.ExecuteNonQuery();
@@ -88,16 +88,15 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        // to do - get date of blog post, maybe change return from tuple to array
-        public static (string? title, string? message) GetBlogPost(int? blogid)
+        public static (string? title, string? message, string? date) GetBlogPost(int? blogid)
         {
-            string? title = null, message = null; 
+            string? title = null, message = null, date = null;
             try
             {
                 using (var con = Main.Connect())
                 {
                     con.Open();
-                    string query = "SELECT title, message FROM blog WHERE id = @id";
+                    string query = "SELECT title, message, date FROM blog WHERE id = @id";
                     using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@id", blogid);
@@ -107,20 +106,21 @@ namespace FunWebsiteThing.SQL
                             {
                                 title = reader.GetString(0);
                                 message = reader.GetString(1);
+                                date = reader.GetDateTime(2).ToLongDateString();
                             }
                             else
                             {
-                                return (null, null);
+                                return (null, null, null);
                             }
                         }
                     }
-                    return (title, message);
+                    return (title, message, date);
                 }
             }
             catch (MySqlException e)
             {
                 Logger.Write("SQL.Blog: An error occured in GetBlogPost: " + e.Message + "\nSQL.Blog: Error Code: " + e.ErrorCode, "ERROR");
-                return (null, null);
+                return (null, null, null);
             }
         }
 
