@@ -19,6 +19,10 @@ namespace FunWebsiteThing.Pages
 
         public void OnGet()
         {
+            if (HttpContext.Session.GetInt32("IsLoggedIn") != 1)
+            {
+                Response.Redirect("/Index");
+            }
         }
 
         public async void OnPost()

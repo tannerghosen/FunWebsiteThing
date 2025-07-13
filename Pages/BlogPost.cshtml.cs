@@ -15,6 +15,13 @@ namespace FunWebsiteThing.Pages
         [BindProperty]
         public string BlogPostId { get; set; }
 
+        public void OnGet()
+        {
+            if (HttpContext.Session.GetInt32("IsAdmin") == 1 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")))
+            {
+                Response.Redirect("/Index");
+            }
+        }
         public async Task<IActionResult> OnPost()
         {
             int blogid = SQL.Blog.GetBlogPostCount() + 1;

@@ -17,7 +17,11 @@ namespace FunWebsiteThing.Pages
 
         public void OnGet()
         {
-            Id = TempData["Id"]?.ToString(); 
+            Id = TempData["Id"]?.ToString();
+            if (Id == null)
+            {
+                Response.Redirect("/Index");
+            }
         }
 
         public async Task<IActionResult> OnPost()

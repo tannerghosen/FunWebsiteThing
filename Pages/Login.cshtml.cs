@@ -37,7 +37,10 @@ namespace FunWebsiteThing.Pages
 
         public void OnGet()
         {
-
+            if (HttpContext.Session.GetInt32("IsLoggedIn") == 1)
+            {
+                Response.Redirect("/Index");
+            }
         }
 
         // Changed from void to IActionResult because void doesn't actually wait for methods. For some reason, this was not an issue before we switched to MySQL, funny enough.

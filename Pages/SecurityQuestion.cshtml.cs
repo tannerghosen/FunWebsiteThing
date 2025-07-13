@@ -21,7 +21,11 @@ namespace FunWebsiteThing.Pages
 
         public void OnGet()
         {
-            Id = TempData["Id"]?.ToString(); 
+            Id = TempData["Id"]?.ToString();
+            if (Id == null)
+            {
+                Response.Redirect("/Index");
+            }
             try
             {
                 int userid = int.TryParse(Id, out int newid) ? newid : 0;
