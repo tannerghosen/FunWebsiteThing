@@ -351,13 +351,19 @@ td
 .commentsection 
 {
     margin: 0 auto;
+    max-width: 100%;
+    min-width: 100%;
+    width: 100%;
 }
 
 table 
 {
     display: block;
-    overflow-y: scroll;
+    overflow-x: auto;
     max-height: 150px;
+    max-width: 800px;
+    min-width: 800px;
+    width: 800px;
 }
 
 .adminstuff
@@ -381,5 +387,22 @@ table
 #Comment 
 {
     resize: none;
+    max-width: 100%;
+    min-width: 100%;
     width: 100%;
+}
+
+.blog {
+    text-align: center;
+    margin: auto;
+    max-height: 300px;
+    max-width: 800px;
+    overflow: auto;
+    min-height: 200px;
+}
+
+.blogcomment td
+{
+    overflow-x: auto;
+    max-width: 75%;
 }
