@@ -17,7 +17,7 @@
         {
             <a href="/Blog?post=@(Model.Post - 1)">Back</a>
         }
-        @if (!(Model.Post + 1 > SQL.Blog.GetBlogPostCount()))
+        @if (Model.Post < SQL.Blog.GetBlogPostCount()) // if post id is less than total blog posts
         {
             <a href="/Blog?post=@(Model.Post + 1)">Next</a>
         }

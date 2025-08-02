@@ -35,6 +35,12 @@ namespace FunWebsiteThing.Pages
                 Post = SQL.Blog.GetBlogPostCount();
             }
             (Title, Message, Date) = SQL.Blog.GetBlogPost(Post); //  Get the post to be displayed in the page
+            if (SQL.Blog.DoesBlogPostExist(Post) == false)
+            {
+                Title = "Deleted Post";
+                Message = "This post was deleted";
+                Date = "Unknown";
+            }
         }
 
         public async Task<IActionResult> OnPost()

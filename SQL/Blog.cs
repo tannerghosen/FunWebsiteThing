@@ -147,12 +147,44 @@ namespace FunWebsiteThing.SQL
                         }
                     }
                 }
-                return count;
+                return count + 1;
             }
             catch (MySqlException e)
             {
                 Logger.Write("SQL.Blog: An error occured in GetBlogPostCount: " + e.Message + "\nSQL.Blog: Error Code: " + e.ErrorCode, "ERROR");
                 return 0;
+            }
+        }
+
+        public static bool DoesBlogPostExist(int blogid)
+        {
+            try
+            {
+                using (var con = Main.Connect())
+                {
+                    con.Open();
+                    string query = "SELECT * FROM blog WHERE id = @id";
+                    using (var cmd = new MySqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", blogid);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (MySqlException e)
+            {
+                Logger.Write("SQL.Blog: An error occured in DoesBlogPostExist: " + e.Message + "\nSQL.Blog: Error Code: " + e.ErrorCode, "ERROR");
+                return false;
             }
         }
     }
