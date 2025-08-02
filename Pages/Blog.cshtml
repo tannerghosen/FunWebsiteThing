@@ -24,8 +24,12 @@
     </span>
     <!-- Comment Section -->
     <div>
-        <form method="post">
-            <fieldset>
+        
+        @if ((Model.Title != "Deleted Post" && Model.Title != null))
+        {
+            // eventually this if statement will be altered a bit to consider blog posts that don't want comments enabled
+            <form method="post">
+                <fieldset>
                 <textarea style="margin: auto; color: #111" rows="5" col="200" asp-for="Comment"></textarea>
                 <input type="hidden" name="CS" value="@Model.Post" />
                 <input type="hidden" asp-for="Title" value="@Model.Title" />
@@ -34,15 +38,20 @@
                     <label>&nbsp;</label>
                     <input type="submit" value="Submit" class="submit" />
                 </div>
-            </fieldset>
-        </form>
+                </fieldset>
+            </form>
+        }
+        else
+        {
+            <b>Commenting is disabled.</b>
+        }
     </div>
     <div class="commentsection">
         <table>
             @{
                 string[][] array = SQL.Comments.GrabComments(Model.Post);
                 var (usernames, comments, dates, ids) = (array[0], array[1], array[2], array[3]);
-                if (usernames.Length == 0 || usernames == null)
+                if (usernames.Length == 0 || usernames == null || Model.Title == "Deleted Post")
                 {
                     <tr><td><b>No comments available...</b></td></tr>
                 }
