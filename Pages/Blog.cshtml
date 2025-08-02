@@ -12,7 +12,16 @@
     <h1>@ViewData["Title"]</h1>
     <i>@Model.Date</i>
     <div class="blog"><p class="blogmessage">@Model.Message</p></div>
-    <span><a href="/Blog?post=@(Model.Post - 1)">Back</a>   <a href="/Blog?post=@(Model.Post + 1)">Next</a></span>
+    <span>
+        @if (Model.Post > 1)
+        {
+            <a href="/Blog?post=@(Model.Post - 1)">Back</a>
+        }
+        @if (!(Model.Post + 1 > SQL.Blog.GetBlogPostCount()))
+        {
+            <a href="/Blog?post=@(Model.Post + 1)">Next</a>
+        }
+    </span>
     <!-- Comment Section -->
     <div>
         <form method="post">
