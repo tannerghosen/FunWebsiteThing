@@ -9,8 +9,6 @@
 <h1>@ViewData["Title"]</h1>
 
 @{
-    if (HttpContext.Session.GetInt32("IsLoggedIn") == 1 && HttpContext.Session.GetString("Username") != null && HttpContext.Session.GetInt32("UserId") != null && HttpContext.Session.GetInt32("SessionId") != null)
-    {
         <form method="post">
             <fieldset>
                 <div>
@@ -56,11 +54,6 @@
         {
             <a href="/Admin">Admin Page</a>
         }
-    }
-    else
-    {
-        <p>You cannot change settings as you're not currently logged in.</p>
-    }
 }
 @{
     var message = TempData["Result"] as string;

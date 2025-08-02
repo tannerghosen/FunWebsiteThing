@@ -5,9 +5,7 @@
     SessionManager s;
 }
 
-@if(Model.Id != null) // we make sure the TempData Id is set, otherwise we don't show anything'
-{
-    if(Model.Question != null)
+    @if(Model.Question != null)
     {
     <h1>@ViewData["Title"]</h1>
     <p>Hi @SQL.Accounts.GetUsername(Convert.ToInt32(Model.Id))!<br />To recover your account you will need to answer your security question!<br />It is as follows: "@Model.Question"</p>
@@ -31,12 +29,6 @@
         <h1>Sorry!</h1>
         <p>As your account does not have a security question or answer, it cannot be recovered via this method. Please contact the admins.</p>
     }
-}
-else
-{
-    <h1>Nothing here!</h1>
-    <p>Nothing at all! Nothing at all!</p>
-}
 
 @{
     var message = TempData["Result"] as string;

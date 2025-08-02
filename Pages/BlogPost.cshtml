@@ -3,8 +3,6 @@
 @{
     ViewData["Title"] = "Blog Post";
 }
-@if (HttpContext.Session.GetInt32("IsAdmin") == 1 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")))
-{
     <h1>@ViewData["Title"]</h1>
     <form method="post">
         <fieldset>
@@ -20,9 +18,3 @@
         <textarea style="margin: auto; color: #111" rows="1" col="200" asp-for="BlogPostId"></textarea>
         <button type="submit">Delete</button>
     </form>
-}
-else
-{
-    <h1>Nothing here!</h1>
-    <p>Nothing at all! Nothing at all!</p>
-}

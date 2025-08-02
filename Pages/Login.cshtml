@@ -11,8 +11,6 @@
 <h1>@ViewData["Title"]</h1>
 
 <!-- Login Form -->
-@if (HttpContext.Session.GetString("Username") == null || HttpContext.Session.GetString("Username") == "") // isloggedin is unreliable
-{
     <form method="post">
         <fieldset>
             <div>
@@ -40,11 +38,6 @@
         </button>
     </form>
     </div>
-}
-else
-{
-    <p>You are already logged in, @(HttpContext.Session.GetString("Username")). Did you mean to <a href="Logout">Log Out?</a></p>
-}
 @{
     var message = TempData["Result"] as string;
 }
