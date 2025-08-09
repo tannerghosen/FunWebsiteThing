@@ -76,7 +76,7 @@ namespace FunWebsiteThing.Pages
 
         // This method initiates the OAuth2 authentication flow with Google by creating a challenge
         // The next step (handling the response to the challenge) is handled in SigninGoogle.cshtml.cs
-        // Login -> SigninGoogle
+        // Login -> SigninGoogle (SigninGoogle proceses the response to the challenge, finalizes login)
         public async Task<IActionResult> OnPostGoogleLoginAsync()
         {
             TempData["LoginSource"] = "Google";
