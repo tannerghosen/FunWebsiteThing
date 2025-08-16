@@ -1,0 +1,44 @@
+﻿@page
+@model FunWebsiteThing.Pages.StatusModel
+@{
+}
+@{
+    ViewData["Title"] = "Update Notification Banner";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p>Use "clear" to clear the banner. These only persist until the program is killed.</p>
+<input type="text" id="input" placeholder="Type a message..." />
+<button id="send">Send</button>
+<div id="messages"></div>
+<script>
+            const websocket = new WebSocket("ws://localhost:5000/");
+
+            websocket.onopen = () =>
+            {
+                console.log("Connected!");
+            };
+
+            //  On Message Received from WebSocket server
+            websocket.onmessage = (event) =>
+            {
+                const messages = document.getElementById("messages");
+                console.log(event.data);
+                messages.innerHTML = `<p>${event.data}</p>`;
+            };
+
+            websocket.onclose = () =>
+            {
+                console.log("Disconnected");
+            };
+
+            document.getElementById("send").onclick = () =>
+            {
+                const input = document.getElementById("input");
+                if (input.value)
+                {
+                    websocket.send(input.value);
+                    input.value = '';
+                }
+            };
+</script>

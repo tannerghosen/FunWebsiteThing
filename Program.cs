@@ -106,5 +106,6 @@ app.UseEndpoints(endpoints =>
 app.MapRazorPages();
 
 FunWebsiteThing.SQL.Main.Init(sqlconstr);
+FunWebsiteThing.WebSocketManager.Start(); // Start the WebSocket Server
 
 app.Run();

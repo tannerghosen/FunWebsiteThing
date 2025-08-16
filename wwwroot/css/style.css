@@ -85,6 +85,10 @@ img {
   font-family: "Press Start 2P";
 }
 
+input 
+{
+    color: #000!important;
+}
 /*ul 
 {
 	list-style-type: none;
@@ -405,4 +409,11 @@ table
 {
     overflow-x: auto;
     max-width: 75%;
+}
+
+.statuscontainer 
+{
+    overflow: hidden;
+    background-color: #111;
+    position: relative;
 }
