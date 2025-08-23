@@ -11,6 +11,9 @@
 <input type="text" id="input" placeholder="Type a message..." />
 <button id="send">Send</button>
 <div id="messages"></div>
+@{
+    string Password = WebSocketManager.GetAccessPassword();
+}
 <script>
             const websocket = new WebSocket("ws://localhost:5000/");
 
@@ -37,7 +40,7 @@
                 const input = document.getElementById("input");
                 if (input.value)
                 {
-                    websocket.send(input.value);
+                    websocket.send(input.value + " " + "@Password");
                     input.value = '';
                 }
             };

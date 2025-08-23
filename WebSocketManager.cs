@@ -1,14 +1,18 @@
 ﻿using System.Net.WebSockets;
 using System.Net;
 using System.Text;
+using FunWebsiteThing.Controllers.Classes;
 
 namespace FunWebsiteThing
 {
     public static class WebSocketManager
     {
         public static string Status = String.Empty;
+
+        private static string AccessPassword = String.Empty;
         public static async Task Start()
         {
+            AccessPassword = Password.GeneratePassword();
             // Start Server
             var hl = new HttpListener();
             hl.Prefixes.Add("http://localhost:5000/");
@@ -50,15 +54,19 @@ namespace FunWebsiteThing
                         var message = Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
 
                         //Console.WriteLine($"Message Received: {message}");
-
-                        if (message == "clear")
+                        if (message.Contains(AccessPassword)) // if the request message contains the password
                         {
-                            Status = String.Empty;
-                            message = "";
-                        }
-                        else
-                        {
-                            Status = message;
+                            int index = message.IndexOf(AccessPassword)-1; // get the index of where AccessPassword starts - 1 because of the space
+                            message = message.Remove(index, AccessPassword.Length + 1); // make the new message that, but removed
+                            if (message == "clear")
+                            {
+                                Status = String.Empty;
+                                message = "";
+                            }
+                            else
+                            {
+                                Status = message;
+                            }
                         }
                         await ws.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes((Status == "" ? "" : Status))), WebSocketMessageType.Text, true, CancellationToken.None); // send the websocket a message
                     }
@@ -68,6 +76,11 @@ namespace FunWebsiteThing
             {
                 Console.WriteLine(e.ToString());
             }
+        }
+
+        public static string GetAccessPassword()
+        {
+            return AccessPassword;
         }
     }
 }
