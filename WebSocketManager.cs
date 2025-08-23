@@ -54,10 +54,11 @@ namespace FunWebsiteThing
                         var message = Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
 
                         //Console.WriteLine($"Message Received: {message}");
-                        if (message.Contains(AccessPassword)) // if the request message contains the password
+                        if (message.Contains(AccessPassword))
                         {
-                            int index = message.IndexOf(AccessPassword)-1; // get the index of where AccessPassword starts - 1 because of the space
-                            message = message.Remove(index, AccessPassword.Length + 1); // make the new message that, but removed
+                            int index = message.IndexOf(AccessPassword); // get the index of where AccessPassword starts
+                            index = index - 1; // as we include the space, the index is 1 backwards
+                            message = message.Remove(index, AccessPassword.Length + 1);
                             if (message == "clear")
                             {
                                 Status = String.Empty;

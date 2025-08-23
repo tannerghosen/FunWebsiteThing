@@ -6,7 +6,6 @@ namespace FunWebsiteThing.Pages
 {
     public class SecurityQuestionModel : PageModel
     {
-        SessionManager _s;
         [BindProperty]
         public string Id { get; set; }
         public string Question { get; set; }

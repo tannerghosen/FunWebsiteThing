@@ -8,7 +8,7 @@
 
 <h1>@ViewData["Title"]</h1>
 <p>Use "clear" to clear the banner. These only persist until the program is killed.</p>
-<input type="text" id="input" placeholder="Type a message..." />
+<input type="text" id="input" class="text-black" placeholder="Type a message..." />
 <button id="send">Send</button>
 <div id="messages"></div>
 @{
@@ -27,7 +27,7 @@
             {
                 const messages = document.getElementById("messages");
                 console.log(event.data);
-                messages.innerHTML = `<p>${event.data}</p>`;
+                messages.innerHTML = `<p>Current Notification Banner: ${event.data}</p>`;
             };
 
             websocket.onclose = () =>

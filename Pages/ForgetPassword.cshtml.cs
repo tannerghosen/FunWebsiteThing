@@ -6,7 +6,6 @@ namespace FunWebsiteThing.Pages
 {
     public class ForgetPasswordModel : PageModel
     {
-        SessionManager _s;// = new SessionManager();
         [BindProperty]
         public string Username { get; set; }
 

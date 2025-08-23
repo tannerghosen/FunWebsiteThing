@@ -5,7 +5,6 @@ namespace FunWebsiteThing.Pages
 {
     public class ChangePasswordModel : PageModel
     {
-        SessionManager _s;
         [BindProperty]
         public string Id { get; set; }
 

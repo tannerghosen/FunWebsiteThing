@@ -87,7 +87,17 @@ img {
 
 input 
 {
+    color: #000;
+}
+
+.submit .lightmode input 
+{
     color: #000!important;
+}
+
+.submit input 
+{
+    color: #FFF!important;
 }
 /*ul 
 {
@@ -415,5 +425,12 @@ table
 {
     overflow: hidden;
     background-color: #111;
+    position: relative;
+}
+
+.lightmode .statuscontainer 
+{
+    overflow: hidden;
+    background-color: #EEE;
     position: relative;
 }
