@@ -8,7 +8,7 @@
 }
     <h1>@ViewData["Title"]</h1>
 
-    <div class="adminstuff">
+<div class="adminstuff">
         <table>
             <thead><tr><td>User ID</td><td>Username</td><td>Email</td><td>IP Address</td><td>Session ID</td><td>Security Question</td><td>Are they Admin?</td><td>Delete User</td><td>Update User</td><td>Admin User</td></tr></thead>
             <tbody>
@@ -37,7 +37,8 @@
                         <tr><td>@row[0]</td><td>@row[2]</td><td>@row[1]</td><td>@row[7]</td><td>@row[4]</td><td>@row[6]</td><td>@row[5]</td>
                             @if (row[0] != "0" && row[0] != "-1") // if the entries are not for userids 0 and -1 (super admin and anonymous respectively)
                             {
-                                if (SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0 || HttpContext.Session.GetInt32("IsAdmin") == 1 && row[6] != "Yes")) // if admin and userid = 0 or if admin and they are not updating an admin
+                                // if user is an admin in sql db and session and the user is the head admin OR if user is an admin in sql db and session and the account in that row is a non-admin
+                                if (SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0 || SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && HttpContext.Session.GetInt32("IsAdmin") == 1 && row[6] != "Yes")) // if admin and userid = 0 or if admin and they are not updating an admin
                                 {
                                     <td>
                                         <form method="post" asp-page-handler="Delete">
@@ -47,7 +48,8 @@
                                     </td>
                                     <td><a href=@updateurl>Update</a></td>
                                 }
-                                if (SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0)) // if admin and userid = 0
+                                // if user is an admin in sql db and session and the user is the head admin
+                                if (SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0)) 
                                 {
                                     <td>
                                         <form method="post" asp-page-handler="Admin">
@@ -67,22 +69,23 @@
                     }
                 }
             </tbody>
-        </table>
-
+        </table>        
         @{
+            // Get our stats from the sql db
             Stats stats = await Statistics.GetStats();
         }
-<table>
-    <tbody>
-        <tr><td>Stat</td><td>Count</td></tr>
-        <tr><td>Logins</td><td>@stats.Logins</td></tr>
-        <tr><td>Registrations</td><td>@stats.Registrations</td></tr>
-        <tr><td>
-                        <form method="post" asp-page-handler="ResetStats">
-                            <button type="submit">Reset Stats</button>
-                        </form>
-        </td></tr>
-    </tbody>
-</table>
-<a href="Status">Update Notification Banner</a>
+        <table>
+            <tbody>
+                <tr><td>Stat</td><td>Count</td></tr>
+                <tr><td>Logins</td><td>@stats.Logins</td></tr>
+                <tr><td>Registrations</td><td>@stats.Registrations</td></tr>
+                <tr><td>
+                                <form method="post" asp-page-handler="ResetStats">
+                                    <button type="submit">Reset Stats</button>
+                                </form>
+                </td></tr>
+            </tbody>
+        </table>
+
+        <a href="Status">Update Notification Banner</a>
 </div>
