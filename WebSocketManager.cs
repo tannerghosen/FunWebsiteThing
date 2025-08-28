@@ -57,12 +57,11 @@ namespace FunWebsiteThing
                         if (message.Contains(AccessPassword))
                         {
                             int index = message.IndexOf(AccessPassword); // get the index of where AccessPassword starts
-                            index = index - 1; // as we include the space, the index is 1 backwards
-                            message = message.Remove(index, AccessPassword.Length + 1);
+                            index = index - 1; // as we include the space in the removal, the index is 1 backwards from where AccessPassword starts
+                            message = message.Remove(index, AccessPassword.Length + 1); // remove from the index to the end of the accesspassword length's + 1.
                             if (message == "clear")
                             {
                                 Status = String.Empty;
-                                message = "";
                             }
                             else
                             {
