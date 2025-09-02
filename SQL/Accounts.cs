@@ -486,41 +486,6 @@ namespace FunWebsiteThing.SQL
             return false;
         }
 
-        // Does Session Token Match
-        public static bool DoesSTokenMatch(int? userid, string? stoken)
-        {
-            bool usercheck = DoesUserExist(userid);
-            if (usercheck)
-            {
-                try
-                {
-                    using (var con = Main.Connect())
-                    {
-                        con.Open();
-                        string query = "SELECT sessiontoken FROM accounts WHERE id = @userid";
-                        using (var cmd = new MySqlCommand(query, con))
-                        {
-                            cmd.Parameters.AddWithValue("@userid", userid);
-                            var token = Convert.ToString(cmd.ExecuteScalar());
-                            if (token != stoken)
-                            {
-                                return false;
-                            }
-                            else
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
-                catch (MySqlException e)
-                {
-                    Logger.Write("SQL.Accounts: An error occured in DoesSTokenMatch: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
-                    return false;
-                }
-            }
-            return false;
-        }
         public static string[] GetSecurityQuestion(int? userid)
         {
             try
