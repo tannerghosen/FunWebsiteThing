@@ -422,7 +422,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (MySqlException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in GetUserID: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in GetUsername (int userid variant): " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return null;
             }
         }
@@ -445,7 +445,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (MySqlException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in GetEmail: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in GetUsername (string email variant): " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return null;
             }
         }
@@ -511,7 +511,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (MySqlException e)
             {
-                Logger.Write("SQL.Accounts: An error occured in SecurityQuestion: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
+                Logger.Write("SQL.Accounts: An error occured in GetSecurityQuestion: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return new string[] { null, null };
             }
             return new string[] { null, null };
