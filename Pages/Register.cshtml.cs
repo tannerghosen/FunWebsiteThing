@@ -42,7 +42,6 @@ namespace FunWebsiteThing.Pages
         }
         public async Task<IActionResult> OnPost()
         {
-            int sid = _s.SID();
             if (string.IsNullOrEmpty(Email)) // if email doesn't match regex / is empty
             {
                 Result = "Email is blank";

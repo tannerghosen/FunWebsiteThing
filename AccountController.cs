@@ -19,7 +19,7 @@ namespace FunWebsiteThing
         {
             if (_h.HttpContext.Session.GetInt32("IsLoggedIn") != 1)
             {
-                int sid = _s.SID();
+                int sid = _s.SID(); // generate session id
                 bool isusernameemail = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
                 Username = isusernameemail == true ? SQL.Accounts.GetUsername(Username) : Username;
                 string ip = _s.GetIP();
@@ -55,7 +55,7 @@ namespace FunWebsiteThing
         }
         public async Task<IActionResult> Register(string Email, string Username, string Password, string? SecurityQuestion = null, string? Answer = null, bool External = false)
         {
-            int sid = _s.SID();
+            int sid = _s.SID(); // generate session id
             if (_h.HttpContext.Session.GetInt32("IsLoggedIn") != 1) 
             {
                 string ip = _s.GetIP();

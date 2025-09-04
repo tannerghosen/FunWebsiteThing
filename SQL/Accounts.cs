@@ -137,18 +137,23 @@ namespace FunWebsiteThing.SQL
                             return (false, false);
                         }
                     }
+                    // verify the password
                     query = "SELECT password FROM accounts WHERE username = @username";
                     using (var cmd = new MySqlCommand(query, con))
                     {
                         cmd.Parameters.AddWithValue("@username", username);
                         var res = await cmd.ExecuteScalarAsync();
                         string hashedpassword = res.ToString();
+                        // if password doesn't match password in database
                         if (!BCrypt.Net.BCrypt.Verify(password, hashedpassword))
                         {
+                            // reject login
                             return (false, false);
                         }
                         else
                         {
+                            // continue login process
+                            // updating session id if required
                             query = "SELECT sessionid FROM accounts WHERE username = @username";
                             using (var c = new MySqlCommand(query, con))
                             {
@@ -166,6 +171,7 @@ namespace FunWebsiteThing.SQL
                                     }
                                 }
                             }
+                            // updating ip address
                             query = "SELECT ipaddress FROM accounts WHERE username = @username";
                             using (var c = new MySqlCommand(query, con))
                             {
@@ -191,6 +197,7 @@ namespace FunWebsiteThing.SQL
                                     }
                                 }
                             }
+                            // login
                             return (true, false);
                         }
                     }

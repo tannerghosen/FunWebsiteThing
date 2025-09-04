@@ -51,7 +51,6 @@ namespace FunWebsiteThing.Pages
                 Result = "Username or Password is blank.";
                 return Page();
             }
-            int sid = _s.SID();
             IActionResult result = await _a.Login(Username, Password);
             if (result is OkObjectResult)
             {

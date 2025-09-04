@@ -1,6 +1,7 @@
 ﻿using FunWebsiteThing;
 using Microsoft.AspNetCore.Authentication;
 using Org.BouncyCastle.Asn1.Ocsp;
+using System.Security.Cryptography;
 
 #pragma warning disable CS8602
 public class SessionManager
@@ -39,9 +40,20 @@ public class SessionManager
     // Session ID generator
     public int SID()
     {
-        Random r = new Random();
-        int sid = r.Next(999999999);
-        return sid;
+        int max = 999999999;
+        byte[] bytes = new byte[4];
+        using (var rng = RandomNumberGenerator.Create()) // create a random number generator
+        {
+            rng.GetBytes(bytes);
+        }
+        int result = BitConverter.ToInt32(bytes, 0) & int.MaxValue; // convert the bytes to an int. & int.MaxValue is an AND bitwise operation that ensures we only get positives
+        result = result % (max + 1); // in case it goes over our max, we do a modulo to get the remainder. this does nothing if it's less than the max
+        
+        // old code, keeping for now
+        //Random r = new Random();
+        //int sid = r.Next(999999999);
+
+        return result;
     }
 
     public bool IsUserLoggedIn()
