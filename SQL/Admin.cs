@@ -48,8 +48,7 @@ namespace FunWebsiteThing.SQL
         // checks if user is admin
         public static bool IsAdmin(int? userid)
         {
-            bool usercheck = Accounts.DoesUserExist(userid);
-            if (usercheck)
+            if (Accounts.DoesUserExist(userid))
             {
                 try
                 {
@@ -80,8 +79,7 @@ namespace FunWebsiteThing.SQL
         // Deletes a user from the accounts table
         public static async Task DeleteUser(int? userid)
         {
-            bool usercheck = Accounts.DoesUserExist(userid);
-            if (usercheck && (userid != -1 && userid != 0))
+            if (Accounts.DoesUserExist(userid) && (userid != -1 && userid != 0))
             {
                 try
                 {
@@ -106,8 +104,7 @@ namespace FunWebsiteThing.SQL
         // Makes user an admin
         public static async Task AdminUser(int? userid)
         {
-            bool usercheck = Accounts.DoesUserExist(userid);
-            if (usercheck && (userid != -1 && userid != 0))
+            if (Accounts.DoesUserExist(userid) && (userid != -1 && userid != 0))
             {
                 try
                 {
