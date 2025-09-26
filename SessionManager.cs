@@ -7,8 +7,7 @@ using System.Security.Cryptography;
 public class SessionManager
 {
 
-    //private readonly IHttpContextAccessor _h = new HttpContextAccessor();
-    private readonly IHttpContextAccessor _h;
+    private IHttpContextAccessor _h;
 
     public SessionManager(IHttpContextAccessor h)
     {

@@ -49,14 +49,10 @@ namespace FunWebsiteThing.Pages
                     }
                     string password = Password.GeneratePassword(); 
                     TempData["TempPassword"] = password; // we store this for WelcomeExternal's message so the user can see their password
+
+                    // This is a work around as HttpContext for some reason is initially null/uninitialized during the first time register/login via Account Controller, so we just handle it by using Session Manager directly.
                     _a.Register(email, username, password, "", "", true);
-                    // ugly work-around as the session of SessionManager is null when we try to register from Google OAuth.
-                    _h.HttpContext.Session.SetString("Username", username);
-                    _h.HttpContext.Session.SetInt32("UserId", FunWebsiteThing.SQL.Accounts.GetUserID(username));
-                    _h.HttpContext.Session.SetInt32("SessionId", 0); // we'll just have no sid for registration
-                    _h.HttpContext.Session.SetInt32("IsLoggedIn", 1);
-                    _h.HttpContext.Session.SetInt32("IsAdmin", FunWebsiteThing.SQL.Admin.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")) == true ? 1 : 0);
-                    Logger.Write("Username: " + username + " id: " + FunWebsiteThing.SQL.Accounts.GetUserID(username) + " ses id: N/A (0)" + " is admin?: " + FunWebsiteThing.SQL.Admin.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")), "GOOGLE FIRST-TIME LOGIN");
+                    _s.Login(username, FunWebsiteThing.SQL.Accounts.GetUserID(username), 0);
                 }
                 else
                 {

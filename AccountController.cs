@@ -62,7 +62,7 @@ namespace FunWebsiteThing
                 (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid, ip); 
                 if (result == true)
                 {
-                    // We have this if statement here in case it's an External login. This session manager is null on the callback page, so we handle the session stuff there.
+                    // We have this if statement here in case it's an External login. The HttpContext is null/uninitialized on the callback page (see the comment), so we handle the session stuff there.
                     if (External == false) 
                     {
                         _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
