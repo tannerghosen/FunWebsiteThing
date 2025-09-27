@@ -50,7 +50,7 @@ namespace FunWebsiteThing.Pages
                     string password = Password.GeneratePassword(); 
                     TempData["TempPassword"] = password; // we store this for WelcomeExternal's message so the user can see their password
 
-                    // This is a work around as HttpContext for some reason is initially null/uninitialized during the first time register/login via Account Controller, so we just handle it by using Session Manager directly.
+                    // This is a work around as HttpContext for some reason is initially null/uninitialized during the first time register/login via AccountController, so we just handle it by logging in (making a session) via SessionManager here instead of AccountController's Register method calling it.
                     _a.Register(email, username, password, "", "", true);
                     _s.Login(username, FunWebsiteThing.SQL.Accounts.GetUserID(username), 0);
                 }
