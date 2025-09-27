@@ -7,17 +7,15 @@ namespace FunWebsiteThing
 {
     public class AccountController : Controller
     {
-        IHttpContextAccessor _h;
         SessionManager _s;
-        public AccountController(SessionManager s, IHttpContextAccessor h)
+        public AccountController(SessionManager s)
         {
             _s = s;
-            _h = h;
         }
         // To-do: change this to work with external login sources? (Google)
         public async Task<IActionResult> Login(string Username, string Password, bool External = false)
         {
-            if (_h.HttpContext.Session.GetInt32("IsLoggedIn") != 1)
+            if (!_s.IsUserLoggedIn())
             {
                 int sid = _s.SID(); // generate session id
                 bool isusernameemail = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
@@ -56,7 +54,7 @@ namespace FunWebsiteThing
         public async Task<IActionResult> Register(string Email, string Username, string Password, string? SecurityQuestion = null, string? Answer = null, bool External = false)
         {
             int sid = _s.SID(); // generate session id
-            if (_h.HttpContext.Session.GetInt32("IsLoggedIn") != 1) 
+            if(!_s.IsUserLoggedIn())
             {
                 string ip = _s.GetIP();
                 (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid, ip); 
@@ -85,10 +83,11 @@ namespace FunWebsiteThing
 
         public async Task<IActionResult> Logout()
         {
-            if (_s.IsUserLoggedIn() && (_h.HttpContext.Session.GetString("Username") != null || _h.HttpContext.Session.GetString("Username") != ""))
+            string? username = _s.GetSession().Username;
+            if (_s.IsUserLoggedIn() && (username != null || username != ""))
             {
                 _s.Logout();
-                return Ok("Logged out of "+ _h.HttpContext.Session.GetString("Username"));
+                return Ok("Logged out of "+ username);
             }
             return BadRequest("You're not logged in.");
         }

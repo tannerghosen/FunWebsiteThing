@@ -4,6 +4,15 @@ using Org.BouncyCastle.Asn1.Ocsp;
 using System.Security.Cryptography;
 
 #pragma warning disable CS8602
+
+public struct Session
+{
+    public string? Username;
+    public int? UserId;
+    public int? SessionId;
+    public int? IsLoggedIn;
+    public int? IsAdmin;
+}
 public class SessionManager
 {
 
@@ -68,4 +77,10 @@ public class SessionManager
     {
         return _h.HttpContext.Connection.RemoteIpAddress.ToString();
     }
+
+    public Session GetSession()
+    {
+        return new Session { Username = _h.HttpContext?.Session.GetString("Username"), UserId = _h.HttpContext?.Session.GetInt32("UserId"), SessionId = _h.HttpContext?.Session.GetInt32("SessionId"), IsLoggedIn = _h.HttpContext?.Session.GetInt32("IsLoggedIn"), IsAdmin = _h.HttpContext?.Session.GetInt32("IsAdmin") };
+    }
+
 }
