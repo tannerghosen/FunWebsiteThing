@@ -26,7 +26,7 @@ namespace FunWebsiteThing.SQL
                     if (count == 0)
                     {
                         string pass = BCrypt.Net.BCrypt.HashPassword("test");
-                        string createadmin = "INSERT INTO accounts (id, email, username, password, isadmin) VALUES (0, 'admin@email.com', 'admin', @pass, 1)";
+                        string createadmin = "INSERT INTO accounts (id, email, username, password, isadmin) VALUES (0, 'admin@email.com', 'Admin', @pass, 1)";
                         using (var cmd = new MySqlCommand(createadmin, con))
                         {
                             cmd.Parameters.AddWithValue("@pass", pass);
