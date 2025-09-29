@@ -58,13 +58,13 @@ namespace FunWebsiteThing.Pages
             }
             else if (result is BadRequestObjectResult)
             {
-                Result = "Invalid login";
+                Result = "Invalid login.";
             }
             else if (result is StatusCodeResult scr && scr.StatusCode == 500)
             {
-                Result = "An error occurred while logging in";
+                Result = "An error occurred while logging in.";
             }
-            else if (result is StatusCodeResult scr2 && scr2.StatusCode == 409)
+            else if (result is StatusCodeResult scr2 && scr2.StatusCode == 403)
             {
                 Result = "You are already logged in.";
             }

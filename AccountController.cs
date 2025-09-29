@@ -49,7 +49,7 @@ namespace FunWebsiteThing
                     return StatusCode(500, "An error occurred while logging in");
                 }
             }
-            return StatusCode(409, "You're already logged in.");
+            return StatusCode(403, "You're already logged in.");
         }
         public async Task<IActionResult> Register(string Email, string Username, string Password, string? SecurityQuestion = null, string? Answer = null, bool External = false)
         {
@@ -78,7 +78,7 @@ namespace FunWebsiteThing
                     StatusCode(500, "An error occured while registering the account.");
                 }
             }
-            return StatusCode(409, "You're already logged in, no need to register an account!");
+            return StatusCode(403, "You're already logged in, no need to register an account!");
         }
 
         public async Task<IActionResult> Logout()

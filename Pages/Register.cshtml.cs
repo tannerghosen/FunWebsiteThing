@@ -24,12 +24,10 @@ namespace FunWebsiteThing.Pages
         public string Result { get; set; }
 
         private readonly ILogger<IndexModel> _logger;
-        private SessionManager _s;
         private AccountController _a;
-        public RegisterModel(ILogger<IndexModel> logger, SessionManager s, AccountController a)
+        public RegisterModel(ILogger<IndexModel> logger, AccountController a)
         {
             _logger = logger;
-            _s = s;
             _a = a;
         }
 
@@ -79,13 +77,13 @@ namespace FunWebsiteThing.Pages
                 }
                 else if (result is BadRequestObjectResult)
                 {
-                    Result = "Duplicate Account";
+                    Result = "Duplicate Account.";
                 }
                 else if (result is StatusCodeResult scr && scr.StatusCode == 500)
                 {
                     Result = "An error occured while registering the account.";
                 }
-                else if (result is StatusCodeResult scr2 && scr2.StatusCode == 409)
+                else if (result is StatusCodeResult scr2 && scr2.StatusCode == 403)
                 {
                     Result = "You are already logged in.";
                 }
