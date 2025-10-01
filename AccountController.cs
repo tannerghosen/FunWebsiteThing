@@ -20,12 +20,11 @@ namespace FunWebsiteThing
                 int sid = _s.SID(); // generate session id
                 bool isusernameemail = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
                 Username = isusernameemail == true ? SQL.Accounts.GetUsername(Username) : Username;
-                string ip = _s.GetIP();
                 (bool result, bool error) = (false, false);
                 // If non-external login source (the website only)
                 if (External == false)
                 {
-                    (result, error) = await SQL.Accounts.Login(Username, Password, sid, ip);
+                    (result, error) = await SQL.Accounts.Login(Username, Password, sid, "");
                 }
                 // If it's an external website and this method is being called, it's a successful result
                 // So all we need to really prove here is the user does actually exist
@@ -53,11 +52,10 @@ namespace FunWebsiteThing
         }
         public async Task<IActionResult> Register(string Email, string Username, string Password, string? SecurityQuestion = null, string? Answer = null, bool External = false)
         {
-            int sid = _s.SID(); // generate session id
             if(!_s.IsUserLoggedIn())
             {
-                string ip = _s.GetIP();
-                (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid, ip); 
+                int sid = _s.SID(); // generate session id
+                (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid, ""); 
                 if (result == true)
                 {
                     // We have this if statement here in case it's an External login. The HttpContext is null/uninitialized on the callback page (see the comment), so we handle the session stuff there.
