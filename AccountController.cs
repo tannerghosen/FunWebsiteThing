@@ -24,7 +24,7 @@ namespace FunWebsiteThing
                 // If non-external login source (the website only)
                 if (External == false)
                 {
-                    (result, error) = await SQL.Accounts.Login(Username, Password, sid, "");
+                    (result, error) = await SQL.Accounts.Login(Username, Password, sid);
                 }
                 // If it's an external website and this method is being called, it's a successful result
                 // So all we need to really prove here is the user does actually exist
@@ -55,7 +55,7 @@ namespace FunWebsiteThing
             if(!_s.IsUserLoggedIn())
             {
                 int sid = _s.SID(); // generate session id
-                (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid, ""); 
+                (bool result, bool error) = await SQL.Accounts.Register(Email, Username, Password, sid); 
                 if (result == true)
                 {
                     // We have this if statement here in case it's an External login. The HttpContext is null/uninitialized on the callback page (see the comment), so we handle the session stuff there.
