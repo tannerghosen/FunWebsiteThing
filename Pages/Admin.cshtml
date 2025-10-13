@@ -35,10 +35,10 @@
                         string updateurl = "/Update?userid="+row[0];
                         // Yes, the columns aren't in order, they were switched around to look better, not exactly great but it works.
                         <tr><td>@row[0]</td><td>@row[2]</td><td>@row[1]</td><td>@row[4]</td><td>@row[6]</td><td>@row[5]</td>
-                            @if (row[0] != "0" && row[0] != "-1") // if the entries are not for userids 0 and -1 (super admin and anonymous respectively)
+                            @if (row[0] != "1" && row[0] != "-1") // if the entries are not for userids 1 and -1 (super admin and anonymous respectively)
                             {
                                 // if user is an admin in sql db and session and the user is the head admin OR if user is an admin in sql db and session and the account in that row is a non-admin
-                                if (SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0 || SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && HttpContext.Session.GetInt32("IsAdmin") == 1 && row[6] != "Yes")) // if admin and userid = 0 or if admin and they are not updating an admin
+                                if (SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && HttpContext.Session.GetInt32("IsAdmin") == 1 && (HttpContext.Session.GetInt32("UserId") == 1 || row[6] != "Yes")) // if admin and userid = 0 or if admin and they are not updating an admin
                                 {
                                     <td>
                                         <form method="post" asp-page-handler="Delete">
@@ -49,7 +49,7 @@
                                     <td><a href=@updateurl>Update</a></td>
                                 }
                                 // if user is an admin in sql db and session and the user is the head admin
-                                if (SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 0)) 
+                                if (SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")) && (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 1)) 
                                 {
                                     <td>
                                         <form method="post" asp-page-handler="Admin">
@@ -59,7 +59,7 @@
                                     </td>
                                 }
                             }
-                            else // blank entries for userid 0 and -1
+                            else // blank entries for userid 1 and -1
                             {
                                 <td></td>
                                 <td></td>

@@ -19,22 +19,17 @@ namespace FunWebsiteThing.SQL
                 }
 
                 // Admin Account
-                string doesadminexist = "SELECT COUNT(*) FROM accounts WHERE id = 0";
+                string doesadminexist = "SELECT COUNT(*) FROM accounts WHERE id = 1";
                 using (var c = new MySqlCommand(doesadminexist, con))
                 {
                     int count = Convert.ToInt32(c.ExecuteScalar());
                     if (count == 0)
                     {
                         string pass = BCrypt.Net.BCrypt.HashPassword("test");
-                        string createadmin = "INSERT INTO accounts (id, email, username, password, isadmin) VALUES (0, 'admin@email.com', 'Admin', @pass, 1)";
+                        string createadmin = "INSERT INTO accounts (id, email, username, password, isadmin) VALUES (1, 'admin@email.com', 'Admin', @pass, 1)";
                         using (var cmd = new MySqlCommand(createadmin, con))
                         {
                             cmd.Parameters.AddWithValue("@pass", pass);
-                            cmd.ExecuteNonQuery();
-                        }
-                        string updateadmin = "UPDATE accounts SET id = 0 WHERE email = 'admin@email.com'";
-                        using (var cmd = new MySqlCommand(updateadmin, con))
-                        {
                             cmd.ExecuteNonQuery();
                         }
                     }
