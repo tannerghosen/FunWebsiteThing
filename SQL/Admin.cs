@@ -27,9 +27,9 @@ namespace FunWebsiteThing.SQL
                                 row[2] = reader.GetString(2); // username
                                 row[3] = reader.GetString(3); // password
                                 row[4] = reader.IsDBNull(4) ? "" : reader.GetInt32(4).ToString(); // sessionid
-                                row[5] = reader.IsDBNull(6) ? null : reader.GetBoolean(6).ToString(); // is admin?
-                                row[6] = reader.IsDBNull(7) ? "No security question set!" : reader.GetString(7); // security question
-                                row[7] = reader.IsDBNull(5) ? "No IP address" : reader.GetString(5); // ip address
+                                row[5] = reader.IsDBNull(5) ? null : reader.GetBoolean(5).ToString(); // is admin?
+                                row[6] = reader.IsDBNull(6) ? "No security question set!" : reader.GetString(6); // security question
+        
                                 rows.Add(row);
                                 #pragma warning restore CS8601
                             }
@@ -79,7 +79,7 @@ namespace FunWebsiteThing.SQL
         // Deletes a user from the accounts table
         public static async Task DeleteUser(int? userid)
         {
-            if (Accounts.DoesUserExist(userid) && (userid != -1 && userid != 0))
+            if (Accounts.DoesUserExist(userid) && (userid != -1 && userid != 1))
             {
                 try
                 {
@@ -104,7 +104,7 @@ namespace FunWebsiteThing.SQL
         // Makes user an admin
         public static async Task AdminUser(int? userid)
         {
-            if (Accounts.DoesUserExist(userid) && (userid != -1 && userid != 0))
+            if (Accounts.DoesUserExist(userid) && (userid != -1 && userid != 1))
             {
                 try
                 {
