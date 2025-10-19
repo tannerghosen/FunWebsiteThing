@@ -15,11 +15,19 @@ namespace FunWebsiteThing.SQL
         public static void Init(string sqlconstr)
         {
             SetConnectionString(sqlconstr);
-            Tables.Accounts(); // accounts table
-            Tables.SecurityQuestion(); // securityquestion tables
-            Tables.Blog(); // blog table
-            Tables.Comments(); // comments table
-            Tables.Stats(); // stats table
+            if (TryConnectionString() == true)
+            {
+                Tables.Accounts(); // accounts table
+                Tables.SecurityQuestion(); // securityquestion tables
+                Tables.Blog(); // blog table
+                Tables.Comments(); // comments table
+                Tables.Stats(); // stats table
+            }
+            else
+            {
+                Logger.Write("SQL: MySQL Error occured that isn't recoverable from. Possible causes include:\n* Invalid / Incorrect connection string in environment variables.\n* MySQL is not running.\n* You're connecting to a Remote MySQL server that's not accessible for various reasons (unreachable, not running, no internet locally to connect to it, etc.).", "CRITICAL ERROR!");
+                Environment.Exit(0);
+            }
         }
         public static void SetConnectionString(string cs)
         {
@@ -29,6 +37,28 @@ namespace FunWebsiteThing.SQL
         public static string GetConnectionString()
         {
             return ConnectionString;
+        }
+        public static bool TryConnectionString()
+        {
+            try
+            {
+                using (var con = Connect())
+                {
+                    con.Open();
+                    con.Close();
+                    return true;
+                }
+            }
+            catch (MySqlException e)
+            {
+                Logger.Write("SQL: Something is wrong with MySQL.\nError provided: " + e.Message + "\nSQL: Error Code: " + e.ErrorCode, "ERROR");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.Write("SQL: Something is wrong with MySQL that caused a regular exception.\nError provided: " + ex.Message);
+                return false;
+            }
         }
     }
 }
