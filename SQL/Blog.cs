@@ -4,21 +4,6 @@ namespace FunWebsiteThing.SQL
 {
     public static class Blog
     {
-        public static void Init()
-        {
-            using (var con = Main.Connect())
-            {
-                con.Open();
-
-                string blog = "CREATE TABLE IF NOT EXISTS blog (id INT(11) PRIMARY KEY AUTO_INCREMENT, title VARCHAR(255) NOT NULL, message TEXT(65025) NOT NULL, date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP)";
-                using (var cmd = new MySqlCommand(blog, con))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-
-                con.Close();
-            }
-        }
         public static async Task AddBlogPost(string title, string message)
         {
             try

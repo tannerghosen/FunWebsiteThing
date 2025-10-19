@@ -15,10 +15,11 @@ namespace FunWebsiteThing.SQL
         public static void Init(string sqlconstr)
         {
             SetConnectionString(sqlconstr);
-            Accounts.Init(); // accounts and securityquestion tables
-            Blog.Init(); // blog table
-            Comments.Init(); // comments table
-            Stats.Init(); // stats table
+            Tables.Accounts(); // accounts table
+            Tables.SecurityQuestion(); // securityquestion tables
+            Tables.Blog(); // blog table
+            Tables.Comments(); // comments table
+            Tables.Stats(); // stats table
         }
         public static void SetConnectionString(string cs)
         {

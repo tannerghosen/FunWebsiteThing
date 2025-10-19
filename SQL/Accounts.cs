@@ -5,61 +5,6 @@ namespace FunWebsiteThing.SQL
 {
     public static class Accounts
     {
-        public static void Init()
-        {
-            using (var con = Main.Connect())
-            {
-                con.Open();
-
-                // Accounts Table
-                string accounts = "CREATE TABLE IF NOT EXISTS accounts (id INT(11) PRIMARY KEY AUTO_INCREMENT, email VARCHAR(255) NOT NULL UNIQUE, username VARCHAR(50) NOT NULL UNIQUE, password TEXT NOT NULL, sessionid INT(11), isadmin TINYINT DEFAULT 0)";
-                using (var cmd = new MySqlCommand(accounts, con))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-
-                // Admin Account
-                string doesadminexist = "SELECT COUNT(*) FROM accounts WHERE id = 1";
-                using (var c = new MySqlCommand(doesadminexist, con))
-                {
-                    int count = Convert.ToInt32(c.ExecuteScalar());
-                    if (count == 0)
-                    {
-                        string pass = BCrypt.Net.BCrypt.HashPassword("test");
-                        string createadmin = "INSERT INTO accounts (id, email, username, password, isadmin) VALUES (1, 'admin@email.com', 'Admin', @pass, 1)";
-                        using (var cmd = new MySqlCommand(createadmin, con))
-                        {
-                            cmd.Parameters.AddWithValue("@pass", pass);
-                            cmd.ExecuteNonQuery();
-                        }
-                    }
-                }
-
-                // Anonymous Account
-                string doesanonymousexist = "SELECT COUNT(*) FROM accounts WHERE id = -1";
-                using (var c = new MySqlCommand(doesanonymousexist, con))
-                {
-                    int count = Convert.ToInt32(c.ExecuteScalar());
-                    if (count == 0)
-                    {
-                        string pass = BCrypt.Net.BCrypt.HashPassword("tSFSDAKFSDJKGFISDJTR89324JR283JI213HE812H3E8D1H2IKASKFHDASKDFHKASHDKASHDKAH1231241251241231;;'===---+++SDA");
-                        string createanonymous = "INSERT INTO accounts (id, email, username, password) VALUES (-1, 'anonymous@email.com', 'Anonymous', @pass)";
-                        using (var cmd = new MySqlCommand(createanonymous, con))
-                        {
-                            cmd.Parameters.AddWithValue("@pass", pass);
-                            cmd.ExecuteNonQuery();
-                        }
-                    }
-                }
-
-                // Security Questions Table
-                string securityquestion = "CREATE TABLE IF NOT EXISTS securityquestion (id INT(11) PRIMARY KEY, question VARCHAR(255) NOT NULL, answer VARCHAR(255) NOT NULL, FOREIGN KEY (id) REFERENCES accounts(id) ON DELETE CASCADE)";
-                using (var cmd = new MySqlCommand(securityquestion, con))
-                {
-                    cmd.ExecuteNonQuery();
-                }
-            }
-        }
         // Registers an account by first running a SQL statement to see if it the account exists. If it does, don't do anything.
         // If it doesn't, run another SQL statement that inserts it into the table, alongside generating a salt to hash our password.
         // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
