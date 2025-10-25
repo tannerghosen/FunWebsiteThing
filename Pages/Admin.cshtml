@@ -46,7 +46,6 @@
                                 </td>
                                 <td><a href=@updateurl>Update</a></td>
                                 (bool b, int? id, string? r, DateTime? d) = SQL.Admin.IsUserBanned(Convert.ToInt32(row[0]));
-                                Logger.Write(id.ToString() + " " + b.ToString());
                                 if(b == true)
                                 {
                                         <td>

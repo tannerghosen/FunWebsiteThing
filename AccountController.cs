@@ -36,7 +36,6 @@ namespace FunWebsiteThing
                 if (result == true)
                 {
                     (bool b, int? id, string? reason, DateTime? expire) = SQL.Admin.IsUserBanned(SQL.Accounts.GetUserID(Username));
-                    Logger.Write(b.ToString());
                     if(b == false) // if user is not banned
                     {
                         _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
