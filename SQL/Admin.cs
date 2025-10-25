@@ -1,4 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
+using Mysqlx.Expr;
 
 namespace FunWebsiteThing.SQL
 {
@@ -123,6 +124,196 @@ namespace FunWebsiteThing.SQL
                 catch (MySqlException e)
                 {
                     Logger.Write("SQL.Admin: An error occured in AdminUser: " + e.Message + "\nSQL.Admin: Error Code: " + e.ErrorCode, "ERROR");
+                }
+            }
+        }
+
+        // ban ip
+        public static async Task BanIP(string ip, string? reason, DateTime? expire)
+        {
+            if (ip != "" || ip != null)
+            {
+                if (expire == null)
+                    expire = DateTime.Now;
+                if (reason == "" || reason == null)
+                    reason = "You have been banned.";
+
+                try
+                {
+                    using (var con = Main.Connect())
+                    {
+                        con.Open();
+                        string query = "INSERT INTO bans (ip, reason, expire) VALUES (@ip, @reason, @expire)";
+                        using (var cmd = new MySqlCommand(query, con))
+                        {
+                            cmd.Parameters.AddWithValue("@ip", ip);
+                            cmd.Parameters.AddWithValue("@reason", reason);
+                            cmd.Parameters.AddWithValue("@expire", expire);
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                    }
+                    Logger.Write("Ban added for IP Address " + ip);
+                }
+                catch (MySqlException e)
+                {
+                    Logger.Write("SQL.Admin: An error occured in BanIP: " + e.Message + "\nSQL.Admin: Error Code: " + e.ErrorCode, "ERROR");
+                }
+            }
+        }
+
+        // is user ip banned
+        public static (bool, string?, string?, DateTime?) IsUserIPBanned(string ip)
+        {
+            try
+            {
+                using (var con = Main.Connect())
+                {
+                    con.Open();
+                    string query = "SELECT reason, expire FROM bans WHERE ip = @ip";
+                    using (var cmd = new MySqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@ip", ip);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                string reason = reader.GetString(0);
+                                DateTime expire = reader.GetDateTime(1);
+                                return (true, ip, reason, expire);
+                            }
+                            return (false, null, null, null);
+                        }
+                    }
+                }
+            }
+            catch (MySqlException e)
+            {
+                Logger.Write("SQL.Admin: An error occured in IsUserIPBanned " + e.Message + "\nSQL.Admin: Error Code: " + e.ErrorCode, "ERROR");
+                return (false, null, null, null);
+            }
+        }
+
+        // ban user
+        public static async Task BanUser(int? id, string? reason, DateTime? expire)
+        {
+            if (id != 1 && id != -1 && id != null && SQL.Accounts.DoesUserExist(id))
+            {
+                if (expire == null)
+                    expire = DateTime.Now;
+                if (reason == "" || reason == null)
+                    reason = "You have been banned.";
+
+                try
+                {
+                    using (var con = Main.Connect())
+                    {
+                        con.Open();
+                        string query = "UPDATE accountbans SET banned = @banned, reason = @reason, expire = @expire WHERE id = @id";
+                        using (var cmd = new MySqlCommand(query, con))
+                        {
+                            cmd.Parameters.AddWithValue("@id", id);
+                            cmd.Parameters.AddWithValue("@banned", true);
+                            cmd.Parameters.AddWithValue("@reason", reason);
+                            cmd.Parameters.AddWithValue("@expire", expire);
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                    }
+                    Logger.Write("Ban added for Account ID " + id);
+                }
+                catch (MySqlException e)
+                {
+                    Logger.Write("SQL.Admin: An error occured in BanUser: " + e.Message + "\nSQL.Admin: Error Code: " + e.ErrorCode, "ERROR");
+                }
+            }
+        }
+
+        // is user banned
+        public static (bool, int?, string?, DateTime?) IsUserBanned(int? id)
+        {
+            if (id == null) return (false, null, null, null);
+            try
+            {
+                using (var con = Main.Connect())
+                {
+                    con.Open();
+                    string query = "SELECT banned, reason, expire FROM accountbans WHERE id = @id";
+                    using (var cmd = new MySqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                bool banned = reader.GetBoolean(0);
+                                string reason = reader.GetString(1);
+                                DateTime expire = reader.GetDateTime(2);
+                                return (banned, id, reason, expire);
+                            }
+                            return (false, null, null, null);
+                        }
+                    }
+                }
+            }
+            catch (MySqlException e)
+            {
+                Logger.Write("SQL.Admin: An error occured in IsUserBanned " + e.Message + "\nSQL.Admin: Error Code: " + e.ErrorCode, "ERROR");
+                return (false, null, null, null);
+            }
+        }
+
+        // unban user
+        public static async Task UnbanUser(int id)
+        {
+            (bool b, int? i, string? r, DateTime? ex) = IsUserBanned(id);
+            if (b == true)
+            {
+                try
+                {
+                    using (var con = Main.Connect())
+                    {
+                        con.Open();
+                        string query = "UPDATE accountbans SET expire = @expire, banned = @banned WHERE id = @id";
+                        using (var cmd = new MySqlCommand(query, con))
+                        {
+                            cmd.Parameters.AddWithValue("@id", id);
+                            cmd.Parameters.AddWithValue("@banned", false);
+                            cmd.Parameters.AddWithValue("@expire", DateTime.Now);
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                    }
+                    Logger.Write("Unbanned Account ID " + id);
+                }
+                catch (MySqlException e)
+                {
+                    Logger.Write("SQL.Admin: An error occured in UnbanUser: " + e.Message + "\nSQL.Admin: Error Code: " + e.ErrorCode, "ERROR");
+                }
+            }
+        }
+
+        // unban ip
+        public static async Task UnbanIP(string ip)
+        {
+            (bool b, string? i, string? r, DateTime? ex) = IsUserIPBanned(ip);
+            if (b == true)
+            {
+                try
+                {
+                    using (var con = Main.Connect())
+                    {
+                        con.Open();
+                        string query = "UPDATE bans SET expire = @expire WHERE ip = @ip";
+                        using (var cmd = new MySqlCommand(query, con))
+                        {
+                            cmd.Parameters.AddWithValue("@ip", ip);
+                            cmd.Parameters.AddWithValue("@expire", DateTime.Now);
+                            await cmd.ExecuteNonQueryAsync();
+                        }
+                    }
+                    Logger.Write("Ban removed for IP Address " + ip);
+                }
+                catch (MySqlException e)
+                {
+                    Logger.Write("SQL.Admin: An error occured in UnbanIP: " + e.Message + "\nSQL.Admin: Error Code: " + e.ErrorCode, "ERROR");
                 }
             }
         }

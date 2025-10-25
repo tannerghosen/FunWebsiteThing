@@ -19,9 +19,15 @@ namespace FunWebsiteThing.SQL
             {
                 Tables.Accounts(); // accounts table
                 Tables.SecurityQuestion(); // securityquestion tables
+                Tables.AccountBans(); // account bans table
+                Triggers.Accounts(); // accounts trigger
+                Triggers.UnbanOnExpire(); // unban on expire event
+                Misc.CreateDefaultAccounts(); // create accounts
                 Tables.Blog(); // blog table
                 Tables.Comments(); // comments table
                 Tables.Stats(); // stats table
+                Tables.Bans(); // bans table
+                Triggers.UnbanOnExpireIP(); // unban on expire IP event
             }
             else
             {

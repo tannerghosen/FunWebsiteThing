@@ -35,9 +35,18 @@ namespace FunWebsiteThing
 
                 if (result == true)
                 {
-                    _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
-                    IncrementLogins();
-                    return Ok("Login successful. Logged in as: " + Username + ".");
+                    (bool b, int? id, string? reason, DateTime? expire) = SQL.Admin.IsUserBanned(SQL.Accounts.GetUserID(Username));
+                    Logger.Write(b.ToString());
+                    if(b == false) // if user is not banned
+                    {
+                        _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
+                        IncrementLogins();
+                        return Ok("Login successful. Logged in as: " + Username + ".");
+                    }
+                    else
+                    {
+                        return Ok("Banned");
+                    }
                 }
                 else if (result == false && error != true)
                 {

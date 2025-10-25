@@ -46,13 +46,19 @@ namespace FunWebsiteThing.Pages
         // Changed from void to IActionResult because void doesn't actually wait for methods. For some reason, this was not an issue before we switched to MySQL, funny enough.
         public async Task<IActionResult> OnPost()
         {
+            (bool b, int? id, string? reason, DateTime? expire) = SQL.Admin.IsUserBanned(SQL.Accounts.GetUserID(Username));
             if ((Username == null || Username == "") || (Password == null || Password == ""))
             {
                 Result = "Username or Password is blank.";
                 return Page();
             }
             IActionResult result = await _a.Login(Username, Password);
-            if (result is OkObjectResult)
+            if (result is OkObjectResult && b)
+            {
+                Result = "Your account is banned until " + expire + ".\nReason: '" + reason + "'.\nIf you believe this to be in error, contact the admins.";
+                Logger.Write("banned bitch");
+            }
+            else if (result is OkObjectResult)
             {
                 Result = "Login successful. Logged in as: " + Username + ".";
             }
