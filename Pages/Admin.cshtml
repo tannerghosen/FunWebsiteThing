@@ -45,8 +45,7 @@
                                     </form>
                                 </td>
                                 <td><a href=@updateurl>Update</a></td>
-                                (bool b, int? id, string? r, DateTime? d) = SQL.Admin.IsUserBanned(Convert.ToInt32(row[0]));
-                                if(b == true)
+                                if (SQL.Admin.IsUserBannedSimple(Convert.ToInt32(row[0])))
                                 {
                                         <td>
                                             <form method="post" asp-page-handler="UnbanUser">

@@ -193,6 +193,36 @@ namespace FunWebsiteThing.SQL
             }
         }
 
+        // is user ip banned (simple true/false)
+        public static bool IsUserIPBannedSimple(string ip)
+        {
+            try
+            {
+                using (var con = Main.Connect())
+                {
+                    con.Open();
+                    string query = "SELECT reason, expire FROM bans WHERE ip = @ip";
+                    using (var cmd = new MySqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@ip", ip);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return true;
+                            }
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (MySqlException e)
+            {
+                Logger.Write("SQL.Admin: An error occured in IsUserIPBannedS " + e.Message + "\nSQL.Admin: Error Code: " + e.ErrorCode, "ERROR");
+                return false;
+            }
+        }
+
         // ban user
         public static async Task BanUser(int? id, string? reason, DateTime? expire)
         {
@@ -228,9 +258,8 @@ namespace FunWebsiteThing.SQL
         }
 
         // is user banned
-        public static (bool, int?, string?, DateTime?) IsUserBanned(int? id)
+        public static (bool, int?, string?, DateTime?) IsUserBanned(int id)
         {
-            if (id == null) return (false, null, null, null);
             try
             {
                 using (var con = Main.Connect())
@@ -258,6 +287,37 @@ namespace FunWebsiteThing.SQL
             {
                 Logger.Write("SQL.Admin: An error occured in IsUserBanned " + e.Message + "\nSQL.Admin: Error Code: " + e.ErrorCode, "ERROR");
                 return (false, null, null, null);
+            }
+        }
+
+        // is user banned (simple true/false)
+        public static bool IsUserBannedSimple(int id)
+        {
+            try
+            {
+                using (var con = Main.Connect())
+                {
+                    con.Open();
+                    string query = "SELECT banned, reason, expire FROM accountbans WHERE id = @id";
+                    using (var cmd = new MySqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@id", id);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                bool banned = reader.GetBoolean(0);
+                                return banned;
+                            }
+                            return false;
+                        }
+                    }
+                }
+            }
+            catch (MySqlException e)
+            {
+                Logger.Write("SQL.Admin: An error occured in IsUserBannedS " + e.Message + "\nSQL.Admin: Error Code: " + e.ErrorCode, "ERROR");
+                return false;
             }
         }
 
