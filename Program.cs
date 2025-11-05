@@ -34,18 +34,17 @@ if (setcheck.Contains(false))
 }
 
 var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
-builder.Services.AddRazorPages();
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
+    options.AddPolicy("AllowAllOrigins",
         builder => builder
             .AllowAnyOrigin()
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
+builder.Services.AddRazorPages();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = "TannerGhosensFunWebsiteThing.Session";
@@ -80,7 +79,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 var app = builder.Build();
-
+app.UseCors("AllowAllOrigins");
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -104,7 +103,6 @@ app.UseEndpoints(endpoints =>
 });
 
 app.MapRazorPages();
-
 FunWebsiteThing.SQL.Main.Init(sqlconstr);
 FunWebsiteThing.WebSocketManager.Start(); // Start the WebSocket Server
 

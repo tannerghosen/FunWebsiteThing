@@ -50,5 +50,11 @@ namespace FunWebsiteThing.Controllers.Classes
             }
             return "";
         }
+
+        public static bool ValidatePassword(string password)
+        {
+            if (!passregex.IsMatch(password) || password == null) return false;
+            return true;
+        }
     }
 }
