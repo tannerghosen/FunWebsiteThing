@@ -80,7 +80,5 @@ function NavbarToggle()
 {
 	let l = document.getElementById("links");
 	l.style.display = l.style.display === "block" ? "none" : "block";
-	console.log("navbar atm :" + localStorage.getItem("navbar"));
 	localStorage.setItem("navbar", localStorage.getItem("navbar") === "closed" ? "open" : "closed");
-	console.log("navbar now: " + localStorage.getItem("navbar"));
 }
