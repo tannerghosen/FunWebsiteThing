@@ -5,14 +5,14 @@ using FunWebsiteThing.Controllers.Classes;
 
 namespace FunWebsiteThing
 {
-    public static class WebSocketManager
+    public static class WebSocketServer
     {
         public static string Status = String.Empty;
 
         private static string AccessPassword = String.Empty;
         public static async Task Start()
         {
-            AccessPassword = Password.GeneratePassword();
+            AccessPassword = Password.GeneratePassword(); // generate a password needed to actually send new updates to the websocket server (can be get'd)
             // Start Server
             var hl = new HttpListener();
             hl.Prefixes.Add("http://localhost:5000/");
@@ -25,6 +25,7 @@ namespace FunWebsiteThing
                 if (context.Request.IsWebSocketRequest) // if the request is a websocket
                 {
                     var websocketcontext = await context.AcceptWebSocketAsync(null); // accept it
+                    // What we are encoding below before sending is our Status, which if blank, we just send an empty string, else we send status as it likely changed
                     websocketcontext.WebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes((Status == "" ? "" : Status))), WebSocketMessageType.Text, true, CancellationToken.None); // send the websocket a message
                     await HandleWebSocket(websocketcontext.WebSocket); // await responses from the socket again
                 }
@@ -53,7 +54,6 @@ namespace FunWebsiteThing
                     {
                         var message = Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
 
-                        //Console.WriteLine($"Message Received: {message}");
                         if (message.Contains(AccessPassword))
                         {
                             int index = message.IndexOf(AccessPassword); // get the index of where AccessPassword starts

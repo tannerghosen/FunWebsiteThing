@@ -12,7 +12,7 @@
 <button id="send">Send</button>
 <div id="messages"></div>
 @{
-    string Password = WebSocketManager.GetAccessPassword();
+    string Password = WebSocketServer.GetAccessPassword();
 }
 <script>
             const websocket = new WebSocket("ws://localhost:5000/");
