@@ -55,7 +55,8 @@ namespace FunWebsiteThing.Pages
             IActionResult result = await _a.Login(Username, Password);
             if (result is OkObjectResult && b)
             {
-                Result = "Your account is banned until " + expire + ".\\nReason: " + reason + "\\nIf you believe this to be in error, contact the admins.";
+                DateTime permacheck = DateTime.Now.AddYears(100);
+                Result = expire <= permacheck ? "Your account is banned until " + expire + ".\\nReason: " + reason + "\\nIf you believe this to be in error, contact the admins." : "Your account is permanently banned.\\nReason: " + reason + "\\nIf you believe this to be in error, contact the admins.";
             }
             else if (result is OkObjectResult)
             {
