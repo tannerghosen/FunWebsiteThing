@@ -35,7 +35,8 @@ namespace FunWebsiteThing
 
                 if (result == true)
                 {
-                    if(SQL.Admin.IsUserBannedSimple(SQL.Accounts.GetUserID(Username))) // if user is not banned
+                    Logger.Write(SQL.Admin.IsUserBannedSimple(SQL.Accounts.GetUserID(Username)).ToString());
+                    if (!SQL.Admin.IsUserBannedSimple(SQL.Accounts.GetUserID(Username))) // if user is not banned
                     {
                         _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
                         IncrementLogins();
