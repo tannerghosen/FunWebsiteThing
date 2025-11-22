@@ -55,7 +55,7 @@ namespace FunWebsiteThing.Pages
             IActionResult result = await _a.Login(Username, Password);
             if (result is OkObjectResult && b)
             {
-                Result = "Your account is banned until " + expire + ". Reason: '" + reason + "'. If you believe this to be in error, contact the admins.";
+                Result = "Your account is banned until " + expire + ".\\nReason: " + reason + "\\nIf you believe this to be in error, contact the admins.";
             }
             else if (result is OkObjectResult)
             {
