@@ -12,27 +12,6 @@ namespace FunWebsiteThing.Pages
             _logger = logger;
         }
 
-        public string[] Emojis = new string[]
-        {
-                "😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇",
-                "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚",
-                "😋", "😛", "😝", "😜", "🤪", "🤨", "🧐", "🤓", "😎", "🤩",
-                "🥳", "😏", "😒", "😞", "😔", "😟", "😕", "🙁", "☹️", "😣",
-                "😖", "😫", "😩", "🥺", "😢", "😭", "😤", "😠", "😡", "🤬"
-        };
-
-        public Random random = new Random();
-
-        public string RandomEmoji()
-        {
-            return Emojis[random.Next(Emojis.Length)];
-        }
-
-        public DateTime GetTime()
-        {
-            return DateTime.Now;
-        }
-
         public void OnGet()
         {
 
