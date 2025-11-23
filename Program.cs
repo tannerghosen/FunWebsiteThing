@@ -8,6 +8,7 @@ using System.Buffers.Text;
 string sqlconstr = Environment.GetEnvironmentVariable("FWTConnectionString"); // FWTConnectionString, MySQL Connction String, syntax looks like this: Server=(server);Database=(db);User ID=(user);Password=(pass);
 string gclientid = Environment.GetEnvironmentVariable("FWTGoogleClientId"); // FWTGoogleClientId, Google Client Id, used for OAuth 2.0 login
 string gclientsec = Environment.GetEnvironmentVariable("FWTGoogleClientSecret"); // FWTGoogleClientSecret, Google Client Secret, used for OAuth 2.0 login
+string domainname = Environment.GetEnvironmentVariable("FWTDomainName"); // FWTDomainName, Domain Name used for the website. (format: localhost or www.google.com)
 /* To set up Google Login:
    1. Go to console.cloud.google.com
    2. Create an OAuth 2.0 Client ID
@@ -15,19 +16,19 @@ string gclientsec = Environment.GetEnvironmentVariable("FWTGoogleClientSecret");
    4. Save and wait roughly 5 minutes for it to take effect.
 */
 
-bool[] setcheck = { sqlconstr != null, gclientid != null, gclientsec != null };
-
+bool[] setcheck = { sqlconstr != null, gclientid != null, gclientsec != null, domainname != null };
+Logger.Write(domainname);
 if (setcheck.Contains(false))
 {
     // Log Fatal Error to FWT.log
     Logger.Write($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error.", "ERROR");
     Logger.Write($"For more clarification, see the project's code in Program.cs", "ERROR");
-    Logger.Write($"FWTConnectionString Set: {setcheck[0]} FWTGoogleClientId Set: {setcheck[1]} FWTGoogleClientSecret Set: {setcheck[2]}","ERROR");
+    Logger.Write($"FWTConnectionString Set: {setcheck[0]} FWTGoogleClientId Set: {setcheck[1]} FWTGoogleClientSecret Set: {setcheck[2]} FWTDomainName Set: {setcheck[3]}","ERROR");
 
     // Display Fatal Error in console
     Console.WriteLine($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error.");
     Console.WriteLine($"For more clarification, see the project's code in Program.cs");
-    Console.WriteLine($"FWTConnectionString Set: {setcheck[0]} FWTGoogleClientId Set: {setcheck[1]} FWTGoogleClientSecret Set: {setcheck[2]}");
+    Console.WriteLine($"FWTConnectionString Set: {setcheck[0]} FWTGoogleClientId Set: {setcheck[1]} FWTGoogleClientSecret Set: {setcheck[2]} FWTDomainName Set: {setcheck[3]}");
     Console.ReadKey();
 
     Environment.Exit(0);
@@ -104,6 +105,6 @@ app.UseEndpoints(endpoints =>
 
 app.MapRazorPages();
 FunWebsiteThing.SQL.Main.Init(sqlconstr);
-FunWebsiteThing.WebSocketServer.Start(); // Start the WebSocket Server
-
+FunWebsiteThing.WebSocketServer.Start(domainname); // Start the WebSocket Server
+FunWebsiteThing.JavaScriptHelper.SetDomainName(domainname); // For any JavaScript function that needs the exact domain name
 app.Run();

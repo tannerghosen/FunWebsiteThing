@@ -15,7 +15,7 @@
     string Password = WebSocketServer.GetAccessPassword();
 }
 <script>
-            const websocket = new WebSocket("ws://localhost:5000/");
+            const websocket = new WebSocket("ws://@JavaScriptHelper.GetDomainName():5000/");
 
             websocket.onopen = () =>
             {
