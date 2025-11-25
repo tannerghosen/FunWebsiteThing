@@ -18,8 +18,7 @@ namespace FunWebsiteThing
             if (!_s.IsUserLoggedIn())
             {
                 int sid = _s.SID(); // generate session id
-                bool isusernameemail = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
-                Username = isusernameemail == true ? SQL.Accounts.GetUsername(Username) : Username;
+                Username = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$") == true ? SQL.Accounts.GetUsername(Username) : Username;
                 (bool result, bool error) = (false, false);
                 // If non-external login source (the website only)
                 if (External == false)
