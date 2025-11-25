@@ -108,6 +108,20 @@ namespace FunWebsiteThing.SQL
                         }
                     }
                 }
+
+                string errors = "SELECT COUNT(*) FROM stats WHERE stat = 'errors'";
+                using (var c = new MySqlCommand(errors, con))
+                {
+                    int count = Convert.ToInt32(c.ExecuteScalar());
+                    if (count == 0)
+                    {
+                        string createerrors = "INSERT INTO stats (stat, count) VALUES ('errors', 0)";
+                        using (var cmd = new MySqlCommand(createerrors, con))
+                        {
+                            cmd.ExecuteNonQuery();
+                        }
+                    }
+                }
                 con.Close();
             }
         }

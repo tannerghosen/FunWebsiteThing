@@ -4,6 +4,7 @@
     {
         public int Logins;
         public int Registrations;
+        public int Errors;
     }
     public static class Statistics
     {
@@ -15,7 +16,13 @@
 
         public async static void IncrementRegistrations()
         {
-            Logger.Write("Increasementing registration", "STATS");
+            Logger.Write("Increasementing registrations", "STATS");
+            await SQL.Stats.UpdateStat("registrations");
+        }
+
+        public async static void IncrementErrors()
+        {
+            Logger.Write("Increasementing error total", "STATS");
             await SQL.Stats.UpdateStat("registrations");
         }
 
@@ -28,7 +35,7 @@
         public async static Task<Stats> GetStats()
         {
             int[] stats = await SQL.Stats.GetStats();
-            return new Stats() { Logins = stats[0], Registrations = stats[1] };
+            return new Stats() { Logins = stats[0], Registrations = stats[1], Errors = stats[2]};
         }
 
     }

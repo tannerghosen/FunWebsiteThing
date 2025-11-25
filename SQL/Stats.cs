@@ -21,6 +21,10 @@ namespace FunWebsiteThing.SQL
                     {
                         query = "UPDATE stats SET count = count + 1 WHERE stat = 'registrations'";
                     }
+                    else if (stat == "errors" || stat == "Errors")
+                    {
+                        query = "UPDATE stats SET count = count + 1 WHERE stat = 'errors'";
+                    }
                     using (var cmd = new MySqlCommand(query, con))
                     {
                         await cmd.ExecuteNonQueryAsync();
@@ -42,6 +46,7 @@ namespace FunWebsiteThing.SQL
                     con.Open();
                     string query = "UPDATE stats SET count = 0 WHERE stat = 'logins'";
                     string query2 = "UPDATE stats SET count = 0 WHERE stat = 'registrations'";
+                    string query3 = "UPDATE stats SET count = 0 WHERE stat = 'errors'";
 
                     using (var cmd = new MySqlCommand(query, con))
                     {
@@ -49,6 +54,11 @@ namespace FunWebsiteThing.SQL
                     }
 
                     using (var cmd = new MySqlCommand(query2, con))
+                    {
+                        await cmd.ExecuteNonQueryAsync();
+                    }
+
+                    using (var cmd = new MySqlCommand(query3, con))
                     {
                         await cmd.ExecuteNonQueryAsync();
                     }
@@ -62,7 +72,7 @@ namespace FunWebsiteThing.SQL
 
         public static async Task<int[]> GetStats()
         {
-            int logins = 0, registrations = 0;
+            int logins = 0, registrations = 0, errors = 0;
             try
             {
                 using (var con = Main.Connect())
@@ -98,13 +108,28 @@ namespace FunWebsiteThing.SQL
                             }
                         }
                     }
-                    return new int[] { logins, registrations };
+                    string errquery = "SELECT count FROM stats WHERE stat = 'errors'";
+                    using (var cmd = new MySqlCommand(errquery, con))
+                    {
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                errors = reader.GetInt32(0);
+                            }
+                            else
+                            {
+                                errors = 0;
+                            }
+                        }
+                    }
+                    return new int[] { logins, registrations, errors };
                 }
             }
             catch (MySqlException e)
             {
                 Logger.Write("SQL.Stats: An error occured in GetStats " + e.Message + "\nSQL.Stats: Error Code: " + e.ErrorCode, "ERROR");
-                return new int[] { 0, 0 };
+                return new int[] { 0, 0, 0 };
             }
         }
     }

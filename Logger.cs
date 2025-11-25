@@ -36,6 +36,7 @@ namespace FunWebsiteThing
                 writer.WriteLine("(" + Time + ") [" + messagetype + "]: " + message);
                 if (messagetype == "ERROR" || messagetype == "DEBUG") // if error, let's help out by giving the stack trace
                 {
+                    if (messagetype == "ERROR") Statistics.IncrementErrors();
                     string stack = grandparentsf != null ? grandparentsf.GetMethod().Name + " -> " + parentsf.GetMethod().Name : parentsf.GetMethod().Name; // this is a string that says Grandparent -> Parent
                     writer.WriteLine("(" + Time + ") [" + messagetype + "]: " + messagetype == "ERROR" ? flavortexts[0] : flavortexts[1] + " " + stack + ".");
                 }
