@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using System.Buffers.Text;
 
+// These need to be set as environment variables before first launch. If not, you will have the below check stop you and the program's execution will stop.
 string sqlconstr = Environment.GetEnvironmentVariable("FWTConnectionString"); // FWTConnectionString, MySQL Connction String, syntax looks like this: Server=(server);Database=(db);User ID=(user);Password=(pass);
 string gclientid = Environment.GetEnvironmentVariable("FWTGoogleClientId"); // FWTGoogleClientId, Google Client Id, used for OAuth 2.0 login
 string gclientsec = Environment.GetEnvironmentVariable("FWTGoogleClientSecret"); // FWTGoogleClientSecret, Google Client Secret, used for OAuth 2.0 login
@@ -16,7 +17,6 @@ string domainname = Environment.GetEnvironmentVariable("FWTDomainName"); // FWTD
    4. Save and wait roughly 5 minutes for it to take effect.
 */
 
-//bool[] setcheck = { sqlconstr != null, gclientid != null, gclientsec != null, domainname != null };
 bool[] setcheck = { !string.IsNullOrWhiteSpace(sqlconstr), !string.IsNullOrWhiteSpace(gclientid), !string.IsNullOrWhiteSpace(gclientsec), !string.IsNullOrWhiteSpace(domainname) };
 if (setcheck.Contains(false))
 {
@@ -35,7 +35,6 @@ if (setcheck.Contains(false))
 }
 
 var builder = WebApplication.CreateBuilder(args);
-// Add services to the container.
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins",
