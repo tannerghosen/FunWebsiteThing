@@ -16,17 +16,17 @@ string domainname = Environment.GetEnvironmentVariable("FWTDomainName"); // FWTD
    4. Save and wait roughly 5 minutes for it to take effect.
 */
 
-bool[] setcheck = { sqlconstr != null, gclientid != null, gclientsec != null, domainname != null };
-Logger.Write(domainname);
+//bool[] setcheck = { sqlconstr != null, gclientid != null, gclientsec != null, domainname != null };
+bool[] setcheck = { !string.IsNullOrWhiteSpace(sqlconstr), !string.IsNullOrWhiteSpace(gclientid), !string.IsNullOrWhiteSpace(gclientsec), !string.IsNullOrWhiteSpace(domainname) };
 if (setcheck.Contains(false))
 {
     // Log Fatal Error to FWT.log
-    Logger.Write($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error.", "ERROR");
+    Logger.Write($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error for this program to run.", "ERROR");
     Logger.Write($"For more clarification, see the project's code in Program.cs", "ERROR");
     Logger.Write($"FWTConnectionString Set: {setcheck[0]} FWTGoogleClientId Set: {setcheck[1]} FWTGoogleClientSecret Set: {setcheck[2]} FWTDomainName Set: {setcheck[3]}","ERROR");
 
     // Display Fatal Error in console
-    Console.WriteLine($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error.");
+    Console.WriteLine($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error for this program to run.");
     Console.WriteLine($"For more clarification, see the project's code in Program.cs");
     Console.WriteLine($"FWTConnectionString Set: {setcheck[0]} FWTGoogleClientId Set: {setcheck[1]} FWTGoogleClientSecret Set: {setcheck[2]} FWTDomainName Set: {setcheck[3]}");
     Console.ReadKey();
