@@ -7,8 +7,8 @@ using System.Buffers.Text;
 
 // These need to be set as environment variables before first launch. If not, you will have the below check stop you and the program's execution will stop.
 string sqlconstr = Environment.GetEnvironmentVariable("FWTConnectionString"); // FWTConnectionString, MySQL Connction String, syntax looks like this: Server=(server);Database=(db);User ID=(user);Password=(pass);
-string gclientid = Environment.GetEnvironmentVariable("FWTGoogleClientId"); // FWTGoogleClientId, Google Client Id, used for OAuth 2.0 login
-string gclientsec = Environment.GetEnvironmentVariable("FWTGoogleClientSecret"); // FWTGoogleClientSecret, Google Client Secret, used for OAuth 2.0 login
+string gclientid = Environment.GetEnvironmentVariable("FWTGoogleClientId"); // FWTGoogleClientId, Google Client Id, used for OAuth 2.0 login, Optional
+string gclientsec = Environment.GetEnvironmentVariable("FWTGoogleClientSecret"); // FWTGoogleClientSecret, Google Client Secret, used for OAuth 2.0 login, Optional
 string domainname = Environment.GetEnvironmentVariable("FWTDomainName"); // FWTDomainName, Domain Name used for the website. (format: localhost or www.google.com)
 /* To set up Google Login:
    1. Go to console.cloud.google.com
@@ -17,24 +17,27 @@ string domainname = Environment.GetEnvironmentVariable("FWTDomainName"); // FWTD
    4. Save and wait roughly 5 minutes for it to take effect.
 */
 
-bool[] setcheck = { !string.IsNullOrWhiteSpace(sqlconstr), !string.IsNullOrWhiteSpace(gclientid), !string.IsNullOrWhiteSpace(gclientsec), !string.IsNullOrWhiteSpace(domainname) };
+//bool[] setcheck = { !string.IsNullOrWhiteSpace(sqlconstr), !string.IsNullOrWhiteSpace(gclientid), !string.IsNullOrWhiteSpace(gclientsec), !string.IsNullOrWhiteSpace(domainname) };
+bool[] setcheck = { !string.IsNullOrWhiteSpace(sqlconstr), !string.IsNullOrWhiteSpace(domainname) };
 if (setcheck.Contains(false))
 {
     // Log Fatal Error to FWT.log
     Logger.Write("FATAL ERROR! READ BELOW CAREFULLY BEFORE RE-LAUNCHING THE PROGRAM.", "FATAL");
     Logger.Write($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error for this program to run.", "FATAL");
     Logger.Write($"For more clarification, see the project's code in Program.cs", "FATAL");
-    Logger.Write($"FWTConnectionString Set: {setcheck[0]} FWTGoogleClientId Set: {setcheck[1]} FWTGoogleClientSecret Set: {setcheck[2]} FWTDomainName Set: {setcheck[3]}","FATAL");
+    Logger.Write($"FWTConnectionString Set: {setcheck[0]} FWTDomainName Set: {setcheck[1]}","FATAL");
 
     // Display Fatal Error in console
     Console.WriteLine("FATAL ERROR! READ BELOW CAREFULLY BEFORE RE-LAUNCHING THE PROGRAM.", "FATAL");
     Console.WriteLine($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error for this program to run.");
     Console.WriteLine($"For more clarification, see the project's code in Program.cs");
-    Console.WriteLine($"FWTConnectionString Set: {setcheck[0]} FWTGoogleClientId Set: {setcheck[1]} FWTGoogleClientSecret Set: {setcheck[2]} FWTDomainName Set: {setcheck[3]}");
+    Console.WriteLine($"FWTConnectionString Set: {setcheck[0]} FWTDomainName Set: {setcheck[1]}");
     Console.ReadKey();
 
     Environment.Exit(0);
 }
+
+Globals.DisableGoogle = string.IsNullOrWhiteSpace(gclientid) || string.IsNullOrWhiteSpace(gclientsec); // Disable Google login if these system environment variables are empty or not set.
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options =>
@@ -68,17 +71,16 @@ builder.Services.AddAuthentication(options =>
 // A lot of the OAuth2.0 authentication is handled by middleware in ASP.NET Core, all we need to do is initiate a request to the provider and handle the response.
 .AddGoogle(options => // add google oauth
 {
-
-    options.ClientId = gclientid; // retrieve client id from environment variable
-    options.ClientSecret = gclientsec; // retrieve client secret from environment variable
-    options.CallbackPath = "/signin-google"; // do not change, /login or /login?method=google or similar would all be invalid, it has to be specific.
-    // This is the callback path. ASP.NET Core middleware will handle the authentication process at this path, including
-    // •	Validating the authentication token received from Google.
-    // •	Creating a user principal (user identity) based on the claims (data given by a provider that creates an user's identity) provided by Google.
-    // You can see the above being handled in SigninGoogle.cshtml.cs
-    options.SignInScheme = IdentityConstants.ExternalScheme; // we sign in with the external scheme as the default scheme is cookie otherwise, which is not what we want 
-    options.Scope.Add("email");
-    options.Scope.Add("profile");
+    if (Globals.DisableGoogle == false)
+    {
+        options.ClientId = gclientid; // retrieve client id from environment variable
+        options.ClientSecret = gclientsec; // retrieve client secret from environment variable
+        options.CallbackPath = "/signin-google"; // do not change, /login or /login?method=google or similar would all be invalid, it has to be specific.
+                                                 // This is where the middleware will process the challenge's response so HandleGoogleLogin can use it.
+        options.SignInScheme = IdentityConstants.ExternalScheme; // we sign in with the external scheme as the default scheme is cookie otherwise, which is not what we want 
+        options.Scope.Add("email");
+        options.Scope.Add("profile");
+    }
 });
 
 var app = builder.Build();
