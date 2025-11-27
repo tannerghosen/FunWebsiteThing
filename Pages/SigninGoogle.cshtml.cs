@@ -22,23 +22,23 @@ namespace FunWebsiteThing.Pages
             _a = a;
             _h = h;
         }
-        // This method accesses the data from the Google OAuth2 login challenge with the token we received from Google.
-        // Additionally, based on the data, we either login the user or register them.
+        // This method accesses the data with get in response from the Google OAuth2 login challenge started by in Login.cshtml.cs
+        // Based on the data, we either login the user or register them.
         // The next step is to redirect to WelcomeExternal, which either is the end of the process or it redirects to Index and stops there
         // SigninGoogle -> WelcomeExternal (redirect, all log in related stuff is finalized here)
         public async Task<IActionResult> OnGetAsync()
         {
-            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme); // We validate the authentication token and make sure it was sent by Google
-            if (result.Succeeded) 
+            var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme); // Authenticate the request using Google's auth scheme
+            if (result.Succeeded)
             {
-                // Claims are the data that Google sends back to us
+                // Claims are the data that Google sends back to us that contains the authenticated user's identity
                 // These can consist of the user's email, username, etc.
                 var claims = result.Principal.Claims;
                 var username = claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value; // Username
                 var email = claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value; // Email
 
                 // We login / register the user based on email
-                if (!SQL.Accounts.DoesUserExist(email, "email")) 
+                if (!SQL.Accounts.DoesUserExist(email, "email"))
                 {
                     if (SQL.Accounts.DoesUserExist(username, "username"))
                     {
@@ -47,7 +47,7 @@ namespace FunWebsiteThing.Pages
                         int num = random.Next(1, 9999);
                         username = username + num.ToString();
                     }
-                    string password = Password.GeneratePassword(); 
+                    string password = Password.GeneratePassword();
                     TempData["TempPassword"] = password; // we store this for WelcomeExternal's message so the user can see their password
 
                     // This is a work around as HttpContext for some reason is initially null/uninitialized during the first time register/login via AccountController, so we just handle it by logging in (making a session) via SessionManager here instead of AccountController's Register method calling it.
@@ -61,9 +61,11 @@ namespace FunWebsiteThing.Pages
 
                 return RedirectToPage(Url.Page("/WelcomeExternal"));
             }
-
-            Logger.Write("Google token validation failed!", "ERROR");
-            return RedirectToPage("/Login", new { Result = "Google login failed." });
+            else
+            {
+                Logger.Write("Google authentication failed!", "ERROR");
+                return RedirectToPage("/Login", new { Result = "Google authentication failed." });
+            }
         }
     }
 }
