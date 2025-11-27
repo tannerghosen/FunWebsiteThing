@@ -108,6 +108,7 @@ app.UseEndpoints(endpoints =>
 
 app.MapRazorPages();
 FunWebsiteThing.SQL.Main.Init(sqlconstr);
-FunWebsiteThing.WebSocketServer.Start(domainname); // Start the WebSocket Server
-FunWebsiteThing.JavaScriptHelper.SetDomainName(domainname); // For any JavaScript function that needs the exact domain name
+Globals.DomainName = domainname;
+FunWebsiteThing.WebSocketServer.Start(); // Start the WebSocket Server
+//FunWebsiteThing.JavaScriptHelper.SetDomainName(domainname); // For any JavaScript function that needs the exact domain name
 app.Run();

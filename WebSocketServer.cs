@@ -11,12 +11,12 @@ namespace FunWebsiteThing
 
         private static string AccessPassword = String.Empty;
 
-        public static async Task Start(string domainname = "")
+        public static async Task Start()
         {
             AccessPassword = Password.GeneratePassword(); // generate a password needed to actually send new updates to the websocket server (can be get'd)
             // Start Server
             var hl = new HttpListener();
-            hl.Prefixes.Add("http://"+domainname+":5000/");
+            hl.Prefixes.Add("http://"+Globals.DomainName+":5000/");
             hl.Start();
             Console.WriteLine("WebSocket Server Started!");
 
