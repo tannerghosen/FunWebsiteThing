@@ -26,7 +26,7 @@ namespace FunWebsiteThing.SQL
             using (var con = Main.Connect())
             {
                 con.Open();
-                string e = "CREATE EVENT IF NOT EXISTS unbanonexpireevent ON SCHEDULE EVERY 30 SECOND COMMENT 'Unban every 30 seconds' DO UPDATE accountbans SET expire = CURDATE(), banned = 0 WHERE expire <= CURDATE()";
+                string e = "CREATE EVENT IF NOT EXISTS unbanonexpireevent ON SCHEDULE EVERY 30 SECOND DO UPDATE accountbans SET expire = CURDATE(), banned = 0 WHERE expire <= CURDATE()";
                 using (var cmd = new MySqlCommand(e, con))
                 {
                     cmd.ExecuteNonQuery();
@@ -40,7 +40,7 @@ namespace FunWebsiteThing.SQL
             using (var con = Main.Connect())
             {
                 con.Open();
-                string e = "CREATE EVENT IF NOT EXISTS unbanonexpireipevent ON SCHEDULE EVERY 30 SECOND COMMENT 'Unban every 30 seconds' DO DELETE FROM bans WHERE expire <= CURDATE()";
+                string e = "CREATE EVENT IF NOT EXISTS unbanonexpireipevent ON SCHEDULE EVERY 30 SECOND DO DELETE FROM bans WHERE expire <= CURDATE()";
                 using (var cmd = new MySqlCommand(e, con))
                 {
                     cmd.ExecuteNonQuery();
