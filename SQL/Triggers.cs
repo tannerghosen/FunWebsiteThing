@@ -21,6 +21,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
+        // Unbans on Expire for Accounts
         public static void UnbanOnExpire()
         {
             using (var con = Main.Connect())
@@ -35,6 +36,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
+        // Unbans on Expire for IPs
         public static void UnbanOnExpireIP()
         {
             using (var con = Main.Connect())
