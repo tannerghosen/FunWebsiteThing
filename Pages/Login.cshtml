@@ -27,6 +27,8 @@
         </fieldset>
     <a href="/ForgetPassword">Forgot Password?</a>
     </form>
+    @if(Globals.DisableGoogle == false)
+    {
     <div style="display: flex; align-items: center">
     <form method="post" asp-page-handler="GoogleLogin">
         <button class="" type="submit" style="border: solid; border-width: 1px; border-radius: 3px; margin: auto;">
@@ -37,6 +39,7 @@
         </button>
     </form>
     </div>
+    }
 @{
     var message = TempData["Result"] as string;
 }

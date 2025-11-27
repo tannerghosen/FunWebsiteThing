@@ -17,7 +17,6 @@ string domainname = Environment.GetEnvironmentVariable("FWTDomainName"); // FWTD
    4. Save and wait roughly 5 minutes for it to take effect.
 */
 
-//bool[] setcheck = { !string.IsNullOrWhiteSpace(sqlconstr), !string.IsNullOrWhiteSpace(gclientid), !string.IsNullOrWhiteSpace(gclientsec), !string.IsNullOrWhiteSpace(domainname) };
 bool[] setcheck = { !string.IsNullOrWhiteSpace(sqlconstr), !string.IsNullOrWhiteSpace(domainname) };
 if (setcheck.Contains(false))
 {

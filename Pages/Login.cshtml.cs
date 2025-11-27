@@ -80,12 +80,12 @@ namespace FunWebsiteThing.Pages
         }
 
         // This method initiates the OAuth2 authentication flow with Google by creating a challenge
-        // The next step (handling the response to the challenge) is handled in SigninGoogle.cshtml.cs
-        // Login -> SigninGoogle (SigninGoogle proceses the response to the challenge, finalizes login if it's successful)
+        // The next step is middleware processing the response at signin-google, followed by registering / logging in being handled in HandleGoogleLogin
+        // Login -> Middleware (signin-google) -> HandleGoogleLogin -> WelcomeExternal
         public async Task<IActionResult> OnPostGoogleLoginAsync()
         {
             TempData["LoginSource"] = "Google";
-            var redirect = Url.Page("/SignInGoogle");  // this is our page which contains the code for handling this request
+            var redirect = Url.Page("/HandleGoogleLogin");  // this is our page which contains the code for handling this request
             var properties = new AuthenticationProperties { RedirectUri = redirect }; // set the redirect as the redirect uri
             return Challenge(properties, GoogleDefaults.AuthenticationScheme); // create a challenge that makes the user grant access to their Google account for their user identity.
         }

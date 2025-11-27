@@ -10,22 +10,22 @@ using MySqlX.XDevAPI;
 namespace FunWebsiteThing.Pages
 {
     // This is the callback page after we initiated the OAuth2 login challenge in Login. We redirect to WelcomeExternal.
-    public class SigninGoogleModel : PageModel
+    public class HandleGoogleLoginModel : PageModel
     {
         private readonly SessionManager _s;
         private readonly AccountController _a;
         private IHttpContextAccessor _h;
 
-        public SigninGoogleModel(SessionManager s, AccountController a, IHttpContextAccessor h)
+        public HandleGoogleLoginModel(SessionManager s, AccountController a, IHttpContextAccessor h)
         {
             _s = s;
             _a = a;
             _h = h;
         }
-        // This method accesses the data with get in response from the Google OAuth2 login challenge started by in Login.cshtml.cs
-        // Based on the data, we either login the user or register them.
+        // This method accesses the processed response the middleware at signin-google gets from the challenge we started back in Login.cshtml.cs.
+        // Based on the data, we either login the user or register them, or we redirect back to login because the authentication in middleware failed.
         // The next step is to redirect to WelcomeExternal, which either is the end of the process or it redirects to Index and stops there
-        // SigninGoogle -> WelcomeExternal (redirect, all log in related stuff is finalized here)
+        // HandleGoogleLogin -> WelcomeExternal (redirect, all log in related stuff is finalized here)
         public async Task<IActionResult> OnGetAsync()
         {
             var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme); // Authenticate the request using Google's auth scheme
