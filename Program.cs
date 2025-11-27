@@ -21,11 +21,13 @@ bool[] setcheck = { !string.IsNullOrWhiteSpace(sqlconstr), !string.IsNullOrWhite
 if (setcheck.Contains(false))
 {
     // Log Fatal Error to FWT.log
-    Logger.Write($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error for this program to run.", "ERROR");
-    Logger.Write($"For more clarification, see the project's code in Program.cs", "ERROR");
-    Logger.Write($"FWTConnectionString Set: {setcheck[0]} FWTGoogleClientId Set: {setcheck[1]} FWTGoogleClientSecret Set: {setcheck[2]} FWTDomainName Set: {setcheck[3]}","ERROR");
+    Logger.Write("FATAL ERROR! READ BELOW CAREFULLY BEFORE RE-LAUNCHING THE PROGRAM.", "FATAL");
+    Logger.Write($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error for this program to run.", "FATAL");
+    Logger.Write($"For more clarification, see the project's code in Program.cs", "FATAL");
+    Logger.Write($"FWTConnectionString Set: {setcheck[0]} FWTGoogleClientId Set: {setcheck[1]} FWTGoogleClientSecret Set: {setcheck[2]} FWTDomainName Set: {setcheck[3]}","FATAL");
 
     // Display Fatal Error in console
+    Console.WriteLine("FATAL ERROR! READ BELOW CAREFULLY BEFORE RE-LAUNCHING THE PROGRAM.", "FATAL");
     Console.WriteLine($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error for this program to run.");
     Console.WriteLine($"For more clarification, see the project's code in Program.cs");
     Console.WriteLine($"FWTConnectionString Set: {setcheck[0]} FWTGoogleClientId Set: {setcheck[1]} FWTGoogleClientSecret Set: {setcheck[2]} FWTDomainName Set: {setcheck[3]}");
@@ -73,6 +75,7 @@ builder.Services.AddAuthentication(options =>
     // This is the callback path. ASP.NET Core middleware will handle the authentication process at this path, including
     // •	Validating the authentication token received from Google.
     // •	Creating a user principal (user identity) based on the claims (data given by a provider that creates an user's identity) provided by Google.
+    // You can see the above being handled in SigninGoogle.cshtml.cs
     options.SignInScheme = IdentityConstants.ExternalScheme; // we sign in with the external scheme as the default scheme is cookie otherwise, which is not what we want 
     options.Scope.Add("email");
     options.Scope.Add("profile");
