@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Authentication;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Http;
+using System.Text.Json;
+using MySqlX.XDevAPI;
 
 #pragma warning disable CS8602
 
@@ -29,6 +32,7 @@ public class SessionManager
         _h.HttpContext.Session.SetInt32("SessionId", sessionid);
         _h.HttpContext.Session.SetInt32("IsLoggedIn", 1);
         _h.HttpContext.Session.SetInt32("IsAdmin", FunWebsiteThing.SQL.Admin.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")) == true ? 1 : 0);
+        FWTCookie(username, FunWebsiteThing.SQL.Accounts.GetUserID(username), sessionid, true, FunWebsiteThing.SQL.Admin.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")));
         Logger.Write("Username: " + username + " id: " + FunWebsiteThing.SQL.Accounts.GetUserID(username) + " ses id: " + sessionid + " is admin?: " + FunWebsiteThing.SQL.Admin.IsAdmin(_h.HttpContext.Session.GetInt32("UserId")), "LOGIN");
     }
 
@@ -38,10 +42,11 @@ public class SessionManager
         {
             Logger.Write("Username " + _h.HttpContext.Session.GetString("Username"), "LOGOUT");
             _h.HttpContext.Session.SetString("Username", "");
-            _h.HttpContext.Session.SetInt32("IsLoggedIn", 0);
             _h.HttpContext.Session.SetInt32("UserId", -1);
             _h.HttpContext.Session.SetInt32("SessionId", -1);
+            _h.HttpContext.Session.SetInt32("IsLoggedIn", 0);
             _h.HttpContext.Session.SetInt32("IsAdmin", 0);
+            FWTCookie("", -1, -1, false, false);
         }
     }
 
@@ -79,4 +84,21 @@ public class SessionManager
         return new Session { Username = _h.HttpContext?.Session.GetString("Username"), UserId = _h.HttpContext?.Session.GetInt32("UserId"), SessionId = _h.HttpContext?.Session.GetInt32("SessionId"), IsLoggedIn = _h.HttpContext?.Session.GetInt32("IsLoggedIn"), IsAdmin = _h.HttpContext?.Session.GetInt32("IsAdmin") };
     }
 
+    // Cookie outside of the session one ASP.NET uses for non-ASP.NET code to access.
+    public void FWTCookie(string un, int ui, int sid, bool loggedin, bool admin)
+    {
+        _h.HttpContext.Response.Cookies.Append("FWTCookie",
+            JsonSerializer.Serialize(new
+            {
+                Username = un,
+                UserId = ui,
+                SessionId = sid,
+                IsLoggedIn = loggedin,
+                IsAdmin = admin
+            }),
+            new CookieOptions
+            {
+                Path = "/"
+            });
+    }
 }

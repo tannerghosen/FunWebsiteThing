@@ -296,9 +296,10 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        // Get User ID by Username
+        // Get User ID by Username / Email
         public static int GetUserID(string username)
         {
+            if (Regex.IsMatch(username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$")) username = GetUsername(username);
             try
             {
                 using (var con = Main.Connect())
@@ -309,10 +310,10 @@ namespace FunWebsiteThing.SQL
                     {
                         cmd.Parameters.AddWithValue("@username", username);
                         int id = Convert.ToInt32(cmd.ExecuteScalar());
-                        if (id == 0 && username != GetUsername(0))
+                        /*if (id == 0 && username != GetUsername(0))
                         {
                             return -1;
-                        }
+                        }*/
                         return id;
                     }
                 }
