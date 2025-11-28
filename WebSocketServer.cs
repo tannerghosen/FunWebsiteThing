@@ -23,12 +23,11 @@ namespace FunWebsiteThing
             while (2 + 2 == 4) // while as long the program runs
             {
                 var context = await hl.GetContextAsync();
-                if (context.Request.IsWebSocketRequest) // if the request is a websocket
+                if (context.Request.IsWebSocketRequest) // if the request is to the websocket
                 {
-                    var websocketcontext = await context.AcceptWebSocketAsync(null); // accept it
-                    // What we are encoding below before sending is our Status, which if blank, we just send an empty string, else we send status as it likely changed
-                    websocketcontext.WebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes((Status == "" ? "" : Status))), WebSocketMessageType.Text, true, CancellationToken.None); // send the websocket a message
-                    await HandleWebSocket(websocketcontext.WebSocket); // await responses from the socket again
+                    var websocketcontext = await context.AcceptWebSocketAsync(null); // accept the request and make a websocket
+                    websocketcontext.WebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes((Status == "" ? "" : Status))), WebSocketMessageType.Text, true, CancellationToken.None); // this is sent to anyone listening into this websocket
+                    await HandleWebSocket(websocketcontext.WebSocket); // this method is always called, but it handles the websocket request further if it has more to offer, i.e. an encoded message
                 }
                 else // if not, invalid request
                 {
@@ -37,39 +36,30 @@ namespace FunWebsiteThing
                 }
             }
         }
+        // Handles the websocket request further
         private static async Task HandleWebSocket(WebSocket ws)
         {
             try
             {
-                var buffer = new ArraySegment<byte>(new byte[1024]); // create a buffer, this will contain the data the websocket sends
+                var buffer = new ArraySegment<byte>(new byte[1024]); // create a buffer, this will contain the data we send to the websocket
                 while (ws.State == WebSocketState.Open) // while the ws is open
                 {
-                    // Async receive data from WebSocket ws. The data from the websocket is in buffer
-                    var result = await ws.ReceiveAsync(buffer, CancellationToken.None);
-
-                    if (result.MessageType == WebSocketMessageType.Close) // if the result of this message is to close, we handle it
+                    var result = await ws.ReceiveAsync(buffer, CancellationToken.None); // result is the data in the websocket, i.e. the encoded message
+                    var message = Encoding.UTF8.GetString(buffer.Array, 0, result.Count); // this is the encoded message decoded
+                    if (message.Contains(AccessPassword)) // did the client provide the access password?
                     {
-                        await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None); // close the websocket
-                    }
-                    else // else we interpret it as a message
-                    {
-                        var message = Encoding.UTF8.GetString(buffer.Array, 0, result.Count);
-
-                        if (message.Contains(AccessPassword))
+                        // Good, that means they're allowed to change this.
+                        int index = message.IndexOf(AccessPassword) - 1; // get the index of where AccessPassword starts - 1 (we include the space) in the message
+                        message = message.Remove(index, AccessPassword.Length + 1); // remove from the index to the end of the accesspassword length's + 1. (again, we include the space)
+                        if (message == "clear")  // if the message is clear, reset it back to an empty string
                         {
-                            int index = message.IndexOf(AccessPassword); // get the index of where AccessPassword starts
-                            index = index - 1; // as we include the space in the removal, the index is 1 backwards from where AccessPassword starts
-                            message = message.Remove(index, AccessPassword.Length + 1); // remove from the index to the end of the accesspassword length's + 1.
-                            if (message == "clear")
-                            {
-                                Status = String.Empty;
-                            }
-                            else
-                            {
-                                Status = message;
-                            }
+                            Status = String.Empty;
                         }
-                        await ws.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes((Status == "" ? "" : Status))), WebSocketMessageType.Text, true, CancellationToken.None); // send the websocket a message
+                        else // update status
+                        {
+                            Status = message;
+                        }
+                        await ws.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes((Status == "" ? "" : Status))), WebSocketMessageType.Text, true, CancellationToken.None);  // update everyone listening's Status
                     }
                 }
             }
