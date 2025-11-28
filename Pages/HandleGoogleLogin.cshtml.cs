@@ -53,12 +53,10 @@ namespace FunWebsiteThing.Pages
                     // This is a work around as HttpContext for some reason is initially null/uninitialized during the first time register/login via AccountController, so we just handle it by logging in (making a session) via SessionManager here instead of AccountController's Register method calling it.
                     _a.Register(email, username, password, "", "", true);
                     _s.Login(username, FunWebsiteThing.SQL.Accounts.GetUserID(username), 0);
-                    _s.FWTCookie(username, FunWebsiteThing.SQL.Accounts.GetUserID(username), 0, true, FunWebsiteThing.SQL.Admin.IsAdmin(FunWebsiteThing.SQL.Accounts.GetUserID(username)));
                 }
                 else
                 {
                     _a.Login(email, "", true);
-                    _s.FWTCookie(username, FunWebsiteThing.SQL.Accounts.GetUserID(username), 0, true, FunWebsiteThing.SQL.Admin.IsAdmin(FunWebsiteThing.SQL.Accounts.GetUserID(username)));
                 }
 
                 return RedirectToPage(Url.Page("/WelcomeExternal"));
