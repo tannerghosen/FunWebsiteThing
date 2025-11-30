@@ -23,7 +23,7 @@ namespace FunWebsiteThing.Pages
             {
                 Response.Redirect("/Index");
             }
-            Id = Convert.ToInt32(Request.Query["userid"]);
+            Id = Convert.ToInt32(Request.Query["Id"]);
         }
 
         public async Task<IActionResult> OnPost()
