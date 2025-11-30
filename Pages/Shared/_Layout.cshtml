@@ -51,15 +51,15 @@
                         // IP Ban Check is done here so I don't have to copy and paste this code on every page
                         if(!SQL.Admin.IsUserIPBannedSimple(s.GetIP()))
                         {
-                            
+
                         }
                         else
                         {
+                            (bool isbanned, string ip, string reason, DateTime? expire) = SQL.Admin.IsUserIPBanned(s.GetIP());
                             <script>app.innerHTML = "";</script> // Quick way to empty out the app div
-                            // Below will be improved down the line, providing the reason provided with the IP Ban.
                             ViewData["Title"] = "You are IP Banned";
                             <h1>@ViewData["Title"]</h1>
-                            <p>You are currently IP banned from the website.<br>If you believe this is in error, please contact the admins.<br /><i>IP Address: @s.GetIP()</i></p>
+                            <p>You are currently IP banned from the website.<br>Reason Provided: @reason<br />This ban expires: @expire.<br />If you believe this is in error, please contact the admins.<br /><i>Current IP Address: @s.GetIP()</i></p>
                         }
                     }
                 </div>
