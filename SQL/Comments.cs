@@ -86,7 +86,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        // Deletes comment
+        // Deletes comment by commentid
         public static async Task DeleteComment(int? commentid)
         {
             try

@@ -4,6 +4,7 @@ namespace FunWebsiteThing.SQL
 {
     public static class Blog
     {
+        // Adds a blog post
         public static async Task AddBlogPost(string title, string message)
         {
             try
@@ -27,7 +28,8 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        public static async Task UpdateBlogPost(string title, string message, int? blogid)
+        // Updates an existing blog post by blogid.
+        public static async Task UpdateBlogPost(int? blogid, string title, string message)
         {
             try
             {
@@ -51,6 +53,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
+        // Deletes a blog post by blogid
         public static async Task DeleteBlogPost(int? blogid)
         {
             try
@@ -73,6 +76,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
+        // Gets a blog post by blogid
         public static (string? title, string? message, string? date) GetBlogPost(int? blogid)
         {
             string? title = null, message = null, date = null;
@@ -109,6 +113,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
+        // Get the total amount of blog posts.
         public static int GetBlogPostCount()
         {
             int count = 0;
@@ -141,7 +146,8 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        public static bool DoesBlogPostExist(int blogid)
+        // Checks if a blog post exist by blogid
+        public static bool DoesBlogPostExist(int? blogid)
         {
             try
             {

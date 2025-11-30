@@ -5,6 +5,7 @@ namespace FunWebsiteThing.SQL
 {
     public static class Stats
     {
+        // Updates various stat entries based on which stat needs to be incremented
         public static async Task UpdateStat(string stat)
         {
             try
@@ -37,6 +38,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
+        // Resets all stat entries back to 0
         public static async Task ResetStats()
         {
             try
@@ -70,6 +72,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
+        // Get the stats table as an int array
         public static async Task<int[]> GetStats()
         {
             int logins = 0, registrations = 0, errors = 0;

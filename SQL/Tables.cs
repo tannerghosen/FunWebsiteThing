@@ -2,6 +2,7 @@
 
 namespace FunWebsiteThing.SQL
 {
+    // Creates all the tables in the database
     public static class Tables
     {
         public static void Accounts()

@@ -20,6 +20,7 @@ namespace FunWebsiteThing.SQL
             SetConnectionString(sqlconstr);
             if (TryConnectionString() == true)
             {
+                // Create Tables, Triggers and Default Accounts
                 Tables.Accounts(); // accounts table
                 Tables.SecurityQuestion(); // securityquestion tables
                 Tables.AccountBans(); // account bans table
@@ -49,15 +50,20 @@ namespace FunWebsiteThing.SQL
                 Environment.Exit(0);
             }
         }
+
+        // Sets connection string
         public static void SetConnectionString(string cs)
         {
             ConnectionString = cs;
         }
 
+        // Gets connection string
         public static string GetConnectionString()
         {
             return ConnectionString;
         }
+        
+        // Tests connection string
         public static bool TryConnectionString()
         {
             try

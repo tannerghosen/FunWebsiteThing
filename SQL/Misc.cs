@@ -4,6 +4,7 @@ namespace FunWebsiteThing.SQL
 {
     public static class Misc
     {
+        // Creates default accounts
         public static void CreateDefaultAccounts()
         {
             using (var con = Main.Connect())

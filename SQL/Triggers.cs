@@ -5,6 +5,7 @@ namespace FunWebsiteThing.SQL
 {
     public static class Triggers
     {
+        // Creates ban entries for existing accounts
         public static void Accounts()
         {
             using (var con = Main.Connect())

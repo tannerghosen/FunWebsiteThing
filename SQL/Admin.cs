@@ -128,7 +128,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        // ban ip
+        // Bans IP from Accessing the Website
         public static async Task BanIP(string ip, string? reason, DateTime? expire)
         {
             if (ip != "" || ip != null)
@@ -161,7 +161,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        // is user ip banned
+        // Checks if the user is IP Banned
         public static (bool, string?, string?, DateTime?) IsUserIPBanned(string ip)
         {
             try
@@ -193,7 +193,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        // is user ip banned (simple true/false)
+        // Checks if the user is IP Banned, but as a simple true (yes) or false (no).
         public static bool IsUserIPBannedSimple(string ip)
         {
             try
@@ -223,7 +223,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        // ban user
+        // Bans a user by their UserID
         public static async Task BanUser(int? id, string? reason, DateTime? expire)
         {
             if (id != 1 && id != -1 && id != null && SQL.Accounts.DoesUserExist(id))
@@ -257,7 +257,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        // is user banned
+        // Is a user banned from the website
         public static (bool, int?, string?, DateTime?) IsUserBanned(int id)
         {
             try
@@ -290,7 +290,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        // is user banned (simple true/false)
+        // Is the user banned from the website, but a simple true (yes) or false (no).
         public static bool IsUserBannedSimple(int id)
         {
             try
@@ -321,7 +321,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        // unban user
+        // Unbans a user by UserID
         public static async Task UnbanUser(int id)
         {
             (bool b, int? i, string? r, DateTime? ex) = IsUserBanned(id);
@@ -350,7 +350,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        // unban ip
+        // Unbans an IP based on IP address
         public static async Task UnbanIP(string ip)
         {
             (bool b, string? i, string? r, DateTime? ex) = IsUserIPBanned(ip);

@@ -407,6 +407,7 @@ namespace FunWebsiteThing.SQL
             return false;
         }
 
+        // Gets Security Question by UserID
         public static string[] GetSecurityQuestion(int? userid)
         {
             try
@@ -437,6 +438,8 @@ namespace FunWebsiteThing.SQL
             }
             return new string[] { null, null };
         }
+
+        // Creates a Security Question entry under a specified UserID.
         public static async Task<(bool, bool)> CreateSecurityQuestion(int? userid, string? question, string? answer)
         {
             try
@@ -471,6 +474,8 @@ namespace FunWebsiteThing.SQL
                 return (false, true);
             }
         }
+
+        // Updates a Security Question entry under a specified UserID.
         public static async Task<(bool, bool)> UpdateSecurityQuestion(int? userid, string? question = null, string? answer = null)
         {
             try
