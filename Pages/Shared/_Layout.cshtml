@@ -47,6 +47,21 @@
             <div class="appcontainer">
                 <div id="app">
                     @RenderBody()
+                    @{
+                        // IP Ban Check is done here so I don't have to copy and paste this code on every page
+                        if(!SQL.Admin.IsUserIPBannedSimple(s.GetIP()))
+                        {
+                            
+                        }
+                        else
+                        {
+                            <script>app.innerHTML = "";</script> // Quick way to empty out the app div
+                            // Below will be improved down the line, providing the reason provided with the IP Ban.
+                            ViewData["Title"] = "You are IP Banned";
+                            <h1>@ViewData["Title"]</h1>
+                            <p>You are currently IP banned from the website.<br>If you believe this is in error, please contact the admins.<br /><i>IP Address: @s.GetIP()</i></p>
+                        }
+                    }
                 </div>
             </div>
         </div>
