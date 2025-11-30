@@ -33,6 +33,7 @@
                 foreach(string[] row in newinfo)
                 {
                     string updateurl = "/Update?userid="+row[0];
+                    string banurl = "/BanUser?userid=" + row[0];
                     // Yes, the columns aren't in order, they were switched around to look better, not exactly great but it works.
                     <tr><td>@row[0]</td><td>@row[2]</td><td>@row[1]</td><td>@row[4]</td><td>@row[6]</td><td>@row[5]</td>
                         @{  bool IsOffLimits = row[0] == "1" || row[0] == "-1"; 
@@ -57,10 +58,7 @@
                                 else
                                 {
                                         <td>
-                                            <form method="post" asp-page-handler="BanUser">
-                                                <input type="hidden" name="userid" value="@row[0]" />
-                                                <button type="submit">Ban User</button>
-                                            </form>
+                                            <a href=@banurl>Ban User</a>
                                         </td>
                                 }
                             }
@@ -108,4 +106,6 @@
         </table>
 
         <a href="Status">Update Notification Banner</a>
+
+        <a href="IPBan">IP Ban / Unban</a>
 </div>
