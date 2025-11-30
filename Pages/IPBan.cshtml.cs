@@ -35,7 +35,7 @@ namespace FunWebsiteThing.Pages
                     if (Checkbox)
                     {
                         if (string.IsNullOrEmpty(Reason)) Reason = "You have been banned.";
-                        if (ExpirationDate == DateTime.MinValue) ExpirationDate = DateTime.Now.AddMinutes(1); //DateTime.Now.AddMonths(1);
+                        if (ExpirationDate == DateTime.MinValue) ExpirationDate = DateTime.Now.AddMonths(1);
                         SQL.Admin.BanIP(IP, Reason, ExpirationDate);
                         TempData["Result"] = "Banned " + IP + ".";
                     }
