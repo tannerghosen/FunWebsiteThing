@@ -1,0 +1,47 @@
+﻿@page
+@using static Microsoft.AspNetCore.Mvc.RazorPages.PageBase;
+@using System.Text.RegularExpressions;
+@model IPBanModel
+@{
+    ViewData["Title"] = "IP Ban / Unban";
+}
+
+@{
+        <h1>@ViewData["Title"]</h1>
+        <form method="post">
+            <fieldset>
+                <div>
+                    <label for="ip">IP Address:</label>
+                    <input type="text" name="ip" asp-for="IP" value="" id="ip" class="text-black" placeholder="10.10.10.10" />
+                </div>
+                <div>
+                    <label for="reason">Reason:</label>
+                    <input type="text" name="reason" asp-for="Reason" value="" id="reason" class="text-black" placeholder="You are banned." />
+                </div>
+                <div>
+                    <label for="ExpirationDate">Expires:</label>
+                    <input type="datetime-local" name="ExpirationDate" asp-for="ExpirationDate" value="" id="expire" placeholder="" class="text-black" />
+                </div>
+                <div>
+                    <label for="checkbox">Ban / Unban:</label>
+                    <input type="checkbox" name="checkbox" asp-for="Checkbox" id="checkbox" class="text-black" />
+                </div>
+                <div>
+                    <label>&nbsp;</label>
+                    <input type="submit" value="Submit" class="submit" />
+                </div>
+            </fieldset>
+        </form>
+
+        <a href="/Admin">Admin Page</a>
+}
+@{
+    var message = TempData["Result"] as string;
+}
+
+@if (!string.IsNullOrEmpty(message))
+{
+    <script>
+        alert('@message');
+    </script>
+}
