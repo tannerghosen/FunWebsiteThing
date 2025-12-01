@@ -8,8 +8,9 @@ namespace FunWebsiteThing.Controllers
     {
         public string Password { get; set; }
     }
-    // Route for controller APIs is /api/Controller/Action
-    // example: To access GeneratePassword, route would be /api/Password/Generate because the Controller part of the class name is omitted, and Generate is the GET
+    
+    // Routing is pretty simple, api/[controller] is api/Password as the latter part is omitted. So getting Generate would be api/Password/Generate.
+    // If you wanted it to simply be /(Action), you'd blank the Route string. Simply api/(Action), make Route "api/", etc.
     [ApiController]
     [Route("api/[controller]")]
     public class PasswordController : ControllerBase
@@ -26,14 +27,6 @@ namespace FunWebsiteThing.Controllers
         {
             bool strength = Password.ValidatePassword(password.Password);
             return new JsonResult(new { Strong = strength });
-        }
-
-        [HttpGet("Ping")]
-        public IActionResult Ping()
-        {
-            DateTime time = DateTime.Now;
-            TimeSpan ping = DateTime.Now - time;
-            return new JsonResult(new { Ping = ping.TotalMilliseconds + "ms" });
         }
     }
 }
