@@ -1,5 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using System.Security.AccessControl;
 using System;
 

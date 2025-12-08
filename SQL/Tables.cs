@@ -38,6 +38,7 @@ namespace FunWebsiteThing.SQL
                 con.Close();
             }
         }
+
         public static void Blog()
         {
             using (var con = Main.Connect())
