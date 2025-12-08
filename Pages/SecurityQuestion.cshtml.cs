@@ -59,7 +59,7 @@ namespace FunWebsiteThing.Pages
             {
                 Result = "Answer is blank";
                 TempData["Id"] = Id;
-                Response.Redirect("/SecurityQuestion?id=" + Id);
+                Response.Redirect("/SecurityQuestion");
             }
             return Page();
         }

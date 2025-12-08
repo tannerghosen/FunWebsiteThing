@@ -26,7 +26,7 @@ namespace FunWebsiteThing
                 if (context.Request.IsWebSocketRequest) // if the request is to the websocket
                 {
                     var websocketcontext = await context.AcceptWebSocketAsync(null); // accept the request and make a websocket
-                    websocketcontext.WebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes((Status == "" ? "" : Status))), WebSocketMessageType.Text, true, CancellationToken.None); // this is sent to anyone listening into this websocket
+                    await websocketcontext.WebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes((Status == "" ? "" : Status))), WebSocketMessageType.Text, true, CancellationToken.None); // this is sent to anyone listening into this websocket
                     await HandleWebSocket(websocketcontext.WebSocket); // this method is always called, but it handles the websocket request further if it has more to offer, i.e. an encoded message
                 }
                 else // if not, invalid request

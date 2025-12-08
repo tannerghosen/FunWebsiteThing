@@ -32,7 +32,7 @@ namespace FunWebsiteThing.Pages
             {
                 if (string.IsNullOrEmpty(Reason)) Reason = "You have been banned.";
                 if (ExpirationDate == DateTime.MinValue) ExpirationDate = DateTime.Now.AddMonths(1);
-                SQL.Admin.BanUser(Id, Reason, ExpirationDate);
+                await SQL.Admin.BanUser(Id, Reason, ExpirationDate);
             }
             TempData["Result"] = "Banned UserId " + Id + ".";
 
