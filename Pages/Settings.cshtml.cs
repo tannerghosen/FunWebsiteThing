@@ -25,7 +25,7 @@ namespace FunWebsiteThing.Pages
             }
         }
 
-        public async void OnPost()
+        public async Task<IActionResult> OnPost()
         {
             if (HttpContext.Session.GetInt32("IsLoggedIn") == 1 && HttpContext.Session.GetString("Username") != null && HttpContext.Session.GetInt32("UserId") != null && HttpContext.Session.GetInt32("SessionId") != null)
             {
@@ -97,7 +97,8 @@ namespace FunWebsiteThing.Pages
                 }
             }
             TempData["Result"] = Result;
-            Console.WriteLine(TempData["Result"]);
+
+            return Page();
         }
     }
 }
