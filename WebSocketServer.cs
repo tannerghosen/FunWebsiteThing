@@ -18,7 +18,7 @@ namespace FunWebsiteThing
             var hl = new HttpListener();
             hl.Prefixes.Add("http://"+Globals.DomainName+":5000/");
             hl.Start();
-            Console.WriteLine("WebSocket Server Started!");
+            Console.WriteLine("WebSocket Server Started on http://" + Globals.DomainName + ":5000/");
 
             while (2 + 2 == 4) // while as long the program runs
             {
