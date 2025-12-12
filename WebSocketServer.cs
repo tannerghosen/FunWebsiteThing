@@ -59,12 +59,21 @@ namespace FunWebsiteThing
                         {
                             Status = message;
                         }
-                        await ws.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes((Status == "" ? "" : Status))), WebSocketMessageType.Text, true, CancellationToken.None);  // update everyone listening's Status
+                        if (ws.State == WebSocketState.Open)
+                        {
+                            await ws.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes((Status == "" ? "" : Status))), WebSocketMessageType.Text, true, CancellationToken.None);  // update everyone listening's Status
+                        }
                     }
                 }
             }
+            catch (WebSocketException wse)
+            {
+                Logger.Write(wse.Message, "WEBSOCKET");
+                Console.WriteLine(wse.Message);
+            }
             catch (Exception e)
             {
+                Logger.Write(e.ToString(), "WEBSOCKET");
                 Console.WriteLine(e.ToString());
             }
         }
