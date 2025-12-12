@@ -6,9 +6,6 @@ namespace FunWebsiteThing.Pages
 {
     public class AdminModel : PageModel
     {
-
-        private SessionManager _s;
-
         private readonly ILogger<IndexModel> _logger;
 
         public AdminModel(ILogger<IndexModel> logger)
