@@ -18,6 +18,13 @@ namespace FunWebsiteThing.Pages
         [BindProperty]
         public string Result { get; set; }
 
+        private readonly SessionManager _s;
+
+        public IPBanModel(SessionManager s)
+        {
+            _s = s;
+        }
+
         public void OnGet()
         {
             if (HttpContext.Session.GetInt32("IsAdmin") != 1 && !SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")))
@@ -34,10 +41,18 @@ namespace FunWebsiteThing.Pages
                 {
                     if (Checkbox)
                     {
-                        if (string.IsNullOrEmpty(Reason)) Reason = "You have been banned.";
-                        if (ExpirationDate == DateTime.MinValue) ExpirationDate = DateTime.Now.AddMonths(1);
-                        SQL.Admin.BanIP(IP, Reason, ExpirationDate);
-                        TempData["Result"] = "Banned " + IP + ".";
+                        if (_s.GetIP() == IP)
+                        {
+                            Logger.Write("IP matches session's, disregarding IP ban request.");
+                            TempData["Result"] = "You cannot ban your own IP.";
+                        }
+                        else
+                        {
+                            if (string.IsNullOrEmpty(Reason)) Reason = "You have been banned.";
+                            if (ExpirationDate == DateTime.MinValue) ExpirationDate = DateTime.Now.AddMonths(1);
+                            SQL.Admin.BanIP(IP, Reason, ExpirationDate);
+                            TempData["Result"] = "Banned " + IP + ".";
+                        }
                     }
                     else if (!Checkbox)
                     {
