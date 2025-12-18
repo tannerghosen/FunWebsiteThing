@@ -13,11 +13,11 @@
     <span>
         @if (Model.Post > 1)
         {
-            <a href="/Blog?post=@(Model.Post - 1)">Back</a>
+            <a href="/Blog?Post=@(Model.Post - 1)">Back</a>
         }
         @if (Model.Post < SQL.Blog.GetBlogPostCount()) // if post id is less than total blog posts
         {
-            <a href="/Blog?post=@(Model.Post + 1)">Next</a>
+            <a href="/Blog?Post=@(Model.Post + 1)">Next</a>
         }
     </span>
     <!-- Comment Section -->
