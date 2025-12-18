@@ -13,15 +13,10 @@ document.addEventListener("DOMContentLoaded", () =>
 	// Mobile Check
 	if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
 	{
-		console.log('mobile');
 		let link = document.createElement("link");
 		link.href = "./css/mobile.css";
 		link.rel = "stylesheet";
 		document.head.appendChild(link);
-	}
-	else
-	{
-		console.log('not mobile')
 	}
 
 	// Light/Dark Mode Function
@@ -69,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () =>
 
 	if (localStorage.getItem("navbar") === "open")
 	{
-		console.log(localStorage.getItem("navbar"));
 		NavbarToggle();
 		localStorage.setItem("navbar", "open");
 	}
