@@ -82,19 +82,28 @@ namespace FunWebsiteThing.Pages
 
                 if (!string.IsNullOrEmpty(Username))
                 {
-                    (bool usernameupdated, bool error) = await SQL.Accounts.UpdateInfo(Id, 2, Username, null, true);
-                    if (usernameupdated)
+
+                    if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
                     {
-                        Result += "\\nUsername updated to " + Username;
+                        (bool usernameupdated, bool error) = await SQL.Accounts.UpdateInfo(Id, 2, Username, null, true);
+                        if (usernameupdated)
+                        {
+                            Result += "\\nUsername updated to " + Username;
+                        }
+                        else if (!usernameupdated && !error)
+                        {
+                            Result += "\\nUsername is already in use by another account!";
+                        }
+                        else if (!usernameupdated && error)
+                        {
+                            Result += "\\nAn error occurred while changing the Username.";
+                        }
                     }
-                    else if (!usernameupdated && !error)
+                    else
                     {
-                        Result += "\\nUsername is already in use by another account!";
+                        Result += "\\nUsername cannot be an email.";
                     }
-                    else if (!usernameupdated && error)
-                    {
-                        Result += "\\nAn error occurred while changing the Username."; 
-                    }
+
                 }
                 else if (string.IsNullOrEmpty(Username))  // No need to show an error if it's empty
                 {

@@ -56,6 +56,10 @@ namespace FunWebsiteThing.Pages
             {
                 Result += "Invalid Username";
             }
+            else if (Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
+            {
+                Result += "Username cannot be an email.";
+            }
             else if (string.IsNullOrEmpty(Password)) // if password is empty
             {
                 Result += "Password is blank";

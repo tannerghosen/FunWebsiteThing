@@ -77,19 +77,26 @@ namespace FunWebsiteThing.Pages
 
                 if (!string.IsNullOrEmpty(Username))
                 {
-                    (bool usernameupdated, bool error) = await SQL.Accounts.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 2, Username, HttpContext.Session.GetInt32("SessionId"));
-                    if (usernameupdated)
+                    if (!Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"))
                     {
-                        HttpContext.Session.SetString("Username", Username);
-                        Result += "\\nUsername updated to " + Username; // Success
+                        (bool usernameupdated, bool error) = await SQL.Accounts.UpdateInfo(HttpContext.Session.GetInt32("UserId"), 2, Username, HttpContext.Session.GetInt32("SessionId"));
+                        if (usernameupdated)
+                        {
+                            HttpContext.Session.SetString("Username", Username);
+                            Result += "\\nUsername updated to " + Username; // Success
+                        }
+                        else if (!usernameupdated && !error)
+                        {
+                            Result += "\\nUsername is already in use by another account!"; // SQL Conflict (Username used by another account)
+                        }
+                        else if (!usernameupdated && error)
+                        {
+                            Result += "\\nAn error occurred while changing the Username."; // Error / SQL Error
+                        }
                     }
-                    else if (!usernameupdated && !error)
+                    else
                     {
-                        Result += "\\nUsername is already in use by another account!"; // SQL Conflict (Username used by another account)
-                    }
-                    else if (!usernameupdated && error)
-                    {
-                        Result += "\\nAn error occurred while changing the Username."; // Error / SQL Error
+                        Result += "\\nUsername cannot be an email.";
                     }
                 }
                 else if (string.IsNullOrEmpty(Username))
