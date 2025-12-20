@@ -110,5 +110,4 @@ app.MapRazorPages();
 FunWebsiteThing.SQL.Main.Init(sqlconstr);
 Globals.DomainName = domainname;
 FunWebsiteThing.WebSocketServer.Start(); // Start the WebSocket Server
-//FunWebsiteThing.JavaScriptHelper.SetDomainName(domainname); // For any JavaScript function that needs the exact domain name
 app.Run();
