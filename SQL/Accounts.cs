@@ -348,7 +348,7 @@ namespace FunWebsiteThing.SQL
             }
         }
 
-        //  Get Email by Username
+        //  Get Username by Email
         public static string? GetUsername(string email)
         {
             try
@@ -367,6 +367,29 @@ namespace FunWebsiteThing.SQL
             catch (MySqlException e)
             {
                 Logger.Write("SQL.Accounts: An error occured in GetUsername (string email variant): " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
+                return null;
+            }
+        }
+
+        // Get Join Date by UserID
+        public static DateTime? GetJoinDate(int userid)
+        {
+            try
+            {
+                using (var con = Main.Connect())
+                {
+                    con.Open();
+                    string query = "SELECT joined FROM accounts WHERE id = @userid";
+                    using (var cmd = new MySqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@userid", userid);
+                        return (DateTime?)cmd.ExecuteScalar();
+                    }
+                }
+            }
+            catch (MySqlException e)
+            {
+                Logger.Write("SQL.Accounts: An error occured in GetJoinDate: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
                 return null;
             }
         }
