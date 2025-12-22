@@ -5,11 +5,12 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using System.Buffers.Text;
 
-// These need to be set as environment variables before first launch. If not, you will have the below check stop you and the program's execution will stop.
+// domainname and sqlconstr are required to continue. If they are not set in your environment variables (global or local), the program will not run. Google OAuth is optional.
 string sqlconstr = Environment.GetEnvironmentVariable("FWTConnectionString"); // FWTConnectionString, MySQL Connction String, syntax looks like this: Server=(server);Database=(db);User ID=(user);Password=(pass);
 string gclientid = Environment.GetEnvironmentVariable("FWTGoogleClientId"); // FWTGoogleClientId, Google Client Id, used for OAuth 2.0 login, Optional
 string gclientsec = Environment.GetEnvironmentVariable("FWTGoogleClientSecret"); // FWTGoogleClientSecret, Google Client Secret, used for OAuth 2.0 login, Optional
-string domainname = Environment.GetEnvironmentVariable("FWTDomainName"); // FWTDomainName, Domain Name used for the website. (format: localhost or www.google.com)
+string domainname = Environment.GetEnvironmentVariable("FWTDomainName"); // FWTDomainName, Domain Name used for the website. (example: localhost or www.example.com)
+
 /* To set up Google Login:
    1. Go to console.cloud.google.com
    2. Create an OAuth 2.0 Client ID
@@ -60,7 +61,7 @@ builder.Services.AddSession(options =>
 });
 builder.Services.AddScoped<SessionManager>(); // adds SessionManager as a service
 builder.Services.AddScoped<AccountController>(); // adds AccountController as a service
-builder.Services.AddControllers(); // This adds all controllers to the servicecollection
+builder.Services.AddControllers(); // This adds all controllers to services
 
 builder.Services.AddAuthentication(options =>
 {
@@ -70,8 +71,8 @@ builder.Services.AddAuthentication(options =>
 // A lot of the OAuth2.0 authentication is handled by middleware in ASP.NET Core, all we need to do is initiate a request to the provider and handle the response.
 .AddGoogle(options => // add google oauth
 {
-    if (Globals.DisableGoogle == false)
-    {
+    if (Globals.DisableGoogle == false) // If Google OAuth details are not set up, there's nothing to set up Google OAuth with.
+    { 
         options.ClientId = gclientid; // retrieve client id from environment variable
         options.ClientSecret = gclientsec; // retrieve client secret from environment variable
         options.CallbackPath = "/signin-google"; // do not change, /login or /login?method=google or similar would all be invalid, it has to be specific.
@@ -107,7 +108,7 @@ app.UseEndpoints(endpoints =>
 });
 
 app.MapRazorPages();
-FunWebsiteThing.SQL.Main.Init(sqlconstr);
+FunWebsiteThing.SQL.Main.Init(sqlconstr);  // Init MySQL classes, also creates tables / triggers / events if they aren't already made.
 Globals.DomainName = domainname;
 FunWebsiteThing.WebSocketServer.Start(); // Start the WebSocket Server
 app.Run();
