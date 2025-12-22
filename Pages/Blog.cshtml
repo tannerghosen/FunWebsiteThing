@@ -58,7 +58,7 @@
                     for (int i = 0; i < usernames.Length; i++)
                     {
                         <tr>
-                            <td><b>@usernames[i]</b> (@dates[i])</td>
+                            <td><b><a asp-page="/Profile" asp-route-UserId="@SQL.Accounts.GetUserID(@usernames[i])">@usernames[i]</a></b> (@dates[i])</td>
                             <td style="overflow-x: auto; max-width: 75%; min-width: 75%;">
                                 @comments[i]
                             </td>
