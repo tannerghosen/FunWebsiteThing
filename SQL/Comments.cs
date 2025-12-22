@@ -136,7 +136,7 @@ namespace FunWebsiteThing.SQL
             }
             catch (MySqlException e)
             {
-                Logger.Write("SQL.Comments: An error occured in CountCommentsByUserId: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
+                Logger.Write("SQL.Comments: An error occured in CountCommentsByUserId: " + e.Message + "\nSQL.Comments: Error Code: " + e.ErrorCode, "ERROR");
                 return 0;
             }
         }
