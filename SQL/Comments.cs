@@ -108,5 +108,37 @@ namespace FunWebsiteThing.SQL
                 Logger.Write("SQL.Comments: An error occured in DeleteComment: " + e.Message + "\nSQL.Comments: Error Code: " + e.ErrorCode, "ERROR");
             }
         }
+
+        public static int CountCommentsByUserId(int userid)
+        {
+            try
+            {
+                using (var con = Main.Connect())
+                {
+                    con.Open();
+                    string query = "SELECT COUNT(*) FROM comments WHERE userid = @userid";
+                    using (var cmd = new MySqlCommand(query, con))
+                    {
+                        cmd.Parameters.AddWithValue("@userid", userid);
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader != null)
+                            {
+                                while (reader.Read())
+                                {
+                                    return reader.GetInt32(0);
+                                }
+                            }
+                        }
+                        return 0;
+                    }
+                }
+            }
+            catch (MySqlException e)
+            {
+                Logger.Write("SQL.Comments: An error occured in CountCommentsByUserId: " + e.Message + "\nSQL.Accounts: Error Code: " + e.ErrorCode, "ERROR");
+                return 0;
+            }
+        }
     }
 }
