@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-#pragma warning disable CS8618
 
 namespace FunWebsiteThing.Pages
 {
@@ -27,7 +26,10 @@ namespace FunWebsiteThing.Pages
             int blogid = SQL.Blog.GetBlogPostCount() + 1;
             if (HttpContext.Session.GetInt32("IsAdmin") == 1 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")))
             {
-                await SQL.Blog.AddBlogPost(Title, Message);
+                if(!string.IsNullOrWhiteSpace(Title) && !string.IsNullOrWhiteSpace(Message))
+                {
+                    await SQL.Blog.AddBlogPost(Title, Message);
+                }
             }
             return RedirectToPage("/Blog", new { post = blogid });
         }

@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 using FunWebsiteThing.Controllers.Classes;
-using System.Configuration;
-using MySqlX.XDevAPI;
+
 
 namespace FunWebsiteThing.Pages
 {

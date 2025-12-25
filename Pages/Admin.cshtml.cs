@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-#pragma warning disable CS8618
 
 namespace FunWebsiteThing.Pages
 {
@@ -50,20 +49,18 @@ namespace FunWebsiteThing.Pages
 
         public async Task<IActionResult> OnPostUnbanUser(int? userid)
         {
-            int u = (int)userid;
             if (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 1 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId"))) // is the user admin and is it super admin doing this and does the userid in session check out as admin? if so, make the requested userid an admin
             {
-                await SQL.Admin.UnbanUser(u);
+                await SQL.Admin.UnbanUser(userid);
             }
             return RedirectToPage();
         }
 
         public async Task<IActionResult> OnPostBanUser(int? userid)
         {
-            int u = (int)userid;
             if (HttpContext.Session.GetInt32("IsAdmin") == 1 && HttpContext.Session.GetInt32("UserId") == 1 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId"))) // is the user admin and is it super admin doing this and does the userid in session check out as admin? if so, make the requested userid an admin
             {
-                await SQL.Admin.BanUser(u, "You have been banned.", DateTime.Now.AddYears(999));
+                await SQL.Admin.BanUser(userid, "You have been banned.", DateTime.Now.AddYears(999));
             }
             return RedirectToPage();
         }

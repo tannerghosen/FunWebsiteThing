@@ -1,5 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using System.Globalization;
 
 namespace FunWebsiteThing.SQL
 {

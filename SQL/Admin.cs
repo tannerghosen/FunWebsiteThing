@@ -1,5 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using Mysqlx.Expr;
 
 namespace FunWebsiteThing.SQL
 {
@@ -323,7 +322,7 @@ namespace FunWebsiteThing.SQL
         }
 
         // Unbans a user by UserID
-        public static async Task UnbanUser(int id)
+        public static async Task UnbanUser(int? id)
         {
             (bool b, int? i, string? r, DateTime? ex) = IsUserBanned(id);
             if (b == true)

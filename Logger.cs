@@ -1,8 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-#pragma warning disable CS8600
-#pragma warning disable CS8602
+﻿using System.Diagnostics;
 
 namespace FunWebsiteThing
 {

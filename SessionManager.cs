@@ -1,12 +1,6 @@
 ﻿using FunWebsiteThing;
 using Microsoft.AspNetCore.Authentication;
-using Org.BouncyCastle.Asn1.Ocsp;
 using System.Security.Cryptography;
-using Microsoft.AspNetCore.Http;
-using System.Text.Json;
-using MySqlX.XDevAPI;
-
-#pragma warning disable CS8602
 
 public struct Session
 {

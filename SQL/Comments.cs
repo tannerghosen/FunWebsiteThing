@@ -6,7 +6,7 @@ namespace FunWebsiteThing.SQL
     public static class Comments
     {
         // Adds a comment to a specified comment section
-        public static async Task AddComment(string comment, string username = "Anonymous", int commentsection = 0)
+        public static async Task AddComment(string? comment, string username = "Anonymous", int commentsection = 0)
         {
             int userid, anonymousid = -1;
             if (comment == null)

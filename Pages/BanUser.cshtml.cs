@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.RegularExpressions;
-#pragma warning disable CS8618
 
 namespace FunWebsiteThing.Pages
 {
@@ -15,7 +14,7 @@ namespace FunWebsiteThing.Pages
         public DateTime ExpirationDate { get; set; }
 
         [BindProperty]
-        public string Result { get; set; }
+        public string? Result { get; set; }
 
         public void OnGet()
         {

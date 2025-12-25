@@ -1,11 +1,7 @@
-﻿using FunWebsiteThing.SQL;
-using Microsoft.AspNetCore.Authentication.Google;
+﻿using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Text.RegularExpressions;
-using System.Security.Claims;
-#pragma warning disable CS8618
 
 namespace FunWebsiteThing.Pages
 {

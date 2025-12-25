@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.RegularExpressions;
-#pragma warning disable CS8618
 
 namespace FunWebsiteThing.Pages
 {

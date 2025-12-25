@@ -1,6 +1,4 @@
-﻿using FunWebsiteThing.SQL;
-using Microsoft.AspNetCore.Mvc;
-using MySqlX.XDevAPI;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
 
 namespace FunWebsiteThing

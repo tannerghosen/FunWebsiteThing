@@ -13,7 +13,7 @@ namespace FunWebsiteThing.Pages
         public string Result { get; set; }
         public void OnGet()
         {
-            // add a redirect here
+
         }
         public async Task<IActionResult> OnPost()
         {
