@@ -14,8 +14,14 @@ namespace FunWebsiteThing.Pages
         public DateTime ExpirationDate { get; set; }
 
         [BindProperty]
-        public string? Result { get; set; }
+        public string Result { get; set; }
 
+        private readonly SessionManager _s;
+
+        public BanUserModel(SessionManager s)
+        {
+            _s = s;
+        }
         public void OnGet()
         {
             if (HttpContext.Session.GetInt32("IsAdmin") != 1 && !SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")))
@@ -29,11 +35,19 @@ namespace FunWebsiteThing.Pages
         {
             if (HttpContext.Session.GetInt32("IsAdmin") == 1 && SQL.Admin.IsAdmin(HttpContext.Session.GetInt32("UserId")))
             {
-                if (string.IsNullOrEmpty(Reason)) Reason = "You have been banned.";
-                if (ExpirationDate == DateTime.MinValue) ExpirationDate = DateTime.Now.AddMonths(1);
-                await SQL.Admin.BanUser(Id, Reason, ExpirationDate);
+                if (Id == _s.GetSession().UserId)
+                {
+                    Logger.Write("User tried to ban themself, ignoring ban user request.");
+                    TempData["Result"] = "You cannot ban yourself.";
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(Reason)) Reason = "You have been banned.";
+                    if (ExpirationDate == DateTime.MinValue) ExpirationDate = DateTime.Now.AddMonths(1);
+                    await SQL.Admin.BanUser(Id, Reason, ExpirationDate);
+                    TempData["Result"] = "Banned UserId " + Id + ".";
+                }
             }
-            TempData["Result"] = "Banned UserId " + Id + ".";
 
             return Page();
         }
