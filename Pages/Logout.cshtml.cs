@@ -19,7 +19,7 @@ namespace FunWebsiteThing.Pages
                 Response.Redirect("/Index");
             }
         }
-        public async Task<IActionResult> OnPost()
+        public IActionResult OnPost()
         {
             _a.Logout();
             Logger.Write("Logging out this user: " + HttpContext.Session.GetString("Username") + " " + HttpContext.Session.GetInt32("UserId") + " " + HttpContext.Session.GetInt32("SessionId") + " " + HttpContext.Session.GetInt32("IsLoggedIn"), "LOGOUT");

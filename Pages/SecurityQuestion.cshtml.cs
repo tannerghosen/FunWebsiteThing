@@ -34,7 +34,7 @@ namespace FunWebsiteThing.Pages
             {
             }
          }
-        public async Task<IActionResult> OnPost()
+        public IActionResult OnPost()
         {
             Id = Request.Form["Id"]; // pass the Id from the form
             int id = int.TryParse(Id, out int newid) ? newid : 0;

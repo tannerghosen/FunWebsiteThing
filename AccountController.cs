@@ -84,7 +84,7 @@ namespace FunWebsiteThing
             return StatusCode(403, "You're already logged in, no need to register an account!");
         }
 
-        public async Task<IActionResult> Logout()
+        public IActionResult Logout()
         {
             string? username = _s.GetSession().Username;
             if (_s.IsUserLoggedIn() && (username != null || username != ""))
@@ -95,12 +95,12 @@ namespace FunWebsiteThing
             return BadRequest("You're not logged in.");
         }
 
-        public async void IncrementLogins()
+        public void IncrementLogins()
         {
             Statistics.IncrementLogins();
         }
 
-        public async void IncrementRegistrations()
+        public void IncrementRegistrations()
         {
             Statistics.IncrementRegistrations();
         }

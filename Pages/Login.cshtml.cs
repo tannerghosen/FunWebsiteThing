@@ -78,7 +78,7 @@ namespace FunWebsiteThing.Pages
         // This method initiates the OAuth2 authentication flow with Google by creating a challenge
         // The next step is middleware processing the response at signin-google, followed by registering / logging in being handled in HandleGoogleLogin
         // Login -> Middleware (signin-google) -> HandleGoogleLogin -> WelcomeExternal
-        public async Task<IActionResult> OnPostGoogleLoginAsync()
+        public IActionResult OnPostGoogleLoginAsync()
         {
             TempData["LoginSource"] = "Google";
             var redirect = Url.Page("/HandleGoogleLogin");  // this is our page which contains the code for handling this request

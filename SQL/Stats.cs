@@ -72,7 +72,7 @@ namespace FunWebsiteThing.SQL
         }
 
         // Get the stats table as an int array
-        public static async Task<int[]> GetStats()
+        public static int[] GetStats()
         {
             int logins = 0, registrations = 0, errors = 0;
             try

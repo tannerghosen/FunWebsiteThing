@@ -32,9 +32,9 @@
             await SQL.Stats.ResetStats();
         }
 
-        public async static Task<Stats> GetStats()
+        public static Stats GetStats()
         {
-            int[] stats = await SQL.Stats.GetStats();
+            int[] stats = SQL.Stats.GetStats();
             return new Stats() { Logins = stats[0], Registrations = stats[1], Errors = stats[2]};
         }
 

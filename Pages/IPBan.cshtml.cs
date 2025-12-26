@@ -48,13 +48,13 @@ namespace FunWebsiteThing.Pages
                         {
                             if (string.IsNullOrEmpty(Reason)) Reason = "You have been banned.";
                             if (ExpirationDate == DateTime.MinValue) ExpirationDate = DateTime.Now.AddMonths(1);
-                            SQL.Admin.BanIP(IP, Reason, ExpirationDate);
+                            await SQL.Admin.BanIP(IP, Reason, ExpirationDate);
                             TempData["Result"] = "Banned " + IP + ".";
                         }
                     }
                     else if (!Checkbox)
                     {
-                        SQL.Admin.UnbanIP(IP);
+                        await SQL.Admin.UnbanIP(IP);
                         TempData["Result"] = "Unbanned " + IP + ".";
                     }
                 }

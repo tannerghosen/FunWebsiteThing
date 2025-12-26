@@ -15,7 +15,7 @@ namespace FunWebsiteThing.Pages
         {
 
         }
-        public async Task<IActionResult> OnPost()
+        public IActionResult OnPost()
         {
             bool isusernameemail = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
             Username = isusernameemail == true ? SQL.Accounts.GetUsername(Username) : Username;
