@@ -258,7 +258,7 @@ namespace FunWebsiteThing.SQL
         }
 
         // Is a user banned from the website
-        public static (bool, int?, string?, DateTime?) IsUserBanned(int id)
+        public static (bool, int?, string?, DateTime?) IsUserBanned(int? id)
         {
             try
             {
