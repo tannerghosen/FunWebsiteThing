@@ -10,7 +10,7 @@ namespace FunWebsiteThing
         {
             _s = s;
         }
-        // To-do: change this to work with external login sources? (Google)
+
         public async Task<IActionResult> Login(string Username, string Password, bool External = false)
         {
             if (!_s.IsUserLoggedIn())
@@ -23,7 +23,7 @@ namespace FunWebsiteThing
                 {
                     (result, error) = await SQL.Accounts.Login(Username, Password, sid);
                 }
-                // If it's an external website and this method is being called, it's a successful result
+                // If it's an external website and this method is being called, it's a successful login via that site
                 // So all we need to really prove here is the user does actually exist
                 else
                 {
@@ -32,7 +32,6 @@ namespace FunWebsiteThing
 
                 if (result == true)
                 {
-                    Logger.Write(SQL.Admin.IsUserBannedSimple(SQL.Accounts.GetUserID(Username)).ToString());
                     if (!SQL.Admin.IsUserBannedSimple(SQL.Accounts.GetUserID(Username))) // if user is not banned
                     {
                         _s.Login(Username, SQL.Accounts.GetUserID(Username), sid);
@@ -55,6 +54,7 @@ namespace FunWebsiteThing
             }
             return StatusCode(403, "You're already logged in.");
         }
+
         public async Task<IActionResult> Register(string Email, string Username, string Password, string? SecurityQuestion = null, string? Answer = null, bool External = false)
         {
             if(!_s.IsUserLoggedIn())
