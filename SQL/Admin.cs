@@ -20,7 +20,6 @@ namespace FunWebsiteThing.SQL
                             List<string[]> rows = new List<string[]>(); // create a List of string arrays called rows
                             while (reader.Read())
                             {
-                                #pragma warning disable CS8601 
                                 string[] row = new string[9];
                                 row[0] = reader.GetInt32(0).ToString(); // id
                                 row[1] = reader.GetString(1); // email
@@ -32,7 +31,6 @@ namespace FunWebsiteThing.SQL
                                 row[7] = reader.IsDBNull(7) ? "No security question set!" : reader.GetString(7); // security question
         
                                 rows.Add(row);
-                                #pragma warning restore CS8601
                             }
                             return rows.ToArray(); // convert the List to an array and return it
                         }
