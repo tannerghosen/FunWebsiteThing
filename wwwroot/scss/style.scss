@@ -97,21 +97,6 @@ img
 	font-family: $psfont;
 }
 
-input 
-{
-	color: #000;
-}
-
-.submit .lightmode input 
-{
-	color: #000 !important;
-}
-
-.submit input 
-{
-	color: #FFF !important;
-}
-
 /*ul 
 {
 	list-style-type: none;
@@ -249,7 +234,7 @@ li
 .linkcontainer
 {
 	overflow: hidden;
-	background-color: #111;
+	background-color: $almostblack;
 	position: relative;
 }
 
@@ -437,13 +422,13 @@ thead
 
 td 
 {
-	border: 2px solid #FFF;
+	border: 2px solid $white;
 	padding: 0px 5px 0px 5px;
 }
 
 .lightmode td 
 {
-	border: 2px solid #000;
+	border: 2px solid $black;
 }
 
 .commentsection 
@@ -510,13 +495,27 @@ table
 .statuscontainer 
 {
 	overflow: hidden;
-	background-color: #111;
+	background-color: $almostblack;
 	position: relative;
 }
 
 .lightmode .statuscontainer 
 {
 	overflow: hidden;
-	background-color: #EEE;
+	background-color: $lightwhite;
 	position: relative;
+}
+
+input {
+	color: #000;
+}
+
+.submit .lightmode input 
+{
+	color: $black !important;
+}
+
+.submit input 
+{
+	color: $white !important;
 }
