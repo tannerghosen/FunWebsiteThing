@@ -425,31 +425,37 @@ li
 	}
 }
 
-#app {
+#app 
+{
 	text-align: center;
 }
 
-thead {
+thead 
+{
 	font-weight: 800;
 }
 
-td {
+td 
+{
 	border: 2px solid #FFF;
 	padding: 0px 5px 0px 5px;
 }
 
-.lightmode td {
+.lightmode td 
+{
 	border: 2px solid #000;
 }
 
-.commentsection {
+.commentsection 
+{
 	margin: 0 auto;
 	max-width: 100%;
 	min-width: 100%;
 	width: 100%;
 }
 
-table {
+table 
+{
 	display: block;
 	overflow-x: auto;
 	max-height: 150px;
@@ -458,30 +464,35 @@ table {
 	width: 800px;
 }
 
-.adminstuff {
+.adminstuff 
+{
 	position: relative;
 }
 
-.adminstuff table {
+.adminstuff table 
+{
 	display: block;
 	overflow-y: scroll;
 	max-height: 350px;
 }
 
-.message {
+.message 
+{
 	width: 300px;
 	text-align: center;
 	margin: 0 auto;
 }
 
-#Comment {
+#Comment 
+{
 	resize: none;
 	max-width: 100%;
 	min-width: 100%;
 	width: 100%;
 }
 
-.blog {
+.blog 
+{
 	text-align: center;
 	margin: auto;
 	max-height: 300px;
@@ -490,18 +501,21 @@ table {
 	min-height: 200px;
 }
 
-.blogcomment td {
+.blogcomment td 
+{
 	overflow-x: auto;
 	max-width: 75%;
 }
 
-.statuscontainer {
+.statuscontainer 
+{
 	overflow: hidden;
 	background-color: #111;
 	position: relative;
 }
 
-.lightmode .statuscontainer {
+.lightmode .statuscontainer 
+{
 	overflow: hidden;
 	background-color: #EEE;
 	position: relative;
