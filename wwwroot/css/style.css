@@ -18,7 +18,7 @@ html, body {
   /* flexbox */
   max-width: 65%; /* we don't need a lot of space */
   height: 45vh; /* screen height */
-  max-height: 45vh; 
+  max-height: 45vh;
   min-width: 60%;
   display: flex;
   flex-direction: column; /* display as a column */
@@ -87,18 +87,19 @@ img {
 
 input 
 {
-    color: #000;
+  color: #000;
 }
 
 .submit .lightmode input 
 {
-    color: #000!important;
+    color: #000 !important;
 }
 
 .submit input 
 {
-    color: #FFF!important;
+     color: #FFF !important;
 }
+
 /*ul 
 {
 	list-style-type: none;
@@ -339,98 +340,100 @@ li
     opacity: 1;
   }
 }
-
-/*# sourceMappingURL=style.css.map */
-
 #app 
 {
-    text-align: center;
+  text-align: center;
 }
 
 thead
 {
-    font-weight: 800;
+  font-weight: 800;
 }
+
 td 
 {
-    border: 2px solid #FFF;
-    padding: 0px 5px 0px 5px;
+  border: 2px solid #FFF;
+  padding: 0px 5px 0px 5px;
 }
 
 .lightmode td 
 {
-    border: 2px solid #000;
+  border: 2px solid #000;
 }
 
 .commentsection 
 {
-    margin: 0 auto;
-    max-width: 100%;
-    min-width: 100%;
-    width: 100%;
+  margin: 0 auto;
+  max-width: 100%;
+  min-width: 100%;
+  width: 100%;
 }
 
 table 
 {
-    display: block;
-    overflow-x: auto;
-    max-height: 150px;
-    max-width: 800px;
-    min-width: 800px;
-    width: 800px;
+  display: block;
+  overflow-x: auto;
+  max-height: 150px;
+  max-width: 800px;
+  min-width: 800px;
+  width: 800px;
 }
 
-.adminstuff
+.adminstuff 
 {
-    position: relative;
+  position: relative;
 }
+
 .adminstuff table 
 {
-    display: block;
-    overflow-y: scroll;
-    max-height: 350px;
+  display: block;
+  overflow-y: scroll;
+  max-height: 350px;
 }
 
 .message 
 {
-    width: 300px;
-    text-align: center;
-    margin: 0 auto;
+  width: 300px;
+  text-align: center;
+  margin: 0 auto;
 }
 
 #Comment 
 {
-    resize: none;
-    max-width: 100%;
-    min-width: 100%;
-    width: 100%;
+  resize: none;
+  max-width: 100%;
+  min-width: 100%;
+  width: 100%;
 }
 
-.blog {
-    text-align: center;
-    margin: auto;
-    max-height: 300px;
-    max-width: 800px;
-    overflow: auto;
-    min-height: 200px;
-}
-
-.blogcomment td
+.blog 
 {
-    overflow-x: auto;
-    max-width: 75%;
+  text-align: center;
+  margin: auto;
+  max-height: 300px;
+  max-width: 800px;
+  overflow: auto;
+  min-height: 200px;
 }
 
-.statuscontainer 
+.blogcomment td 
 {
-    overflow: hidden;
-    background-color: #111;
-    position: relative;
+  overflow-x: auto;
+  max-width: 75%;
+}
+
+.statuscontainer
+{
+  overflow: hidden;
+  background-color: #111;
+  position: relative;
 }
 
 .lightmode .statuscontainer 
 {
-    overflow: hidden;
-    background-color: #EEE;
-    position: relative;
+  overflow: hidden;
+  background-color: #EEE;
+  position: relative;
 }
+
+/*# sourceMappingURL=style.css.map */

@@ -1,0 +1,508 @@
+@import 'variables';
+
+/* to-do: clean up the stylesheet a bit */
+body 
+{
+	font: normal 110% $font;
+	margin: 0;
+}
+
+html, body 
+{
+	height: 100%;
+	background: $black;
+	color: $white;
+	transition: background-color 0.5s ease;
+	/*background-image: linear-gradient(180deg, rgb(39, 39, 39) 0%, #060606 70%); */
+	/* background-attachment: fixed; */ /* background doesn't scroll */
+}
+
+.container {
+	/* flexbox */
+	max-width: 65%; /* we don't need a lot of space */
+	height: 45vh; /* screen height */
+	max-height: 45vh;
+	min-width: 60%;
+	display: flex;
+	flex-direction: column; /* display as a column */
+	align-items: center; /* align content in center vertically */
+	justify-content: center; /* align content in center horizontally */
+	position: relative;
+	bottom: 2.5%;
+	overflow: visible;
+	animation-delay: 2s;
+}
+
+.flexcontainer 
+{
+	flex-direction: column;
+	justify-content: space-around;
+	align-items: center;
+	align-content: flex-start;
+	max-height: 100vh;
+	height: 100vh;
+}
+
+h1 
+{
+	font: 400 175% $psfont;
+	margin: 0;
+}
+
+.container h2 
+{
+	font: 400 125% $psfont;
+	margin: 0;
+	grid-column: span 2;
+}
+
+a 
+{
+	text-decoration: none;
+	color: $lightgray;
+	transition: all 0.2s ease-out;
+}
+
+a:hover 
+{
+	color: $lightwhite;
+}
+
+.headercontainer 
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 15vh;
+}
+
+.header 
+{
+	animation-timing-function: linear;
+	text-align: center;
+	transform: translateX(0);
+}
+
+img 
+{
+    width: 43.75vw;
+    height: 50vh;
+	border: 1px solid $lightergray;
+	border-radius: 4px;
+	padding: 5px;
+}
+
+#links, #linksthebutton
+{
+	font-family: $psfont;
+}
+
+input 
+{
+	color: #000;
+}
+
+.submit .lightmode input 
+{
+	color: #000 !important;
+}
+
+.submit input 
+{
+	color: #FFF !important;
+}
+
+/*ul 
+{
+	list-style-type: none;
+	margin: 0 auto;
+	padding: 0;
+	overflow: visible;
+}
+
+li 
+{
+	display: inline;
+}*/
+
+/* Light Mode / Dark Mode */
+#lightswitch 
+{
+	color: rgba(255, 255, 255, 0.5); 
+	cursor: pointer;
+	user-select: none;
+	text-shadow: 0 0 0 $lightergray;
+	-webkit-user-select: none;
+}
+
+.lightmode 
+{
+	background: $white;
+	color: $black;
+	transition: background-color .5s ease;
+	/* background-image: linear-gradient(180deg, rgb(255, 255, 255) 0%, #A1A1A1 70%); */
+	/* background-attachment: fixed; */
+}
+
+.lightmode a
+{
+	color: $darkgray;
+}
+
+.lightmode a:hover 
+{
+	color: $almostblack;
+}
+
+.lightmode .linkcontainer
+{
+	background: $lightwhite;
+}
+
+.lightmode #lightswitch
+{
+	text-shadow: 0 0 0 $darkgray;
+}
+
+.lightmode img 
+{
+	border: 1px solid $darkergray;
+	border-radius: 4px;
+	padding: 5px;
+}
+
+/* Slideshow */
+#backbutton, #nextbutton 
+{
+	cursor: pointer;
+	user-select: none;
+	color: $lightgray;
+	-webkit-user-select: none;
+}
+
+#backbutton
+{
+	float: left;
+}
+
+#nextbutton
+{
+	float: right;
+}
+
+#backbutton:hover, #nextbutton:hover
+{
+	color: $lightwhite;
+}
+
+.lightmode #backbutton, .lightmode #nextbutton
+{
+	color: $darkgray;
+}
+
+.lightmode #backbutton:hover, .lightmode #nextbutton:hover
+{
+	color: $almostblack;
+}
+
+#buttoncontainer
+{
+	position: absolute;
+	left: 50%;
+	bottom: 7.5%;
+	transform: translate(-50%, 0%);
+	margin: 0 auto;
+	padding: 30px; 
+}
+
+.notransition
+{
+	transition: none !important;
+}
+
+/* Misc */
+.project 
+{
+	height: 200px;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+#simage 
+{
+	height: 10vh;
+	width: 10vh;
+}
+
+.fade 
+{
+	animation: fade 0.5s linear;
+}
+
+/* Accessibility */
+.accesstext 
+{
+	font-family: sans-serif, Arial, Helvetica;
+}
+
+/* Navbar */
+.linkcontainer
+{
+	overflow: hidden;
+	background-color: #111;
+	position: relative;
+}
+
+.linkcontainer #links
+{
+	display: none;
+}
+
+.linkcontainer a 
+{
+	margin-right: auto;
+	float: left;
+	padding: 0px 10px
+}
+
+.linkcontainer #lightswitch
+{
+
+}
+
+.linkcontainer #lightbulb
+{
+	font-size: 75%;
+	float: right;
+	display: flex;
+	align-items: center;
+}
+
+#app 
+{
+	display: flex;
+	flex-direction: column;
+	height: 15vh;
+}
+/* Responsive */
+/* Moved to mobile.css */
+
+/* Anims */
+@keyframes slidein 
+{
+	0% 
+	{
+		left: -100%;
+	}
+	50% 
+	{
+		left: calc(50% - 25%); /* move halfway to the center */
+	}
+	100% 
+	{
+		left: calc(50% - 25%);
+	}
+}
+
+@keyframes blink 
+{
+	0%, 50%, 100% 
+	{
+		opacity: 1;
+	}
+
+	25%, 75% 
+	{
+		opacity: 0;
+	}
+}
+
+@keyframes rotating
+{
+	0% 
+	{
+		transform: rotate(0deg);
+	}
+
+	50% 
+	{
+		transform: rotate(180deg);
+	}
+
+	100% 
+	{
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes bounce
+{
+	0%, 100%
+	{
+		transform: translate(0, 0);
+	}
+	10%, 90%
+	{
+		transform: translate(0, -5px);
+	}
+	20%, 80% 
+	{
+		transform: translate(0, -15px);
+	}
+	30%, 70% 
+	{
+		transform: translate(0, -20px);
+	}
+	40%, 60% 
+	{
+		transform: translate(0, -25px);
+	}
+	50% 
+	{
+		transform: translate(0, -30px);
+	}
+}
+
+@keyframes fade 
+{
+	0%, 100% 
+	{
+		opacity: 1;
+	}
+
+	50% 
+	{
+		opacity: 0;
+	}
+}
+
+@keyframes fadein
+{
+	0%
+	{
+		visibility: visible;
+		opacity: 0;
+	}
+	10%
+	{
+		opacity: 0.1;
+	}
+	20%
+	{
+		opacity: 0.2;
+	}
+	30%
+	{
+		opacity: 0.3;
+	}
+	40%
+	{
+		opacity: 0.4;
+	}
+	50%
+	{
+		opacity: 0.5;
+	}
+	60%
+	{
+		opacity: 0.6;
+	}
+	70%
+	{
+		opacity: 0.7;
+	}
+	80%
+	{
+		opacity: 0.8;
+	}
+	90%
+	{
+		opacity: 0.9;
+	}
+	100%
+	{
+		opacity: 1;
+	}
+}
+
+#app {
+	text-align: center;
+}
+
+thead {
+	font-weight: 800;
+}
+
+td {
+	border: 2px solid #FFF;
+	padding: 0px 5px 0px 5px;
+}
+
+.lightmode td {
+	border: 2px solid #000;
+}
+
+.commentsection {
+	margin: 0 auto;
+	max-width: 100%;
+	min-width: 100%;
+	width: 100%;
+}
+
+table {
+	display: block;
+	overflow-x: auto;
+	max-height: 150px;
+	max-width: 800px;
+	min-width: 800px;
+	width: 800px;
+}
+
+.adminstuff {
+	position: relative;
+}
+
+.adminstuff table {
+	display: block;
+	overflow-y: scroll;
+	max-height: 350px;
+}
+
+.message {
+	width: 300px;
+	text-align: center;
+	margin: 0 auto;
+}
+
+#Comment {
+	resize: none;
+	max-width: 100%;
+	min-width: 100%;
+	width: 100%;
+}
+
+.blog {
+	text-align: center;
+	margin: auto;
+	max-height: 300px;
+	max-width: 800px;
+	overflow: auto;
+	min-height: 200px;
+}
+
+.blogcomment td {
+	overflow-x: auto;
+	max-width: 75%;
+}
+
+.statuscontainer {
+	overflow: hidden;
+	background-color: #111;
+	position: relative;
+}
+
+.lightmode .statuscontainer {
+	overflow: hidden;
+	background-color: #EEE;
+	position: relative;
+}
