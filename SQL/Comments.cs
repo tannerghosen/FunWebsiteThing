@@ -67,11 +67,20 @@ namespace FunWebsiteThing.SQL
                             {
                                 while (reader.Read())
                                 {
-                                    usernames.Add(reader.GetString(0));
+                                    // A placeholder check to ensure the user exists so we're not sending people to non-existent users.
+                                    if (!SQL.Accounts.DoesUserExist(reader.GetString(0)))
+                                    {
+                                        usernames.Add("Deleted User");
+                                        ids.Add(Convert.ToString(-1));
+                                    }
+                                    else
+                                    {
+                                        usernames.Add(reader.GetString(0));
+                                        ids.Add(Convert.ToString(reader.GetInt32(3)));
+                                    }
                                     comments.Add(reader.GetString(1));
                                    // var date = DateTime.ParseExact(reader.GetDateTime(2), "g", CultureInfo.InvariantCulture);
                                     dates.Add(Convert.ToString(reader.GetDateTime(2)));
-                                    ids.Add(Convert.ToString(reader.GetInt32(3)));
                                 }
                             }
                         }
