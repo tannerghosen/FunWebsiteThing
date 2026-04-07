@@ -18,16 +18,17 @@ namespace FunWebsiteThing
                 int sid = _s.SID(); // generate session id
                 Username = Regex.IsMatch(Username, @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$") == true ? SQL.Accounts.GetUsername(Username) : Username;
                 (bool result, bool error) = (false, false);
-                // If non-external login source (the website only)
-                if (External == false)
+                // If external login source
+                if (External == true)
                 {
-                    (result, error) = await SQL.Accounts.Login(Username, Password, sid);
+                    // If it's an external login and this method is being called, it's a successful login via that site
+                    // So all we need to really prove here is the user does actually exist
+                    (result, error) = (SQL.Accounts.DoesUserExist(Username), false);
                 }
-                // If it's an external website and this method is being called, it's a successful login via that site
-                // So all we need to really prove here is the user does actually exist
+                // Else, just login like normaal.
                 else
                 {
-                    (result, error) = (SQL.Accounts.DoesUserExist(Username), false);
+                    (result, error) = await SQL.Accounts.Login(Username, Password, sid);
                 }
 
                 if (result == true)
