@@ -1,18 +1,9 @@
 ﻿@page
-@model ErrorModel
+@model FunWebsiteThing.Pages.ErrorModel
 @{
     ViewData["Title"] = "Error";
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
-
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}
-
-<h3>What do I do?</h3>
-<p>If you see this error, please report here: </p>
+<h1>@ViewData["Title"]</h1>
+<p>An error has occured. If possible, details of the error are listed below. If you keep seeing this page, please contact us at: </p>
+<p>@Model.ErrorMessage</p>

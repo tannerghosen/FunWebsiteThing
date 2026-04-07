@@ -1,6 +1,11 @@
 using FunWebsiteThing;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Hosting;
+using System.Globalization;
+using System.Net.Http;
+using System.Threading.RateLimiting;
 
 // domainname and sqlconstr are required to continue. If they are not set in your environment variables (global or local), the program will not run. Google OAuth is optional.
 string sqlconstr = Environment.GetEnvironmentVariable("FWTConnectionString"); // FWTConnectionString, MySQL Connction String, syntax looks like this: Server=(server);Database=(db);User ID=(user);Password=(pass);
@@ -60,6 +65,30 @@ builder.Services.AddScoped<SessionManager>(); // adds SessionManager as a servic
 builder.Services.AddScoped<AccountController>(); // adds AccountController as a service
 builder.Services.AddControllers(); // This adds all controllers to services
 
+// Rate Limiter
+builder.Services.AddRateLimiter(options =>
+{
+    options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
+            factory: partition => new FixedWindowRateLimiterOptions
+            {
+                AutoReplenishment = true,
+                PermitLimit = 20,
+                QueueLimit = 0,
+                Window = TimeSpan.FromMinutes(1)
+            }));
+    options.OnRejected = async (context, cancellationToken) =>
+    {
+        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+        {
+            context.HttpContext.Response.Headers.RetryAfter = ((int)retryAfter.TotalSeconds).ToString(NumberFormatInfo.InvariantInfo);
+        }
+        context.HttpContext.Response.Redirect("/Error?error=429");
+    };
+});
+
+// OAuth
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme; // default auth scheme is cookie, which is what Sessions use
@@ -96,6 +125,8 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseSession();
+
+app.UseRateLimiter();
 
 app.UseAuthorization();
 
