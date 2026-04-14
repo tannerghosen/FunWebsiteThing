@@ -31,6 +31,7 @@ namespace FunWebsiteThing
                     (result, error) = await SQL.Accounts.Login(Username, Password, sid);
                 }
 
+                // if the result from the login is true (successful outcome)
                 if (result == true)
                 {
                     if (!SQL.Admin.IsUserBannedSimple(SQL.Accounts.GetUserID(Username))) // if user is not banned

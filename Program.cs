@@ -30,7 +30,7 @@ if (setcheck.Contains(false))
     Logger.Write($"FWTConnectionString Set: {setcheck[0]} FWTDomainName Set: {setcheck[1]}","FATAL");
 
     // Display Fatal Error in console
-    Console.WriteLine("FATAL ERROR! READ BELOW CAREFULLY BEFORE RE-LAUNCHING THE PROGRAM.", "FATAL");
+    Console.WriteLine("FATAL ERROR! READ BELOW CAREFULLY BEFORE RE-LAUNCHING THE PROGRAM.");
     Console.WriteLine($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error for this program to run.");
     Console.WriteLine($"For more clarification, see the project's code in Program.cs");
     Console.WriteLine($"FWTConnectionString Set: {setcheck[0]} FWTDomainName Set: {setcheck[1]}");
