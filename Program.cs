@@ -135,6 +135,8 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers(); // this adds the endpoints of the controllers to the routes for this app
 });
 
+app.UseStatusCodePagesWithRedirects("/Error?error={0}");
+
 app.MapRazorPages();
 FunWebsiteThing.SQL.Main.Init(sqlconstr);  // Init MySQL classes, also creates tables / triggers / events if they aren't already made.
 Globals.DomainName = domainname;

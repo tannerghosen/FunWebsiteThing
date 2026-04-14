@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.RateLimiting;
 
 namespace FunWebsiteThing.Pages
 {
-    [DisableRateLimiting] // This allows this page to be actually accessible during a rate limiting scenario, which is ideal as it tells you you're being ratelimited.
+    [DisableRateLimiting] // This allows this page to be actually accessible if you're being ratelimited, which is ideal as it tells you you're being ratelimited.
     public class ErrorModel : PageModel
     {
         [BindProperty]
@@ -13,7 +13,9 @@ namespace FunWebsiteThing.Pages
         public string? ErrorMessage { get; set; }
         public void OnGet()
         {
-            ErrorCode = Request.Query.ContainsKey("error") ? Convert.ToInt32(Request.Query["error"]) : 0;
+            int e;
+            ErrorCode = Request.Query.ContainsKey("error") && int.TryParse(Request.Query["error"], out e) ? e : 0;
+
             switch (ErrorCode)
             {
                 case 0:

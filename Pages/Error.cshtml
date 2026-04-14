@@ -1,9 +1,9 @@
 ﻿@page
 @model FunWebsiteThing.Pages.ErrorModel
 @{
-    ViewData["Title"] = "Error";
+    ViewData["Title"] = "Error " + @Model.ErrorCode;
 }
 
-<h1>@ViewData["Title"]</h1>
-<p>An error has occured. If possible, details of the error are listed below. If you keep seeing this page, please contact us at: </p>
+<h1>@Model.ErrorCode</h1>
 <p>@Model.ErrorMessage</p>
+<p>If you keep getting this error, please contact us at: </p>
