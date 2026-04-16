@@ -50,7 +50,11 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod()
             .AllowAnyHeader());
 });
-builder.Services.AddRazorPages();
+builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
+{
+    options.Conventions.AddPageRoute("/Profile", "Profile/{id}");
+    options.Conventions.AddPageRoute("/Blog", "Blog/{post}");
+});
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(options =>
 {

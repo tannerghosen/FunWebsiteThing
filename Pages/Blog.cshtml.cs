@@ -24,7 +24,8 @@ namespace FunWebsiteThing.Pages
 
         public void OnGet()
         {
-            Post = Convert.ToInt32(Request.Query["Post"]);
+            //Post = Convert.ToInt32(Request.Query["Post"]);
+            Post = Convert.ToInt32(RouteData.Values["post"]);
             if (Post < 1) // if post is less than 1 we went too far back
             {
                 Post = 1;
