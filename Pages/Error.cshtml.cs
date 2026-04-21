@@ -26,7 +26,7 @@ namespace FunWebsiteThing.Pages
                     ErrorMessage = "This page does not exist.";
                     break;
                 case 429:
-                    ErrorMessage = "You are being rate limited by the server.\nIf you are the owner of a web crawler / bot, you are limited to 20 requests per minute.\nAttempts to step around this will get your web crawlers / bots banned.";
+                    ErrorMessage = "You are being rate limited by the server.\nIf you are the owner of a web crawler / bot, you are limited to 25 requests per minute.\nAttempts to step around this will get your web crawlers / bots banned.";
                     break;
             }
         }
