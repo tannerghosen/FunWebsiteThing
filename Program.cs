@@ -52,8 +52,8 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddRazorPages().AddRazorPagesOptions(options =>
 {
-    options.Conventions.AddPageRoute("/Profile", "Profile/{id}");
-    options.Conventions.AddPageRoute("/Blog", "Blog/{post}");
+    options.Conventions.AddPageRoute("/Profile", "Profile/{id}"); // /Profile/(id)
+    options.Conventions.AddPageRoute("/Blog", "Blog/{post}"); // /Blog/(post)
 });
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(options =>
@@ -131,8 +131,6 @@ app.UseRouting();
 app.UseSession();
 
 app.UseRateLimiter();
-
-app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
