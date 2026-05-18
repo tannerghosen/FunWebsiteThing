@@ -20,7 +20,7 @@ namespace FunWebsiteThing.Pages
             {
                 case 0:
                 default:
-                    ErrorMessage = "An unknown server error has occured.";
+                    ErrorMessage = "A server error has occured.";
                     break;
                 case 404:
                     ErrorMessage = "This page does not exist.";

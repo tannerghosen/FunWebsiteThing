@@ -24,7 +24,7 @@ namespace FunWebsiteThing.Pages
             //Id = Convert.ToInt32(Request.Query["UserId"]);
             Id = Convert.ToInt32(RouteData.Values["id"]);
             Username = SQL.Accounts.GetUsername(Id) == null || SQL.Accounts.GetUsername(Id) == string.Empty ? "Not Registered" : SQL.Accounts.GetUsername(Id);
-            AccountType = SQL.Admin.IsAdmin(Id) == true ? Id == 1 ? "Super Admin" : "Admin" : Id == -1 ? "Guest" : "Member";
+            AccountType = SQL.Admin.IsAdmin(Id) == true ? Id == 1 ? "Owner" : "Admin" : Id == -1 ? "Guest" : "Member";
             JoinDate = SQL.Accounts.GetJoinDate(Id) == null || SQL.Accounts.GetJoinDate(Id) < DateTime.MinValue ? DateTime.Now : SQL.Accounts.GetJoinDate(Id);
             TotalComments = SQL.Comments.CountCommentsByUserId(Id);
         }
