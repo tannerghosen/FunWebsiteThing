@@ -1,9 +1,24 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = "";
 }
 
-<h1>@ViewData["Title"]</h1>
-<p>Hello World!</p>
-<p>The time is @DateTime.Now.</p>
+@{
+    if (HttpContext.Connection.RemoteIpAddress.Equals(HttpContext.Connection.LocalIpAddress) && Globals.FirstTimeRunning == true)
+    {
+        ViewData["Title"] = "Admin Account";
+        <h1>@ViewData["Title"]</h1>
+        <p>Welcome to your website. Your admin account password is: @Globals.AdminPassword</p>
+        <p><b>Make sure to get this password noted down! Refreshing the page will not show this message again!</b></p>
+        Globals.FirstTimeRunning = false;
+        Globals.AdminPassword = "";
+    }
+    else
+    {
+        ViewData["Title"] = "Home";
+        <h1>@ViewData["Title"]</h1>
+        <p>Hello World!</p>
+        <p>The time is @DateTime.Now.</p>
+    }
+}

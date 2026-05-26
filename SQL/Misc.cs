@@ -17,7 +17,10 @@ namespace FunWebsiteThing.SQL
                     int count = Convert.ToInt32(c.ExecuteScalar());
                     if (count == 0)
                     {
-                        string pass = BCrypt.Net.BCrypt.HashPassword("test");
+                        Globals.FirstTimeRunning = true;
+                        string password = Controllers.Classes.Password.GeneratePassword();
+                        Globals.AdminPassword = password;
+                        string pass = BCrypt.Net.BCrypt.HashPassword(password);
                         string createadmin = "INSERT INTO accounts (id, email, username, password, isadmin) VALUES (1, 'admin@email.com', 'Admin', @pass, 1)";
                         using (var cmd = new MySqlCommand(createadmin, con))
                         {
