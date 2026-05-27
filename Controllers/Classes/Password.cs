@@ -6,7 +6,7 @@ namespace FunWebsiteThing.Controllers.Classes
     public class Password
     {
         /* Passwords: Generated passwords kept in a HashSet to prevent duplicate passwords from being generated. */
-        private static HashSet<string> Passwords = new HashSet<string>();
+        //private static HashSet<string> Passwords = new HashSet<string>();
 
         /* Other Misc Things: characters, regexpattern, regex */
         private static string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*";
@@ -21,7 +21,7 @@ namespace FunWebsiteThing.Controllers.Classes
         private static string passregexpattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])(?!.*(.)\\1{5,}).{8,32}$";
         private static Regex passregex = new Regex(passregexpattern);
 
-        public static string GeneratePassword(int attempt = 0)
+        public static string GeneratePassword(/*int attempt = 0*/)
         {
             StringBuilder password = new StringBuilder(string.Empty);
             Random r = new Random();
@@ -31,8 +31,10 @@ namespace FunWebsiteThing.Controllers.Classes
                 password.Append(characters[r.Next(characters.Length)]);
             }
             string GeneratedPass = password.ToString();
+            return passregex.IsMatch(GeneratedPass) == true ? GeneratedPass : GeneratePassword();
+            // Old  Code, to remove
             // if Passwords doesn't contain GeneratedPass and it's good according to our regex
-            if (!Passwords.Contains(GeneratedPass) && passregex.IsMatch(GeneratedPass))
+            /*if (!Passwords.Contains(GeneratedPass) && passregex.IsMatch(GeneratedPass))
             {
                 Passwords.Add(GeneratedPass); // add it to the list
                 //Logger.Write("Generated Password Successfully!");
@@ -48,7 +50,7 @@ namespace FunWebsiteThing.Controllers.Classes
             {
                 return GeneratedPass;
             }
-            return "";
+            return "";*/
         }
 
         public static bool ValidatePassword(string password)
