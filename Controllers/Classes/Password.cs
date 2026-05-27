@@ -21,7 +21,7 @@ namespace FunWebsiteThing.Controllers.Classes
         private static string passregexpattern = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-])(?!.*(.)\\1{5,}).{8,32}$";
         private static Regex passregex = new Regex(passregexpattern);
 
-        public static string GeneratePassword(/*int attempt = 0*/)
+        public static string GeneratePassword()
         {
             StringBuilder password = new StringBuilder(string.Empty);
             Random r = new Random();
@@ -32,31 +32,11 @@ namespace FunWebsiteThing.Controllers.Classes
             }
             string GeneratedPass = password.ToString();
             return passregex.IsMatch(GeneratedPass) == true ? GeneratedPass : GeneratePassword();
-            // Old  Code, to remove
-            // if Passwords doesn't contain GeneratedPass and it's good according to our regex
-            /*if (!Passwords.Contains(GeneratedPass) && passregex.IsMatch(GeneratedPass))
-            {
-                Passwords.Add(GeneratedPass); // add it to the list
-                //Logger.Write("Generated Password Successfully!");
-                return GeneratedPass;
-            }
-            // Otherwise we try again
-            else if (attempt < 1000)
-            {
-                attempt++;
-                return GeneratePassword(attempt);
-            }
-            else if (attempt == 1000) // Unfortunately if recursion goes beyond 500 we'll have to settle for a duplicate. Don't want to slow the program.
-            {
-                return GeneratedPass;
-            }
-            return "";*/
         }
 
         public static bool ValidatePassword(string password)
         {
-            if (!passregex.IsMatch(password) || password == null) return false;
-            return true;
+            return (!passregex.IsMatch(password) || password == null) ? true : false;
         }
     }
 }
