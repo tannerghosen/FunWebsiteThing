@@ -5,9 +5,6 @@ namespace FunWebsiteThing.Controllers.Classes
 {
     public class Password
     {
-        /* Passwords: Generated passwords kept in a HashSet to prevent duplicate passwords from being generated. */
-        //private static HashSet<string> Passwords = new HashSet<string>();
-
         /* Other Misc Things: characters, regexpattern, regex */
         private static string characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*";
         /* It checks for:
