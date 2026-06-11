@@ -40,7 +40,6 @@ namespace FunWebsiteThing.SQL
                 // Fatal Error happened, like in Program.cs we stop the program altogether here.
                 Logger.Write("Fatal error with MySQL. Ending program.", "FATAL");
                 Console.WriteLine("Fatal error with MySQL. Ending program.");
-                Console.ReadKey();
 
                 Environment.Exit(0);
             }
