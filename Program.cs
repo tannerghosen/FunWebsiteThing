@@ -33,6 +33,10 @@ if (setcheck.Contains(false))
     Environment.Exit(0);
 }
 
+int start = sqlconstr.IndexOf("Database=");
+int end = sqlconstr.IndexOf(';', start);
+Globals.DatabaseName = start != -1 && end != -1 ? sqlconstr.Substring(start, end - start) : "None";
+
 Globals.DisableGoogle = string.IsNullOrWhiteSpace(gclientid) || string.IsNullOrWhiteSpace(gclientsec); // Disable Google login if these system environment variables are empty or not set.
 
 var builder = WebApplication.CreateBuilder(args);
