@@ -38,15 +38,8 @@ namespace FunWebsiteThing.SQL
             else
             {
                 // Fatal Error happened, like in Program.cs we stop the program altogether here.
-                Logger.Write("FATAL ERROR! READ BELOW CAREFULLY BEFORE RE-LAUNCHING THE PROGRAM.", "FATAL");
-                Logger.Write("SQL: MySQL Error occured that isn't recoverable from. Possible causes include:", "FATAL");
-                Logger.Write("* Invalid / Incorrect connection string in environment variables.", "FATAL");
-                Logger.Write("* MySQL is not running.", "FATAL");
-                Logger.Write("* You're connecting to a Remote MySQL server that's not accessible for various reasons (unreachable, not running, no internet locally to connect to it, etc.).","FATAL");
-
-                Console.WriteLine("FATAL ERROR! READ BELOW CAREFULLY BEFORE RE-LAUNCHING THE PROGRAM.");
-                Console.WriteLine("SQL: MySQL Error occured that isn't recoverable from. Possible causes include:");
-                Console.WriteLine("\n* Invalid / Incorrect connection string in environment variables.\n* MySQL is not running.\n* You're connecting to a Remote MySQL server that's not accessible for various reasons (unreachable, not running, no internet locally to connect to it, etc.).");
+                Logger.Write("Fatal error with MySQL. Ending program.", "FATAL");
+                Console.WriteLine("Fatal error with MySQL. Ending program.");
                 Console.ReadKey();
 
                 Environment.Exit(0);
@@ -79,11 +72,13 @@ namespace FunWebsiteThing.SQL
             }
             catch (MySqlException e)
             {
+                Console.WriteLine("SQL: Something is wrong with MySQL.\nError provided: " + e.Message + "\nSQL: Error Code: " + e.ErrorCode);
                 Logger.Write("SQL: Something is wrong with MySQL.\nError provided: " + e.Message + "\nSQL: Error Code: " + e.ErrorCode, "ERROR");
                 return false;
             }
             catch (Exception ex)
             {
+                Console.WriteLine("SQL: Something is wrong with MySQL that caused a regular exception.\nError provided: " + ex.Message);
                 Logger.Write("SQL: Something is wrong with MySQL that caused a regular exception.\nError provided: " + ex.Message);
                 return false;
             }
