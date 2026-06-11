@@ -38,7 +38,7 @@ namespace FunWebsiteThing.SQL
             else
             {
                 // Fatal Error happened, like in Program.cs we stop the program altogether here.
-                Logger.Write("Fatal error with MySQL. Ending program.", "FATAL");
+                //Logger.Write("Fatal error with MySQL. Ending program.", "FATAL");
                 Console.WriteLine("Fatal error with MySQL. Ending program.");
 
                 Environment.Exit(0);
@@ -72,13 +72,11 @@ namespace FunWebsiteThing.SQL
             catch (MySqlException e)
             {
                 Console.WriteLine("SQL: Something is wrong with MySQL.\nError provided: " + e.Message + "\nSQL: Error Code: " + e.ErrorCode);
-                Logger.Write("SQL: Something is wrong with MySQL.\nError provided: " + e.Message + "\nSQL: Error Code: " + e.ErrorCode, "ERROR");
                 return false;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("SQL: Something is wrong with MySQL that caused a regular exception.\nError provided: " + ex.Message);
-                Logger.Write("SQL: Something is wrong with MySQL that caused a regular exception.\nError provided: " + ex.Message);
                 return false;
             }
         }

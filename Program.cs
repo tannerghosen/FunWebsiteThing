@@ -23,12 +23,6 @@ string domainname = Environment.GetEnvironmentVariable("FWTDomainName"); // FWTD
 bool[] setcheck = { !string.IsNullOrWhiteSpace(sqlconstr), !string.IsNullOrWhiteSpace(domainname) };
 if (setcheck.Contains(false))
 {
-    // Log Fatal Error to FWT.log
-    Logger.Write("Fatal error with program. Ending program, read below.", "FATAL");
-    Logger.Write($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error for this program to run.", "FATAL");
-    Logger.Write($"For more clarification, see the project's code in Program.cs", "FATAL");
-    Logger.Write($"FWTConnectionString Set: {setcheck[0]} FWTDomainName Set: {setcheck[1]}","FATAL");
-
     // Display Fatal Error in console
     Console.WriteLine("Fatal error with program. Ending program, read below.");
     Console.WriteLine($"One or more of the environment variables is not set. You must add and set the environment variables listed in this error for this program to run.");
