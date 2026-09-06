@@ -41,7 +41,7 @@ namespace TannersWebsiteTemplate
                     if (!await SQL.Admin.IsUserBannedSimple(await SQL.Accounts.GetUserID(Username))) // if user is not banned
                     {
                         await _s.Login(Username, await SQL.Accounts.GetUserID(Username), sid.ToString());
-                        Statistics.IncrementLogins();
+                        await Statistics.IncrementLogins();
                         return Ok("Login successful. Logged in as: " + Username + ".");
                     }
                     else
@@ -72,7 +72,7 @@ namespace TannersWebsiteTemplate
                     await Logger.Write("Registration successful. New user added: " + Username, "REGISTER");
                     await _s.Login(Username, await SQL.Accounts.GetUserID(Username), sid.ToString());
                     if(SecurityQuestion != "" && Answer != "" ) await SQL.SecurityQuestions.CreateSecurityQuestion(await SQL.Accounts.GetUserID(Username), SecurityQuestion, Answer);
-                    Statistics.IncrementRegistrations();
+                    await Statistics.IncrementRegistrations();
                     return Ok("Account Registered. Logged into " + Username + ".");
                 }
                 else if (result == false && error != true)
@@ -97,7 +97,7 @@ namespace TannersWebsiteTemplate
                 {
                     await Logger.Write("Registration successful. New user added: " + Username, "REGISTER");
                     await _s.Login(Username, await SQL.Accounts.GetUserID(Username), sid.ToString());
-                    Statistics.IncrementRegistrations();
+                    await Statistics.IncrementRegistrations();
                     return Ok("Account Registered. Logged into " + Username + ".");
                 }
                 else if (result == false && error != true)
