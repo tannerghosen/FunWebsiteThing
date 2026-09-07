@@ -62,7 +62,7 @@ namespace TannersWebsiteTemplate.SQL
         // (first bool is did operation succeed, second bool is did an error occur. the first bool will never be true if the second one is true.)
         public static async Task<(bool, bool)> Login(string username, string password, string sessionid = "")
         {
-            if (username == "Anonymous") // Let's not allow people to use Anonymous as a username to login
+            if (username == await GetUsername(-1))
             {
                 return (false, false);
             }
